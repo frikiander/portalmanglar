@@ -155,7 +155,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileSidebar, onLogout })
                               : 'text-slate-600 hover:bg-slate-50'
                           }`}
                         >
-                          {year === currentSchoolYear ? `${year} (actual)` : year}
+                          {year}
                         </button>
                       ))}
                     </div>

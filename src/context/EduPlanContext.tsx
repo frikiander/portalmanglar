@@ -139,7 +139,7 @@ interface EduPlanContextType {
   deleteGrade: (name: string) => void;
 }
 
-export const CURRENT_SCHOOL_YEAR = '2025-2026';
+export const CURRENT_SCHOOL_YEAR = '2026-2027';
 export const AVAILABLE_SCHOOL_YEARS = ['2026-2027', '2025-2026', '2024-2025', '2023-2024'];
 
 const EduPlanContext = createContext<EduPlanContextType | undefined>(undefined);
@@ -301,9 +301,12 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const isDemoMode = localStorage.getItem('eduplan_demo_mode') === 'true';
 
   const [plans, setPlans] = useState<LessonPlan[]>(() => {
+    if (!isDemoMode) {
+      const saved = localStorage.getItem('eduplan_plans_real');
+      return saved ? JSON.parse(saved) : [];
+    }
     const saved = localStorage.getItem('eduplan_plans');
-    if (saved) return JSON.parse(saved);
-    return isDemoMode ? INITIAL_LESSON_PLANS : [];
+    return saved ? JSON.parse(saved) : INITIAL_LESSON_PLANS;
   });
 
   const [competencies, setCompetencies] = useState<Competency[]>(() => {
@@ -328,61 +331,85 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
   });
 
   const [classroomProjects, setClassroomProjects] = useState<ClassroomProject[]>(() => {
+    if (!isDemoMode) {
+      const saved = localStorage.getItem('eduplan_classroom_projects_real');
+      return saved ? JSON.parse(saved) : [];
+    }
     const saved = localStorage.getItem('eduplan_classroom_projects_v4');
-    if (saved) return JSON.parse(saved);
-    return isDemoMode ? INITIAL_CLASSROOM_PROJECTS : [];
+    return saved ? JSON.parse(saved) : INITIAL_CLASSROOM_PROJECTS;
   });
 
   const [dutySlots, setDutySlots] = useState<DutySlot[]>(() => {
+    if (!isDemoMode) {
+      const saved = localStorage.getItem('eduplan_duty_slots_real');
+      return saved ? JSON.parse(saved) : [];
+    }
     const saved = localStorage.getItem('eduplan_duty_slots');
-    if (saved) return JSON.parse(saved);
-    return isDemoMode ? INITIAL_DUTY_SLOTS : [];
+    return saved ? JSON.parse(saved) : INITIAL_DUTY_SLOTS;
   });
 
   // Nómina de Estudiantes
   const [students, setStudents] = useState<Student[]>(() => {
+    if (!isDemoMode) {
+      const saved = localStorage.getItem('eduplan_students_real');
+      return saved ? JSON.parse(saved) : [];
+    }
     const saved = localStorage.getItem('eduplan_students');
-    if (saved) return JSON.parse(saved);
-    return isDemoMode ? INITIAL_STUDENTS_DATA : [];
+    return saved ? JSON.parse(saved) : INITIAL_STUDENTS_DATA;
   });
 
   const [selectedRosterGrade, setSelectedRosterGrade] = useState<string>(() => {
     const saved = localStorage.getItem('eduplan_roster_grade');
-    return saved || '2do Grado';
+    return saved || '1er Grado';
   });
 
   // Directorio de Colegios
   const [schools, setSchools] = useState<ExternalSchool[]>(() => {
+    if (!isDemoMode) {
+      const saved = localStorage.getItem('eduplan_schools_real');
+      return saved ? JSON.parse(saved) : [];
+    }
     const saved = localStorage.getItem('eduplan_schools');
-    if (saved) return JSON.parse(saved);
-    return isDemoMode ? INITIAL_SCHOOLS_DATA : [];
+    return saved ? JSON.parse(saved) : INITIAL_SCHOOLS_DATA;
   });
 
   // Salidas de Campo e Invitados Especiales
   const [fieldTrips, setFieldTrips] = useState<FieldTrip[]>(() => {
+    if (!isDemoMode) {
+      const saved = localStorage.getItem('eduplan_field_trips_real');
+      return saved ? JSON.parse(saved) : [];
+    }
     const saved = localStorage.getItem('eduplan_field_trips');
-    if (saved) return JSON.parse(saved);
-    return isDemoMode ? INITIAL_FIELD_TRIPS : [];
+    return saved ? JSON.parse(saved) : INITIAL_FIELD_TRIPS;
   });
 
   // Módulo de Evaluación y Calificaciones
   const [evaluations, setEvaluations] = useState<EvaluationRecord[]>(() => {
+    if (!isDemoMode) {
+      const saved = localStorage.getItem('eduplan_evaluations_real');
+      return saved ? JSON.parse(saved) : [];
+    }
     const saved = localStorage.getItem('eduplan_evaluations');
-    if (saved) return JSON.parse(saved);
-    return isDemoMode ? INITIAL_EVALUATIONS : [];
+    return saved ? JSON.parse(saved) : INITIAL_EVALUATIONS;
   });
 
   // Módulo de Horarios de Clase y Eventos
   const [classSchedules, setClassSchedules] = useState<ClassSchedule[]>(() => {
+    if (!isDemoMode) {
+      const saved = localStorage.getItem('eduplan_class_schedules_real');
+      return saved ? JSON.parse(saved) : [];
+    }
     const saved = localStorage.getItem('eduplan_class_schedules_v1');
-    if (saved) return JSON.parse(saved);
-    return isDemoMode ? INITIAL_CLASS_SCHEDULES : [];
+    return saved ? JSON.parse(saved) : INITIAL_CLASS_SCHEDULES;
   });
 
   const [eventSchedules, setEventSchedules] = useState<EventSchedule[]>(() => {
+    if (!isDemoMode) {
+      const saved = localStorage.getItem('eduplan_event_schedules_real');
+      return saved ? JSON.parse(saved) : [];
+    }
     const saved = localStorage.getItem('eduplan_event_schedules_v1');
-    if (saved) return JSON.parse(saved);
-    return isDemoMode ? INITIAL_EVENT_SCHEDULES : [];
+    return saved ? JSON.parse(saved) : INITIAL_EVENT_SCHEDULES;
   });
 
   const [selectedScheduleGrade, setSelectedScheduleGrade] = useState<string>(() => {
