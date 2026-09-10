@@ -1,0 +1,9 @@
+{
+  "entities": [
+    "users",
+    "students",
+    "lesson_plans",
+    "evaluations",
+    "schedules"
+  ]
+}

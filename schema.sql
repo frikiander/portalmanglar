@@ -1,0 +1,1 @@
+-- Schema definition for EduPlan Portal Manglar
