@@ -43,6 +43,7 @@ export const ClassroomProjectsSection: React.FC = () => {
   const { 
     classroomProjects, 
     currentUser, 
+    viewMode,
     updateClassroomProject, 
     updateClassroomProjectWeek, 
     addClassroomProject,
@@ -52,6 +53,7 @@ export const ClassroomProjectsSection: React.FC = () => {
     availableGradeNames
   } = useEduPlan();
 
+  const isCoordinator = viewMode === 'coordinator' || currentUser.role === 'coordinator' || currentUser.role === 'admin';
   const displayGrades = availableGradeNames?.length > 0 ? availableGradeNames : AVAILABLE_GRADES;
 
   // Filters: Grade and Lapso
@@ -134,25 +136,27 @@ export const ClassroomProjectsSection: React.FC = () => {
             <span>+ Nuevo Proyecto de Aula</span>
           </button>
 
-          {/* Reset / Clear Data Controls */}
-          <div className="flex items-center bg-white border border-slate-200 rounded-xl p-0.5 shadow-2xs">
-            <button
-              onClick={() => setShowResetConfirm(true)}
-              className="inline-flex items-center space-x-1 px-2.5 py-1.5 text-slate-700 hover:text-indigo-700 hover:bg-slate-100 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
-              title="Restablecer a los 12 proyectos base con colores oficiales"
-            >
-              <RotateCcw className="w-3.5 h-3.5 text-indigo-600" />
-              <span className="hidden sm:inline">Restablecer Base</span>
-            </button>
-            <button
-              onClick={() => setShowClearConfirm(true)}
-              className="inline-flex items-center space-x-1 px-2.5 py-1.5 text-slate-600 hover:text-red-700 hover:bg-red-50 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
-              title="Eliminar todos los proyectos para dejar la sección sin datos"
-            >
-              <Trash2 className="w-3.5 h-3.5 text-red-500" />
-              <span className="hidden sm:inline">Vaciar Datos</span>
-            </button>
-          </div>
+          {/* Reset / Clear Data Controls (Only visible to coordinators / admins) */}
+          {isCoordinator && (
+            <div className="flex items-center bg-white border border-slate-200 rounded-xl p-0.5 shadow-2xs">
+              <button
+                onClick={() => setShowResetConfirm(true)}
+                className="inline-flex items-center space-x-1 px-2.5 py-1.5 text-slate-700 hover:text-indigo-700 hover:bg-slate-100 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
+                title="Restablecer a los 12 proyectos base con colores oficiales"
+              >
+                <RotateCcw className="w-3.5 h-3.5 text-indigo-600" />
+                <span className="hidden sm:inline">Restablecer Base</span>
+              </button>
+              <button
+                onClick={() => setShowClearConfirm(true)}
+                className="inline-flex items-center space-x-1 px-2.5 py-1.5 text-slate-600 hover:text-red-700 hover:bg-red-50 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
+                title="Eliminar todos los proyectos para dejar la sección sin datos"
+              >
+                <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                <span className="hidden sm:inline">Vaciar Datos</span>
+              </button>
+            </div>
+          )}
 
           {/* Print Sheet */}
           <button

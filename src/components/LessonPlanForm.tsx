@@ -554,7 +554,6 @@ export const LessonPlanForm: React.FC = () => {
                 </span>
                 <span>Inicio (Apertura, Motivación y Saberes Previos)</span>
               </label>
-              <span className="text-[11px] text-slate-400">Aprox. 10 - 15 min</span>
             </div>
             <p className="text-xs text-slate-500 mb-2">
               Describe cómo activarás la atención de los estudiantes, preguntas generadoras y conexión con la clase anterior.
@@ -579,7 +578,6 @@ export const LessonPlanForm: React.FC = () => {
                 </span>
                 <span>Desarrollo (Construcción del Aprendizaje y Práctica Guiada)</span>
               </label>
-              <span className="text-[11px] text-slate-400">Aprox. 45 - 60 min</span>
             </div>
             <p className="text-xs text-slate-500 mb-2">
               Detalla la explicación temática, modelado docente, trabajo colaborativo en pares o equipos y actividades prácticas.
@@ -604,7 +602,6 @@ export const LessonPlanForm: React.FC = () => {
                 </span>
                 <span>Cierre (Evaluación Formativa, Síntesis y Metacognición)</span>
               </label>
-              <span className="text-[11px] text-slate-400">Aprox. 15 min</span>
             </div>
             <p className="text-xs text-slate-500 mb-2">
               Instrumento de evaluación rápida (Ticket de salida, preguntas de reflexión: ¿Qué aprendimos hoy? ¿Cómo lo aplicamos?).

@@ -28,6 +28,7 @@ import {
   Music,
   Compass,
   Bot,
+  Plus,
   X
 } from 'lucide-react';
 import { useEduPlan } from '../context/EduPlanContext';
@@ -1021,7 +1022,6 @@ export const LessonPlanWizard: React.FC<Props> = ({ initialWeek = 1, onExit }) =
                     </span>
                     <span>Inicio (Apertura, Motivación y Saberes Previos)</span>
                   </label>
-                  <span className="text-[11px] text-slate-400 font-medium">10 - 15 min</span>
                 </div>
                 <p className="text-xs text-slate-500 mb-2">
                   Dinámica rompehielo, activación de conocimientos previos y presentación del objetivo de la clase.
@@ -1032,7 +1032,7 @@ export const LessonPlanWizard: React.FC<Props> = ({ initialWeek = 1, onExit }) =
                   rows={3}
                   value={startActivity}
                   onChange={(e) => setStartActivity(e.target.value)}
-                  placeholder="Ej: Saludo de bienvenida, canción o video corto de 3 min sobre rutinas matutinas. Preguntas guía: ¿A qué hora nos levantamos hoy?..."
+                  placeholder="Ej: Saludo de bienvenida, canción o video corto sobre rutinas matutinas. Preguntas guía: ¿A qué hora nos levantamos hoy?..."
                   className="w-full text-xs sm:text-sm text-slate-800 p-3 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-1 focus:ring-indigo-500 leading-relaxed resize-y disabled:bg-slate-50"
                 />
               </div>
@@ -1046,7 +1046,6 @@ export const LessonPlanWizard: React.FC<Props> = ({ initialWeek = 1, onExit }) =
                     </span>
                     <span>Desarrollo (Construcción del Conocimiento y Práctica Guiada)</span>
                   </label>
-                  <span className="text-[11px] text-slate-400 font-medium">45 - 60 min</span>
                 </div>
                 <p className="text-xs text-slate-500 mb-2">
                   Explicación temática, modelado docente, trabajo en parejas o equipos colaborativos y resolución de ejercicios.
@@ -1071,7 +1070,6 @@ export const LessonPlanWizard: React.FC<Props> = ({ initialWeek = 1, onExit }) =
                     </span>
                     <span>Cierre (Evaluación Formativa, Síntesis y Metacognición)</span>
                   </label>
-                  <span className="text-[11px] text-slate-400 font-medium">15 min</span>
                 </div>
                 <p className="text-xs text-slate-500 mb-2">
                   Ticket de salida, ronda de preguntas de reflexión o autoevaluación formativa de los logros alcanzados.
@@ -1082,7 +1080,7 @@ export const LessonPlanWizard: React.FC<Props> = ({ initialWeek = 1, onExit }) =
                   rows={3}
                   value={closingActivity}
                   onChange={(e) => setClosingActivity(e.target.value)}
-                  placeholder="Ej: Cada alumno dice una oración sobre su rutina antes de salir (Ticket to Exit). Reflexión sobre el uso del tiempo..."
+                  placeholder="Ej: Cada alumno dice una oración sobre su rutina antes de salir (Ticket to Exit). Reflexión sobre el tema..."
                   className="w-full text-xs sm:text-sm text-slate-800 p-3 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-1 focus:ring-indigo-500 leading-relaxed resize-y disabled:bg-slate-50"
                 />
               </div>
