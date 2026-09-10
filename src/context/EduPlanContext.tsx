@@ -86,6 +86,7 @@ import {
   mapDbEventScheduleToEventSchedule,
   mapEventScheduleToDb,
 } from '../lib/mappers';
+import { matchSubjects, matchGrades } from '../utils/curricularMatcher';
 
 interface Toast {
   id: string;
@@ -972,9 +973,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const getCompetenciesFor = (subject: string, grade: string) => {
     return competencies.filter(
-      (c) =>
-        c.subject.toLowerCase().trim() === subject.toLowerCase().trim() &&
-        c.grade.toLowerCase().trim() === grade.toLowerCase().trim()
+      (c) => matchSubjects(c.subject, subject) && matchGrades(c.grade, grade)
     );
   };
 

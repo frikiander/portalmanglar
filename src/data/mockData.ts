@@ -116,18 +116,25 @@ export const MOCK_USERS: User[] = [
 ];
 
 export const AVAILABLE_SUBJECTS = [
-  'English',
-  'Matemáticas',
+  'Inglés (Language Arts)',
   'Lengua y Literatura',
+  'Matemática',
   'Ciencias Naturales',
-  'Historia y Geografía',
-  'Educación Artística',
+  'Ciencias Sociales',
+  'Ajedrez',
+  'Robótica y Computación',
+  'Ed. Física / Deporte',
+  'Música',
+  'Francés',
+  'ADP (Aprender a Pensar)',
+  'Proyecto de Aula',
+  'Rutina / Lectura',
 ];
 
 export const AVAILABLE_GRADES = [
   '1er Grado',
   '2do Grado',
-  '3ro Grado',
+  '3er Grado',
   '4to Grado',
   '5to Grado',
   '6to Grado',

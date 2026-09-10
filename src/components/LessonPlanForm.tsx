@@ -20,6 +20,7 @@ import { useEduPlan } from '../context/EduPlanContext';
 import { AVAILABLE_SUBJECTS, AVAILABLE_GRADES } from '../data/mockData';
 import { LessonPlanPreviewModal } from './LessonPlanPreviewModal';
 import { getGradeBadgeStyle, getGradeLeftAccentStyle } from '../utils/gradeColors';
+import { matchSubjects, matchGrades } from '../utils/curricularMatcher';
 import { LessonPlan } from '../types';
 
 export const LessonPlanForm: React.FC = () => {
@@ -36,20 +37,24 @@ export const LessonPlanForm: React.FC = () => {
     availableGradeNames
   } = useEduPlan();
 
-  const displayGrades = availableGradeNames?.length > 0 ? availableGradeNames : AVAILABLE_GRADES;
-
   // Find existing plan for this week and teacher
   const currentPlan = plans.find(
     (p) => p.teacherId === currentUser.id && p.weekNumber === selectedWeek
   );
 
+  const baseSubjects = availableSubjectNames?.length > 0 ? availableSubjectNames : AVAILABLE_SUBJECTS;
+  const baseGrades = availableGradeNames?.length > 0 ? availableGradeNames : AVAILABLE_GRADES;
+
   // Form local state
   const [subject, setSubject] = useState<string>(
-    currentPlan?.subject || currentUser.specialty?.includes('Inglés') ? 'English' : 'English'
+    currentPlan?.subject || currentUser.specialty || baseSubjects[0] || 'Inglés (Language Arts)'
   );
   const [grade, setGrade] = useState<string>(
-    currentPlan?.grade || currentUser.schoolGrade || '4to Grado'
+    currentPlan?.grade || currentUser.schoolGrade || baseGrades[0] || '4to Grado'
   );
+
+  const displaySubjects = baseSubjects.includes(subject) ? baseSubjects : [subject, ...baseSubjects];
+  const displayGrades = baseGrades.includes(grade) ? baseGrades : [grade, ...baseGrades];
   const [topic, setTopic] = useState<string>(currentPlan?.topic || '');
   const [selectedCompIds, setSelectedCompIds] = useState<string[]>(
     currentPlan?.competencyIds || []
@@ -104,9 +109,7 @@ export const LessonPlanForm: React.FC = () => {
 
   // Dynamically load competencies matching subject and grade
   const availableCompetencies = competencies.filter(
-    (c) =>
-      c.subject.toLowerCase() === subject.toLowerCase() &&
-      c.grade.toLowerCase() === grade.toLowerCase()
+    (c) => matchSubjects(c.subject, subject) && matchGrades(c.grade, grade)
   );
 
   const toggleCompetency = (compId: string) => {
@@ -316,7 +319,7 @@ export const LessonPlanForm: React.FC = () => {
                 onChange={(e) => setSubject(e.target.value)}
                 className="w-full bg-white border border-slate-300 text-slate-800 text-xs sm:text-sm rounded-xl px-3 py-2.5 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all font-medium disabled:bg-slate-100 disabled:text-slate-500"
               >
-                {(availableSubjectNames?.length > 0 ? availableSubjectNames : AVAILABLE_SUBJECTS).map((subj) => (
+                {displaySubjects.map((subj) => (
                   <option key={subj} value={subj}>
                     {subj}
                   </option>

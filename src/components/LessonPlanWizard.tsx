@@ -33,6 +33,8 @@ import {
 import { useEduPlan } from '../context/EduPlanContext';
 import { AVAILABLE_SUBJECTS, AVAILABLE_GRADES } from '../data/mockData';
 import { LessonPlanPreviewModal } from './LessonPlanPreviewModal';
+import { CompetencyManagerModal } from './CompetencyManagerModal';
+import { matchSubjects, matchGrades } from '../utils/curricularMatcher';
 import { getGradeBadgeStyle, getGradeLeftAccentStyle, getGradeColorConfig, GRADE_COLOR_MAP } from '../utils/gradeColors';
 import { detectSubjectCategory, CATEGORY_STYLES } from '../data/mockSchedules';
 import { LessonPlan } from '../types';
@@ -73,7 +75,7 @@ export const LessonPlanWizard: React.FC<Props> = ({ initialWeek = 1, onExit }) =
 
   // Wizard form state
   const [subject, setSubject] = useState<string>(
-    existingPlan?.subject || (currentUser.specialty?.includes('Inglés') ? 'English' : 'English')
+    existingPlan?.subject || currentUser.assignedSubjects?.[0] || 'Inglés (Language Arts)'
   );
   const [grade, setGrade] = useState<string>(
     existingPlan?.grade || currentUser.schoolGrade || '4to Grado'
@@ -103,6 +105,7 @@ export const LessonPlanWizard: React.FC<Props> = ({ initialWeek = 1, onExit }) =
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isSubmittingConfirm, setIsSubmittingConfirm] = useState(false);
+  const [isCompManagerOpen, setIsCompManagerOpen] = useState(false);
 
   // Update form fields when week changes
   useEffect(() => {
@@ -132,11 +135,9 @@ export const LessonPlanWizard: React.FC<Props> = ({ initialWeek = 1, onExit }) =
     }
   }, [selectedWeek, plans, currentUser.id]);
 
-  // Dynamically load competencies matching selected subject and grade
+  // Dynamically load competencies matching selected subject and grade with smart matcher
   const availableCompetencies = competencies.filter(
-    (c) =>
-      c.subject.toLowerCase() === subject.toLowerCase() &&
-      c.grade.toLowerCase() === grade.toLowerCase()
+    (c) => matchSubjects(c.subject, subject) && matchGrades(c.grade, grade)
   );
 
   const toggleCompetency = (compId: string) => {
@@ -918,14 +919,26 @@ export const LessonPlanWizard: React.FC<Props> = ({ initialWeek = 1, onExit }) =
                 })}
               </div>
             ) : (
-              <div className="p-8 rounded-2xl bg-slate-50 border border-dashed border-slate-300 text-center">
-                <Award className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-                <h4 className="text-sm font-bold text-slate-700">
-                  No hay competencias registradas para {subject} - {grade}
-                </h4>
-                <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">
-                  La Coordinación Académica puede dar de alta nuevas competencias desde su panel. Puedes continuar con la planificación y vincularlas luego.
-                </p>
+              <div className="p-8 rounded-2xl bg-slate-50 border border-dashed border-slate-300 text-center space-y-3">
+                <Award className="w-8 h-8 text-slate-400 mx-auto" />
+                <div>
+                  <h4 className="text-sm font-bold text-slate-700">
+                    No hay competencias registradas para {subject} - {grade}
+                  </h4>
+                  <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">
+                    Puedes dar de alta una nueva competencia curricular para {subject} o continuar con la planificación y vincularla luego.
+                  </p>
+                </div>
+                <div className="pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setIsCompManagerOpen(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs cursor-pointer transition-colors"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Abrir Banco y Agregar Competencia</span>
+                  </button>
+                </div>
               </div>
             )}
 
@@ -1218,6 +1231,10 @@ export const LessonPlanWizard: React.FC<Props> = ({ initialWeek = 1, onExit }) =
           competencies={competencies}
           onClose={() => setIsPreviewOpen(false)}
         />
+      )}
+
+      {isCompManagerOpen && (
+        <CompetencyManagerModal onClose={() => setIsCompManagerOpen(false)} />
       )}
 
     </div>

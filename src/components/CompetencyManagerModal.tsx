@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useEduPlan } from '../context/EduPlanContext';
 import { AVAILABLE_SUBJECTS, AVAILABLE_GRADES } from '../data/mockData';
+import { matchSubjects, matchGrades } from '../utils/curricularMatcher';
 import { 
   generateCompetencyCode, 
   getSubjectCode, 
@@ -38,13 +39,17 @@ interface Props {
 export const CompetencyManagerModal: React.FC<Props> = ({ onClose }) => {
   const { competencies, addCompetency, deleteCompetency, addToast, availableSubjectNames, availableGradeNames } = useEduPlan();
 
-  const displayGrades = availableGradeNames?.length > 0 ? availableGradeNames : AVAILABLE_GRADES;
+  const baseSubjects = availableSubjectNames?.length > 0 ? availableSubjectNames : AVAILABLE_SUBJECTS;
+  const baseGrades = availableGradeNames?.length > 0 ? availableGradeNames : AVAILABLE_GRADES;
 
   const [activeTab, setActiveTab] = useState<'create' | 'list'>('create');
   
   // New competency form state
-  const [subject, setSubject] = useState<string>('English');
-  const [grade, setGrade] = useState<string>('4to Grado');
+  const [subject, setSubject] = useState<string>(() => baseSubjects[0] || 'Inglés (Language Arts)');
+  const [grade, setGrade] = useState<string>(() => baseGrades.find((g) => g.includes('4')) || baseGrades[0] || '4to Grado');
+
+  const displaySubjects = baseSubjects.includes(subject) ? baseSubjects : [subject, ...baseSubjects];
+  const displayGrades = baseGrades.includes(grade) ? baseGrades : [grade, ...baseGrades];
   const [category, setCategory] = useState<string>('');
   const [autoCode, setAutoCode] = useState<string>('');
   const [isManualCode, setIsManualCode] = useState<boolean>(false);
@@ -135,8 +140,8 @@ export const CompetencyManagerModal: React.FC<Props> = ({ onClose }) => {
 
   // Filtered competencies for the list tab
   const filteredCompetencies = competencies.filter((c) => {
-    const matchesSubject = filterSubject === 'all' || c.subject.toLowerCase() === filterSubject.toLowerCase();
-    const matchesGrade = filterGrade === 'all' || c.grade.toLowerCase() === filterGrade.toLowerCase();
+    const matchesSubject = filterSubject === 'all' || matchSubjects(c.subject, filterSubject);
+    const matchesGrade = filterGrade === 'all' || matchGrades(c.grade, filterGrade);
     const q = searchQuery.toLowerCase();
     const matchesSearch = 
       !q ||
@@ -218,7 +223,7 @@ export const CompetencyManagerModal: React.FC<Props> = ({ onClose }) => {
                     onChange={(e) => setSubject(e.target.value)}
                     className="w-full bg-slate-50 border border-slate-300 text-slate-800 text-xs sm:text-sm rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-[#285A14] focus:bg-white transition-all font-medium cursor-pointer"
                   >
-                    {(availableSubjectNames?.length > 0 ? availableSubjectNames : AVAILABLE_SUBJECTS).map((s) => (
+                    {displaySubjects.map((s) => (
                       <option key={s} value={s}>{s}</option>
                     ))}
                   </select>
