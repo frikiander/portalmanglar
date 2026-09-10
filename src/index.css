@@ -1,1 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
+
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+  /* ── Institutional palette ── */
+  --color-manglar-green-50:  #f4faee;
+  --color-manglar-green-100: #e4f4d8;
+  --color-manglar-green-200: #caeab3;
+  --color-manglar-green-300: #a7dc84;
+  --color-manglar-green-400: #7ec54f;
+  --color-manglar-green-500: #5ea832;
+  --color-manglar-green-600: #498925;
+  --color-manglar-green-700: #3a6b1f;
+  --color-manglar-green-800: #30551c;
+  --color-manglar-green-900: #29471b;
+
+  --color-manglar-yellow-50:  #fefde8;
+  --color-manglar-yellow-100: #fefbc2;
+  --color-manglar-yellow-200: #fdf587;
+  --color-manglar-yellow-300: #fce843;
+  --color-manglar-yellow-400: #f8cb0a;
+  --color-manglar-yellow-500: #e5b004;
+  --color-manglar-yellow-600: #c18802;
+  --color-manglar-yellow-700: #9a6305;
+}
+
+/* ─── Base ────────────────────────────────────────────────────────────────── */
+:root {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Scrollbar styling ───────────────────────────────────────────────────── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Custom thin scrollbar for panels */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+
+/* ─── Module transition animation ────────────────────────────────────────── */
+@keyframes module-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.module-enter {
+  animation: module-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ─── Sidebar nav item active ─────────────────────────────────────────────── */
+.nav-item-active {
+  background-color: #eef2ff;   /* indigo-50 */
+  color: #4338ca;              /* indigo-700 */
+  font-weight: 600;
+}
+.nav-item-active .nav-icon {
+  color: #4f46e5;              /* indigo-600 */
+}
+
+/* ─── Print ───────────────────────────────────────────────────────────────── */
+@media print {
+  header, aside, footer, .no-print, button:not(.print-include) {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+}
