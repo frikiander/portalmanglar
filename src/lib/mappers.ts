@@ -39,15 +39,16 @@ import type {
   EventScheduleItem,
 } from '../types';
 
-// ─── User mappers ──────────────────────────────────────────────────────────────
+import { sanitizeAvatar } from '../data/flatAvatars';
 
 export function mapDbUserToUser(row: Record<string, unknown>): User {
+  const role = (row.role as User['role']) ?? 'teacher';
   return {
     id:               String(row.id ?? ''),
     email:            String(row.email ?? ''),
     fullName:         String(row.full_name ?? ''),
-    role:             (row.role as User['role']) ?? 'teacher',
-    avatar:           String(row.avatar_url ?? ''),
+    role,
+    avatar:           sanitizeAvatar(row.avatar_url != null ? String(row.avatar_url) : undefined, role),
     specialty:        row.specialty != null ? String(row.specialty) : undefined,
     phone:            row.phone     != null ? String(row.phone)     : undefined,
     schoolGrade:      row.school_grade != null ? String(row.school_grade) : undefined,

@@ -7,6 +7,7 @@ import { INITIAL_FIELD_TRIPS } from '../data/mockFieldTrips';
 import { INITIAL_EVALUATIONS } from '../data/mockEvaluations';
 import { INITIAL_CLASS_SCHEDULES, INITIAL_EVENT_SCHEDULES, detectSubjectCategory } from '../data/mockSchedules';
 import { INITIAL_INSTITUTIONAL_SUBJECTS } from '../data/mockSubjects';
+import { sanitizeAvatar } from '../data/flatAvatars';
 import { ClassSchedule, ClassScheduleCell, EventSchedule, ScheduleDay } from '../types';
 import {
   signInWithGoogle,
@@ -328,7 +329,16 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Gestión de Usuarios y Personal Docente
   const [users, setUsers] = useState<User[]>(() => {
     const saved = localStorage.getItem('eduplan_users_list');
-    return saved ? JSON.parse(saved) : MOCK_USERS;
+    if (saved) {
+      try {
+        const parsed: User[] = JSON.parse(saved);
+        return parsed.map((u, i) => ({
+          ...u,
+          avatar: sanitizeAvatar(u.avatar, u.role, i),
+        }));
+      } catch {}
+    }
+    return MOCK_USERS;
   });
 
   const [authError, setAuthError] = useState<string | null>(null);
@@ -339,7 +349,16 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const [currentUser, setCurrentUser] = useState<User>(() => {
     const saved = localStorage.getItem('eduplan_user');
-    return saved ? JSON.parse(saved) : MOCK_USERS[0]; // Prof. Carlos Mendoza
+    if (saved) {
+      try {
+        const parsed: User = JSON.parse(saved);
+        return {
+          ...parsed,
+          avatar: sanitizeAvatar(parsed.avatar, parsed.role),
+        };
+      } catch {}
+    }
+    return MOCK_USERS[0];
   });
 
   const [viewMode, setViewModeState] = useState<ViewMode>(() => {
@@ -811,14 +830,8 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setViewModeState(mode);
     localStorage.setItem('eduplan_view_mode', mode);
     if (mode === 'coordinator') {
-      const coordinator = users.find((u) => u.role === 'coordinator') || users[0];
-      setCurrentUser(coordinator);
-      localStorage.setItem('eduplan_user', JSON.stringify(coordinator));
       addToast('Cambiaste a la Vista de Coordinación Pedagógica', 'info');
     } else {
-      const teacher = users.find((u) => u.role === 'teacher') || users[1] || users[0];
-      setCurrentUser(teacher);
-      localStorage.setItem('eduplan_user', JSON.stringify(teacher));
       addToast('Cambiaste a la Vista del Docente', 'info');
       if (['subjects', 'schools', 'users'].includes(activeModule)) {
         setActiveModuleState('planning');

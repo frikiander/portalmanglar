@@ -27,14 +27,13 @@ import { useEduPlan } from '../context/EduPlanContext';
 import { User, UserRole } from '../types';
 import { SCHOOL_GRADES } from '../data/mockRoster';
 
-const PRESET_AVATARS = [
-  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
-];
+import { 
+  FLAT_AVATARS_LIST, 
+  PRESET_AVATARS, 
+  DEFAULT_COORDINATOR_AVATAR, 
+  DEFAULT_TEACHER_AVATAR,
+  sanitizeAvatar 
+} from '../data/flatAvatars';
 
 export const UsersManagementSection: React.FC = () => {
   const {
@@ -85,7 +84,7 @@ export const UsersManagementSection: React.FC = () => {
     setFormSections(['A']);
     setFormSubjects([subjects[0]?.name || 'Matemática']);
     setFormPhone('');
-    setFormAvatar('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80');
+    setFormAvatar(DEFAULT_TEACHER_AVATAR);
     setIsFormModalOpen(true);
   };
 
@@ -99,7 +98,7 @@ export const UsersManagementSection: React.FC = () => {
     setFormSections(user.assignedSections || ['A']);
     setFormSubjects(user.assignedSubjects || (user.specialty ? [user.specialty] : []));
     setFormPhone(user.phone || '');
-    setFormAvatar(user.avatar || '');
+    setFormAvatar(sanitizeAvatar(user.avatar, user.role));
     setIsFormModalOpen(true);
   };
 
@@ -152,7 +151,7 @@ export const UsersManagementSection: React.FC = () => {
     e.preventDefault();
     if (!formEmail.trim() || !formFullName.trim()) return;
 
-    const defaultAvatar = formAvatar.trim() || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80';
+    const defaultAvatar = sanitizeAvatar(formAvatar.trim(), formRole);
 
     if (editingUser) {
       await updateUser({
@@ -564,22 +563,25 @@ export const UsersManagementSection: React.FC = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Profile Photo / Avatar Picker */}
+              {/* Profile Photo / Flat Avatar Picker */}
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-3">
-                <label className="block text-xs font-bold text-slate-700">
-                  Fotografía de Perfil del Usuario
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-bold text-slate-800">
+                    Avatar Institucional (Iconos Flat)
+                  </label>
+                  <span className="text-[10px] text-slate-400 font-semibold">Vectorial SVG</span>
+                </div>
                 <div className="flex items-center gap-3">
                   <div className="relative group shrink-0">
                     <img
-                      src={formAvatar || PRESET_AVATARS[0]}
+                      src={formAvatar || DEFAULT_TEACHER_AVATAR}
                       alt="Vista previa avatar"
-                      className="w-14 h-14 rounded-2xl object-cover ring-2 ring-indigo-500/30 shadow-xs"
+                      className="w-14 h-14 rounded-2xl object-cover ring-2 ring-indigo-500/30 shadow-xs bg-white p-0.5"
                     />
                     <label
                       htmlFor="avatar-file-input"
                       className="absolute -bottom-1 -right-1 p-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md cursor-pointer transition-transform hover:scale-105"
-                      title="Subir foto desde tu equipo"
+                      title="Subir imagen personalizada desde tu equipo"
                     >
                       <Camera className="w-3.5 h-3.5" />
                     </label>
@@ -593,22 +595,23 @@ export const UsersManagementSection: React.FC = () => {
                   </div>
 
                   <div className="flex-1 space-y-1.5 min-w-0">
-                    <p className="text-[10px] font-extrabold uppercase text-slate-400">
-                      Elige un avatar predeterminado o sube tu foto:
+                    <p className="text-[10px] font-extrabold uppercase text-slate-500 tracking-wider">
+                      Elige un avatar flat o sube tu imagen:
                     </p>
                     <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
-                      {PRESET_AVATARS.map((url, idx) => (
+                      {FLAT_AVATARS_LIST.map((item) => (
                         <button
-                          key={idx}
+                          key={item.id}
                           type="button"
-                          onClick={() => setFormAvatar(url)}
-                          className={`w-8 h-8 rounded-xl shrink-0 overflow-hidden border-2 transition-all ${
-                            formAvatar === url
-                              ? 'border-indigo-600 scale-105 ring-2 ring-indigo-500/20'
-                              : 'border-transparent opacity-75 hover:opacity-100'
+                          onClick={() => setFormAvatar(item.url)}
+                          title={item.name}
+                          className={`w-9 h-9 rounded-xl shrink-0 overflow-hidden border-2 transition-all p-0.5 bg-white ${
+                            formAvatar === item.url
+                              ? 'border-indigo-600 scale-110 ring-2 ring-indigo-500/30 shadow-xs'
+                              : 'border-slate-200 hover:border-slate-400 opacity-80 hover:opacity-100'
                           }`}
                         >
-                          <img src={url} alt={`Preset ${idx + 1}`} className="w-full h-full object-cover" />
+                          <img src={item.url} alt={item.name} className="w-full h-full object-contain" />
                         </button>
                       ))}
                     </div>
@@ -620,9 +623,9 @@ export const UsersManagementSection: React.FC = () => {
                   <input
                     id="user-form-avatar"
                     type="url"
-                    value={formAvatar}
+                    value={formAvatar.startsWith('data:') ? '' : formAvatar}
                     onChange={(e) => setFormAvatar(e.target.value)}
-                    placeholder="O pega aquí el enlace directo de una foto (https://...)"
+                    placeholder={formAvatar.startsWith('data:') ? 'Avatar flat seleccionado (o pega URL personalizada aquí)' : 'Pega enlace de foto personalizada (https://...)'}
                     className="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-white focus:outline-hidden focus:ring-2 focus:ring-indigo-500 font-mono"
                   />
                 </div>
