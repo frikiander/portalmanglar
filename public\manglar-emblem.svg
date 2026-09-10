@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 170" width="100%" height="100%">
+  <defs>
+    <filter id="manglar-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1.5" dy="2.5" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.32" />
+    </filter>
+  </defs>
+
+  <!-- Green Square: Institutional Green (#63AB32) -->
+  <rect
+    x="48"
+    y="16"
+    width="100"
+    height="100"
+    fill="none"
+    stroke="#63AB32"
+    stroke-width="12"
+    stroke-linejoin="miter"
+    rx="3"
+  />
+
+  <!-- Yellow Circle: Institutional Yellow (#FACD00) -->
+  <circle
+    cx="74"
+    cy="72"
+    r="58"
+    fill="none"
+    stroke="#FACD00"
+    stroke-width="12"
+  />
+
+  <!-- White Triangle: Overlapping with shadow and clean subtle outline -->
+  <!-- Triangle Coordinates: Top apex, bottom-left, bottom-right -->
+  <polygon
+    points="148,10 86,132 196,132"
+    fill="none"
+    stroke="#FFFFFF"
+    stroke-width="10.5"
+    stroke-linejoin="miter"
+    filter="url(#manglar-shadow)"
+  />
+</svg>

@@ -1,4 +1,12 @@
 {
-  "project_id": "eduplan-manglar",
-  "app_id": "1:102030405060:web:abcdef123456"
+  "projectId": "gen-lang-client-0725791230",
+  "appId": "1:1018172286583:web:c7b5b7577b939f73870872",
+  "apiKey": "AIzaSyBKubq0A5mOPe0dahOB6ZTWsR3Z2WmEBOQ",
+  "authDomain": "gen-lang-client-0725791230.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-eduplan-3cf72a14-9024-482f-9571-68ab76b61a24",
+  "storageBucket": "gen-lang-client-0725791230.firebasestorage.app",
+  "messagingSenderId": "1018172286583",
+  "measurementId": "",
+  "oAuthClientId": "1018172286583-cuicin5jc4cm0n1uiff0dd77rf6hhmd4.apps.googleusercontent.com",
+  "recaptchaSiteKey": ""
 }

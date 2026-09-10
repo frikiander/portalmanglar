@@ -1,8 +1,39 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
+    // Helper function
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Users collection: coordinators & registered teachers
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Subjects collection: editable by coordinators, readable by all
+    match /subjects/{subjectId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Class schedules collection
+    match /class_schedules/{scheduleId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Academic plans collection
+    match /academic_plans/{planId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Event schedules collection
+    match /event_schedules/{eventId} {
+      allow read: if true;
+      allow write: if true;
     }
   }
 }

@@ -1,5 +1,7 @@
 {
-  "name": "eduplan",
-  "version": "1.0.0",
-  "description": "Portal Manglar - Sistema de Gestión Académica"
+  "name": "Portal Manglar",
+  "description": "Colegio Integral El Manglar - Plataforma Institucional de Planificación y Gestión Académica.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
+
