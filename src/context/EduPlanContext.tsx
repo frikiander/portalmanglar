@@ -18,9 +18,73 @@ import {
   fetchSubjects,
   upsertSubject,
   removeSubject,
+  fetchCompetencies,
+  upsertCompetency,
+  removeCompetency,
+  fetchLessonPlans,
+  upsertLessonPlan,
+  removeLessonPlan,
+  fetchSchoolEvents,
+  upsertSchoolEvent,
+  removeSchoolEvent,
+  fetchClassroomProjects,
+  upsertClassroomProject,
+  removeClassroomProject,
+  fetchDutySlots,
+  upsertDutySlot,
+  removeDutySlot,
+  fetchStudents,
+  upsertStudent,
+  removeStudent,
+  fetchSchools,
+  upsertSchool,
+  removeSchool,
+  fetchFieldTrips,
+  upsertFieldTrip,
+  removeFieldTrip,
+  fetchEvaluations,
+  upsertEvaluation,
+  removeEvaluation,
+  fetchClassSchedules,
+  upsertClassSchedule,
+  removeClassSchedule,
+  fetchEventSchedules,
+  upsertEventSchedule,
+  removeEventSchedule,
+  fetchSchoolYears,
+  upsertSchoolYear,
+  setDefaultSchoolYearInDb,
+  removeSchoolYear,
   SUPABASE_CONFIGURED,
 } from '../lib/supabase';
-import { mapDbUserToUser, mapUserToDb, mapDbSubjectToSubject, mapSubjectToDb } from '../lib/mappers';
+import {
+  mapDbUserToUser,
+  mapUserToDb,
+  mapDbSubjectToSubject,
+  mapSubjectToDb,
+  mapDbCompetencyToCompetency,
+  mapCompetencyToDb,
+  mapDbLessonPlanToLessonPlan,
+  mapLessonPlanToDb,
+  mapDbSchoolEventToSchoolEvent,
+  mapSchoolEventToDb,
+  mapDbClassroomProjectToClassroomProject,
+  mapClassroomProjectToDb,
+  mapDbDutySlotToDutySlot,
+  mapDutySlotToDb,
+  mapDbStudentToStudent,
+  mapStudentToDb,
+  mapDbSchoolToSchool,
+  mapSchoolToDb,
+  mapDbFieldTripToFieldTrip,
+  mapFieldTripToDb,
+  mapDbEvaluationToEvaluation,
+  mapEvaluationToDb,
+  mapDbClassScheduleToClassSchedule,
+  mapClassScheduleToDb,
+  mapDbEventScheduleToEventSchedule,
+  mapEventScheduleToDb,
+} from '../lib/mappers';
 
 interface Toast {
   id: string;
@@ -185,6 +249,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setDefaultSchoolYearState(year);
     localStorage.setItem('eduplan_default_school_year', year);
     setSelectedSchoolYear(year);
+    setDefaultSchoolYearInDb(year).catch(() => {});
     addToast(`Año escolar "${year}" establecido como el predeterminado para la plataforma.`, 'success');
   };
 
@@ -198,6 +263,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const updated = [trimmed, ...availableSchoolYears].sort((a, b) => b.localeCompare(a));
     setAvailableSchoolYears(updated);
     localStorage.setItem('eduplan_available_school_years', JSON.stringify(updated));
+    upsertSchoolYear({ year_label: trimmed, is_default: false }).catch(() => {});
     addToast(`Año escolar "${trimmed}" creado con éxito.`, 'success');
   };
 
@@ -212,6 +278,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (selectedSchoolYear === year) {
       setSelectedSchoolYear(defaultSchoolYear);
     }
+    removeSchoolYear(year).catch(() => {});
     addToast(`Año escolar "${year}" eliminado de la lista.`, 'info');
   };
 
@@ -580,6 +647,154 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     localStorage.setItem('eduplan_sched_week', selectedScheduleWeek.toString());
   }, [selectedScheduleWeek]);
 
+  // ─── Sincronización Inicial con Supabase (Todas las Entidades) ───────────────
+  // Años Escolares
+  useEffect(() => {
+    if (!SUPABASE_CONFIGURED) return;
+    fetchSchoolYears().then((rows) => {
+      if (rows && rows.length > 0) {
+        const labels = rows.map((r: any) => String(r.year_label));
+        setAvailableSchoolYears(labels);
+        localStorage.setItem('eduplan_available_school_years', JSON.stringify(labels));
+        const def = rows.find((r: any) => r.is_default);
+        if (def) {
+          setDefaultSchoolYearState(String(def.year_label));
+          localStorage.setItem('eduplan_default_school_year', String(def.year_label));
+          if (!localStorage.getItem('eduplan_school_year')) {
+            setSelectedSchoolYearState(String(def.year_label));
+          }
+        }
+      }
+    });
+  }, []);
+
+  // Banco de Competencias
+  useEffect(() => {
+    if (!SUPABASE_CONFIGURED) return;
+    fetchCompetencies().then((rows) => {
+      if (rows && rows.length > 0) {
+        const remote = rows.map(mapDbCompetencyToCompetency);
+        setCompetencies(remote);
+        localStorage.setItem(isDemoMode ? 'eduplan_competencies' : 'eduplan_competencies_real', JSON.stringify(remote));
+      }
+    });
+  }, [isDemoMode]);
+
+  // Planes de Clase
+  useEffect(() => {
+    if (!SUPABASE_CONFIGURED) return;
+    fetchLessonPlans(selectedSchoolYear).then((rows) => {
+      if (rows && rows.length > 0) {
+        const remote = rows.map(mapDbLessonPlanToLessonPlan);
+        setPlans(remote);
+        localStorage.setItem(isDemoMode ? 'eduplan_plans' : 'eduplan_plans_real', JSON.stringify(remote));
+      }
+    });
+  }, [selectedSchoolYear, isDemoMode]);
+
+  // Eventos Escolares
+  useEffect(() => {
+    if (!SUPABASE_CONFIGURED) return;
+    fetchSchoolEvents().then((rows) => {
+      if (rows && rows.length > 0) {
+        const remote = rows.map(mapDbSchoolEventToSchoolEvent);
+        setEvents(remote);
+        localStorage.setItem(isDemoMode ? 'eduplan_events' : 'eduplan_events_real', JSON.stringify(remote));
+      }
+    });
+  }, [isDemoMode]);
+
+  // Proyectos de Aula
+  useEffect(() => {
+    if (!SUPABASE_CONFIGURED) return;
+    fetchClassroomProjects(selectedSchoolYear).then((rows) => {
+      if (rows && rows.length > 0) {
+        const remote = rows.map(mapDbClassroomProjectToClassroomProject);
+        setClassroomProjects(remote);
+        localStorage.setItem(isDemoMode ? 'eduplan_classroom_projects_v4' : 'eduplan_classroom_projects_real', JSON.stringify(remote));
+      }
+    });
+  }, [selectedSchoolYear, isDemoMode]);
+
+  // Guardias Escolares
+  useEffect(() => {
+    if (!SUPABASE_CONFIGURED) return;
+    fetchDutySlots(selectedSchoolYear).then((rows) => {
+      if (rows && rows.length > 0) {
+        const remote = rows.map(mapDbDutySlotToDutySlot);
+        setDutySlots(remote);
+        localStorage.setItem(isDemoMode ? 'eduplan_duty_slots' : 'eduplan_duty_slots_real', JSON.stringify(remote));
+      }
+    });
+  }, [selectedSchoolYear, isDemoMode]);
+
+  // Estudiantes (Nómina)
+  useEffect(() => {
+    if (!SUPABASE_CONFIGURED) return;
+    fetchStudents(selectedSchoolYear).then((rows) => {
+      if (rows && rows.length > 0) {
+        const remote = rows.map(mapDbStudentToStudent);
+        setStudents(remote);
+        localStorage.setItem(isDemoMode ? 'eduplan_students' : 'eduplan_students_real', JSON.stringify(remote));
+      }
+    });
+  }, [selectedSchoolYear, isDemoMode]);
+
+  // Directorio de Colegios
+  useEffect(() => {
+    if (!SUPABASE_CONFIGURED) return;
+    fetchSchools().then((rows) => {
+      if (rows && rows.length > 0) {
+        const remote = rows.map(mapDbSchoolToSchool);
+        setSchools(remote);
+        localStorage.setItem(isDemoMode ? 'eduplan_schools' : 'eduplan_schools_real', JSON.stringify(remote));
+      }
+    });
+  }, [isDemoMode]);
+
+  // Salidas de Campo
+  useEffect(() => {
+    if (!SUPABASE_CONFIGURED) return;
+    fetchFieldTrips(selectedSchoolYear).then((rows) => {
+      if (rows && rows.length > 0) {
+        const remote = rows.map(mapDbFieldTripToFieldTrip);
+        setFieldTrips(remote);
+        localStorage.setItem(isDemoMode ? 'eduplan_field_trips' : 'eduplan_field_trips_real', JSON.stringify(remote));
+      }
+    });
+  }, [selectedSchoolYear, isDemoMode]);
+
+  // Evaluaciones
+  useEffect(() => {
+    if (!SUPABASE_CONFIGURED) return;
+    fetchEvaluations(selectedSchoolYear).then((rows) => {
+      if (rows && rows.length > 0) {
+        const remote = rows.map(mapDbEvaluationToEvaluation);
+        setEvaluations(remote);
+        localStorage.setItem(isDemoMode ? 'eduplan_evaluations' : 'eduplan_evaluations_real', JSON.stringify(remote));
+      }
+    });
+  }, [selectedSchoolYear, isDemoMode]);
+
+  // Horarios de Clase y de Eventos
+  useEffect(() => {
+    if (!SUPABASE_CONFIGURED) return;
+    fetchClassSchedules(selectedSchoolYear).then((rows) => {
+      if (rows && rows.length > 0) {
+        const remote = rows.map(mapDbClassScheduleToClassSchedule);
+        setClassSchedules(remote);
+        localStorage.setItem(isDemoMode ? 'eduplan_class_schedules_v1' : 'eduplan_class_schedules_real', JSON.stringify(remote));
+      }
+    });
+    fetchEventSchedules(selectedSchoolYear).then((rows) => {
+      if (rows && rows.length > 0) {
+        const remote = rows.map(mapDbEventScheduleToEventSchedule);
+        setEventSchedules(remote);
+        localStorage.setItem(isDemoMode ? 'eduplan_event_schedules_v1' : 'eduplan_event_schedules_real', JSON.stringify(remote));
+      }
+    });
+  }, [selectedSchoolYear, isDemoMode]);
+
   const addToast = (message: string, type: 'success' | 'info' | 'warning' = 'success') => {
     const id = Date.now().toString() + Math.random().toString(36).substring(2, 5);
     setToasts((prev) => [...prev, { id, message, type }]);
@@ -617,21 +832,18 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const now = new Date().toISOString();
 
     if (planData.id && plans.some((p) => p.id === planData.id)) {
+      const existing = plans.find((p) => p.id === planData.id)!;
+      savedPlan = {
+        ...existing,
+        ...planData,
+        updatedAt: now,
+      } as LessonPlan;
       setPlans((prev) =>
-        prev.map((p) => {
-          if (p.id === planData.id) {
-            savedPlan = {
-              ...p,
-              ...planData,
-              updatedAt: now,
-            } as LessonPlan;
-            return savedPlan;
-          }
-          return p;
-        })
+        prev.map((p) => (p.id === planData.id ? savedPlan : p))
       );
+      upsertLessonPlan(mapLessonPlanToDb(savedPlan, selectedSchoolYear)).catch(() => {});
       addToast('Planificación guardada exitosamente', 'success');
-      return { ...planData, updatedAt: now } as LessonPlan;
+      return savedPlan;
     } else {
       const newId = `plan-w${planData.weekNumber}-${Date.now().toString().slice(-4)}`;
       savedPlan = {
@@ -653,6 +865,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
         updatedAt: now,
       };
       setPlans((prev) => [...prev, savedPlan]);
+      upsertLessonPlan(mapLessonPlanToDb(savedPlan, selectedSchoolYear)).catch(() => {});
       addToast('Nueva planificación creada como borrador', 'success');
       return savedPlan;
     }
@@ -663,12 +876,14 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setPlans((prev) =>
       prev.map((p) => {
         if (p.id === planId) {
-          return {
+          const updated = {
             ...p,
-            status: 'submitted',
+            status: 'submitted' as PlanStatus,
             submittedAt: now,
             updatedAt: now,
           };
+          upsertLessonPlan(mapLessonPlanToDb(updated, selectedSchoolYear)).catch(() => {});
+          return updated;
         }
         return p;
       })
@@ -681,13 +896,15 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setPlans((prev) =>
       prev.map((p) => {
         if (p.id === planId) {
-          return {
+          const updated = {
             ...p,
             status,
             coordinatorFeedback: feedback,
             reviewedAt: now,
             updatedAt: now,
           };
+          upsertLessonPlan(mapLessonPlanToDb(updated, selectedSchoolYear)).catch(() => {});
+          return updated;
         }
         return p;
       })
@@ -705,17 +922,20 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
       id: `comp-${Date.now().toString().slice(-5)}`,
     };
     setCompetencies((prev) => [...prev, newComp]);
+    upsertCompetency(mapCompetencyToDb(newComp)).catch(() => {});
     addToast(`Competencia "${newComp.title}" agregada al banco de datos.`, 'success');
     return newComp;
   };
 
   const updateCompetency = (competency: Competency) => {
     setCompetencies((prev) => prev.map((c) => (c.id === competency.id ? competency : c)));
+    upsertCompetency(mapCompetencyToDb(competency)).catch(() => {});
     addToast(`Competencia "${competency.code}" actualizada en el banco.`, 'success');
   };
 
   const deleteCompetency = (id: string) => {
     setCompetencies((prev) => prev.filter((c) => c.id !== id));
+    removeCompetency(id).catch(() => {});
     addToast('Competencia eliminada del banco.', 'info');
   };
 
@@ -726,31 +946,36 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
       createdBy: currentUser.id,
     };
     setEvents((prev) => [...prev, newEvent]);
+    upsertSchoolEvent(mapSchoolEventToDb(newEvent)).catch(() => {});
     addToast(`Evento "${newEvent.title}" agregado al calendario escolar.`, 'success');
     return newEvent;
   };
 
   const deleteSchoolEvent = (id: string) => {
     setEvents((prev) => prev.filter((e) => e.id !== id));
+    removeSchoolEvent(id).catch(() => {});
     addToast('Evento eliminado del calendario escolar.', 'info');
   };
 
   const getCompetenciesFor = (subject: string, grade: string) => {
     return competencies.filter(
       (c) =>
-        c.subject.toLowerCase() === subject.toLowerCase() &&
-        c.grade.toLowerCase() === grade.toLowerCase()
+        c.subject.toLowerCase().trim() === subject.toLowerCase().trim() &&
+        c.grade.toLowerCase().trim() === grade.toLowerCase().trim()
     );
   };
 
   const updateClassroomProject = (project: ClassroomProject) => {
+    const updated = { ...project, updatedAt: new Date().toISOString().split('T')[0] };
     setClassroomProjects((prev) =>
-      prev.map((p) => (p.id === project.id ? { ...project, updatedAt: new Date().toISOString().split('T')[0] } : p))
+      prev.map((p) => (p.id === project.id ? updated : p))
     );
+    upsertClassroomProject(mapClassroomProjectToDb(updated, selectedSchoolYear)).catch(() => {});
     addToast(`Proyecto "${project.title}" actualizado con éxito.`, 'success');
   };
 
   const updateClassroomProjectWeek = (projectId: string, weekData: ClassroomProjectWeek) => {
+    let projectToPersist: ClassroomProject | null = null;
     setClassroomProjects((prev) =>
       prev.map((project) => {
         if (project.id !== projectId) return project;
@@ -758,13 +983,18 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
         const newWeeks = exists
           ? project.weeks.map((w) => (w.weekNumber === weekData.weekNumber ? weekData : w))
           : [...project.weeks, weekData].sort((a, b) => a.weekNumber - b.weekNumber);
-        return {
+        const updated = {
           ...project,
           weeks: newWeeks,
           updatedAt: new Date().toISOString().split('T')[0]
         };
+        projectToPersist = updated;
+        return updated;
       })
     );
+    if (projectToPersist) {
+      upsertClassroomProject(mapClassroomProjectToDb(projectToPersist, selectedSchoolYear)).catch(() => {});
+    }
     addToast(`Semana ${weekData.weekNumber} del proyecto actualizada.`, 'success');
   };
 
@@ -775,12 +1005,14 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
       updatedAt: new Date().toISOString().split('T')[0]
     };
     setClassroomProjects((prev) => [...prev, newProject]);
+    upsertClassroomProject(mapClassroomProjectToDb(newProject, selectedSchoolYear)).catch(() => {});
     addToast(`Nuevo Proyecto de Aula "${newProject.title}" creado.`, 'success');
     return newProject;
   };
 
   const deleteClassroomProject = (projectId: string) => {
     setClassroomProjects((prev) => prev.filter((p) => p.id !== projectId));
+    removeClassroomProject(projectId).catch(() => {});
     addToast('Proyecto de aula eliminado.', 'info');
   };
 
@@ -798,9 +1030,20 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const updateDutySlot = (slotId: string, assignedPerson: string) => {
+    let slotToPersist: DutySlot | null = null;
     setDutySlots((prev) =>
-      prev.map((slot) => (slot.id === slotId ? { ...slot, assignedPerson } : slot))
+      prev.map((slot) => {
+        if (slot.id === slotId) {
+          const updated = { ...slot, assignedPerson };
+          slotToPersist = updated;
+          return updated;
+        }
+        return slot;
+      })
     );
+    if (slotToPersist) {
+      upsertDutySlot(mapDutySlotToDb(slotToPersist, selectedSchoolYear)).catch(() => {});
+    }
     addToast('Asignación de guardia actualizada.', 'success');
   };
 
@@ -813,6 +1056,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
       orderNumber: gradeStudents.length + 1,
     };
     setStudents((prev) => [...prev, newStudent]);
+    upsertStudent(mapStudentToDb(newStudent, selectedSchoolYear)).catch(() => {});
     addToast(`Estudiante "${newStudent.fullName}" agregado a la nómina de ${newStudent.grade}.`, 'success');
     return newStudent;
   };
@@ -821,12 +1065,14 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setStudents((prev) =>
       prev.map((s) => (s.id === updatedStudent.id ? updatedStudent : s))
     );
+    upsertStudent(mapStudentToDb(updatedStudent, selectedSchoolYear)).catch(() => {});
     addToast(`Ficha de ${updatedStudent.fullName} actualizada.`, 'success');
   };
 
   const deleteStudent = (studentId: string) => {
     const student = students.find((s) => s.id === studentId);
     setStudents((prev) => prev.filter((s) => s.id !== studentId));
+    removeStudent(studentId).catch(() => {});
     addToast(`Estudiante ${student ? student.fullName : ''} eliminado de la nómina.`, 'info');
   };
 
@@ -835,7 +1081,9 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
       prev.map((s) => {
         if (s.id === studentId) {
           const nextGroup = s.sociogramGroup === 'Grupo 1' ? 'Grupo 2' : 'Grupo 1';
-          return { ...s, sociogramGroup: nextGroup };
+          const updated = { ...s, sociogramGroup: nextGroup };
+          upsertStudent(mapStudentToDb(updated, selectedSchoolYear)).catch(() => {});
+          return updated;
         }
         return s;
       })
@@ -847,12 +1095,14 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setStudents((prev) =>
       prev.map((s) => {
         if (s.id === studentId) {
-          return {
+          const updated = {
             ...s,
             canvasAccepted: accepted,
             canvasObservations: observation !== undefined ? observation : s.canvasObservations,
             canvasStatus: accepted ? 'ready' : (s.canvasStatus || 'check_status'),
           };
+          upsertStudent(mapStudentToDb(updated, selectedSchoolYear)).catch(() => {});
+          return updated;
         }
         return s;
       })
@@ -868,20 +1118,24 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
       updatedAt: new Date().toISOString().split('T')[0],
     };
     setSchools((prev) => [newSchool, ...prev]);
+    upsertSchool(mapSchoolToDb(newSchool)).catch(() => {});
     addToast(`Colegio "${newSchool.name}" agregado al directorio.`, 'success');
     return newSchool;
   };
 
   const updateSchool = (updatedSchool: ExternalSchool) => {
+    const updated = { ...updatedSchool, updatedAt: new Date().toISOString().split('T')[0] };
     setSchools((prev) =>
-      prev.map((sch) => (sch.id === updatedSchool.id ? { ...updatedSchool, updatedAt: new Date().toISOString().split('T')[0] } : sch))
+      prev.map((sch) => (sch.id === updated.id ? updated : sch))
     );
-    addToast(`Información de ${updatedSchool.name} actualizada.`, 'success');
+    upsertSchool(mapSchoolToDb(updated)).catch(() => {});
+    addToast(`Información de ${updated.name} actualizada.`, 'success');
   };
 
   const deleteSchool = (schoolId: string) => {
     const sch = schools.find((s) => s.id === schoolId);
     setSchools((prev) => prev.filter((s) => s.id !== schoolId));
+    removeSchool(schoolId).catch(() => {});
     addToast(`Colegio ${sch ? sch.name : ''} eliminado del directorio.`, 'info');
   };
 
@@ -893,11 +1147,13 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
             ...sch.events,
             [eventKey]: !sch.events[eventKey],
           };
-          return {
+          const updated = {
             ...sch,
             events: updatedEvents,
             updatedAt: new Date().toISOString().split('T')[0],
           };
+          upsertSchool(mapSchoolToDb(updated)).catch(() => {});
+          return updated;
         }
         return sch;
       })
@@ -915,6 +1171,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
       updatedAt: today,
     };
     setFieldTrips((prev) => [newFieldTrip, ...prev]);
+    upsertFieldTrip(mapFieldTripToDb(newFieldTrip, selectedSchoolYear)).catch(() => {});
     addToast(
       `${data.type === 'salida_campo' ? 'Salida de Campo' : 'Invitado Especial'} registrada exitosamente.`,
       'success'
@@ -924,14 +1181,17 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const updateFieldTrip = (updated: FieldTrip) => {
     const today = new Date().toISOString().split('T')[0];
+    const updatedTrip = { ...updated, updatedAt: today };
     setFieldTrips((prev) =>
-      prev.map((item) => (item.id === updated.id ? { ...updated, updatedAt: today } : item))
+      prev.map((item) => (item.id === updated.id ? updatedTrip : item))
     );
+    upsertFieldTrip(mapFieldTripToDb(updatedTrip, selectedSchoolYear)).catch(() => {});
     addToast('Registro de Salida / Invitado actualizado correctamente.', 'success');
   };
 
   const deleteFieldTrip = (fieldTripId: string) => {
     setFieldTrips((prev) => prev.filter((item) => item.id !== fieldTripId));
+    removeFieldTrip(fieldTripId).catch(() => {});
     addToast('Registro eliminado.', 'info');
   };
 
@@ -940,12 +1200,14 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setFieldTrips((prev) =>
       prev.map((item) => {
         if (item.id === fieldTripId) {
-          return {
+          const updated = {
             ...item,
             status,
             coordinationFeedback: feedback !== undefined ? feedback : item.coordinationFeedback,
             updatedAt: today,
           };
+          upsertFieldTrip(mapFieldTripToDb(updated, selectedSchoolYear)).catch(() => {});
+          return updated;
         }
         return item;
       })
@@ -1060,6 +1322,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
       return [updated, ...prev];
     });
+    upsertEvaluation(mapEvaluationToDb(updated)).catch(() => {});
 
     if (!silent) {
       addToast('Planilla de evaluación guardada con éxito', 'success');
@@ -1073,6 +1336,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     updates: Partial<StudentGradeEntry>
   ) => {
     const today = new Date().toISOString().split('T')[0];
+    let evalToPersist: EvaluationRecord | null = null;
     setEvaluations((prev) =>
       prev.map((item) => {
         if (item.id === evalId) {
@@ -1082,15 +1346,20 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
             }
             return g;
           });
-          return {
+          const updated = {
             ...item,
             grades: updatedGrades,
             updatedAt: today,
           };
+          evalToPersist = updated;
+          return updated;
         }
         return item;
       })
     );
+    if (evalToPersist) {
+      upsertEvaluation(mapEvaluationToDb(evalToPersist)).catch(() => {});
+    }
   };
 
   const setEvaluationStatus = (
@@ -1099,10 +1368,11 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     auditNotes?: string
   ) => {
     const today = new Date().toISOString().split('T')[0];
+    let evalToPersist: EvaluationRecord | null = null;
     setEvaluations((prev) =>
       prev.map((item) => {
         if (item.id === evalId) {
-          return {
+          const updated = {
             ...item,
             status,
             auditedBy: status === 'audited' ? currentUser.fullName : item.auditedBy,
@@ -1113,10 +1383,15 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
             auditNotes: auditNotes !== undefined ? auditNotes : item.auditNotes,
             updatedAt: today,
           };
+          evalToPersist = updated;
+          return updated;
         }
         return item;
       })
     );
+    if (evalToPersist) {
+      upsertEvaluation(mapEvaluationToDb(evalToPersist)).catch(() => {});
+    }
 
     const labels: Record<EvaluationStatus, string> = {
       draft: 'Evaluación regresada a Borrador (edición habilitada)',
@@ -1128,6 +1403,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const deleteEvaluationRecord = (evalId: string) => {
     setEvaluations((prev) => prev.filter((e) => e.id !== evalId));
+    removeEvaluation(evalId).catch(() => {});
     addToast('Registro de evaluación eliminado', 'info');
   };
 
@@ -1148,6 +1424,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }) => {
     const cellKey = `${day}_${timeSlot}`;
     const today = new Date().toISOString().split('T')[0];
+    let schedToPersist: ClassSchedule | null = null;
 
     setClassSchedules((prev) => {
       const existingIndex = prev.findIndex(
@@ -1167,6 +1444,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
         sched.updatedAt = today;
         sched.updatedBy = currentUser.fullName;
         updated[existingIndex] = sched;
+        schedToPersist = sched;
         return updated;
       } else {
         // Fallback: look for prior week or another week of the same grade as template
@@ -1190,9 +1468,13 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
             },
           },
         };
+        schedToPersist = newSched;
         return [...prev, newSched];
       }
     });
+    if (schedToPersist) {
+      upsertClassSchedule(mapClassScheduleToDb(schedToPersist)).catch(() => {});
+    }
 
     addToast(`Horario modificado: ${day} (${timeSlot}) → ${cell.subject}`, 'success');
   };
@@ -1223,6 +1505,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
       return [...prev, schedWithMeta];
     });
+    upsertClassSchedule(mapClassScheduleToDb(schedWithMeta)).catch(() => {});
     addToast(`Horario de ${schedule.grade} (Semana ${schedule.weekNumber}) guardado exitosamente`, 'success');
   };
 
@@ -1279,6 +1562,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return [...prev, recordToSave];
     });
 
+    upsertClassSchedule(mapClassScheduleToDb(recordToSave)).catch(() => {});
     addToast(`Horario de Semana ${params.weekNumber} (${params.grade}) guardado para el Año ${targetYear}`, 'success');
     return recordToSave;
   };
@@ -1311,31 +1595,31 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     const today = new Date().toISOString().split('T')[0];
 
+    const existingIdx = classSchedules.findIndex(
+      (s) =>
+        (s.schoolYear || CURRENT_SCHOOL_YEAR) === selectedSchoolYear &&
+        s.grade === grade &&
+        s.lapso === targetLapso &&
+        s.weekNumber === targetWeek
+    );
+
+    const targetSched: ClassSchedule = {
+      id: existingIdx >= 0
+        ? classSchedules[existingIdx].id
+        : `sched-${grade.replace(/\s+/g, '-').toLowerCase()}-${targetLapso.replace(/\s+/g, '-').toLowerCase()}-w${targetWeek}-${selectedSchoolYear}-${Date.now()}`,
+      schoolYear: selectedSchoolYear,
+      grade,
+      lapso: targetLapso,
+      weekNumber: targetWeek,
+      cells: { ...sourceSched.cells },
+      notes: `Copiado de Semana ${sourceWeek} (${sourceLapso})`,
+      isSaved: true,
+      basedOnWeekNumber: sourceWeek,
+      updatedAt: today,
+      updatedBy: currentUser.fullName,
+    };
+
     setClassSchedules((prev) => {
-      const existingIdx = prev.findIndex(
-        (s) =>
-          (s.schoolYear || CURRENT_SCHOOL_YEAR) === selectedSchoolYear &&
-          s.grade === grade &&
-          s.lapso === targetLapso &&
-          s.weekNumber === targetWeek
-      );
-
-      const targetSched: ClassSchedule = {
-        id: existingIdx >= 0
-          ? prev[existingIdx].id
-          : `sched-${grade.replace(/\s+/g, '-').toLowerCase()}-${targetLapso.replace(/\s+/g, '-').toLowerCase()}-w${targetWeek}-${selectedSchoolYear}-${Date.now()}`,
-        schoolYear: selectedSchoolYear,
-        grade,
-        lapso: targetLapso,
-        weekNumber: targetWeek,
-        cells: { ...sourceSched.cells },
-        notes: `Copiado de Semana ${sourceWeek} (${sourceLapso})`,
-        isSaved: true,
-        basedOnWeekNumber: sourceWeek,
-        updatedAt: today,
-        updatedBy: currentUser.fullName,
-      };
-
       if (existingIdx >= 0) {
         const updated = [...prev];
         updated[existingIdx] = targetSched;
@@ -1344,6 +1628,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return [...prev, targetSched];
     });
 
+    upsertClassSchedule(mapClassScheduleToDb(targetSched)).catch(() => {});
     addToast(`Horario de Semana ${sourceWeek} aplicado a Semana ${targetWeek} (${grade})`, 'success');
   };
 
@@ -1356,20 +1641,24 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
       updatedAt: today,
     };
     setEventSchedules((prev) => [newEvent, ...prev]);
+    upsertEventSchedule(mapEventScheduleToDb(newEvent)).catch(() => {});
     addToast(`Horario de evento "${newEvent.title}" creado con éxito`, 'success');
     return newEvent;
   };
 
   const updateEventSchedule = (event: EventSchedule) => {
     const today = new Date().toISOString().split('T')[0];
+    const updated = { ...event, updatedAt: today };
     setEventSchedules((prev) =>
-      prev.map((e) => (e.id === event.id ? { ...event, updatedAt: today } : e))
+      prev.map((e) => (e.id === event.id ? updated : e))
     );
+    upsertEventSchedule(mapEventScheduleToDb(updated)).catch(() => {});
     addToast(`Horario de evento "${event.title}" actualizado`, 'success');
   };
 
   const deleteEventSchedule = (id: string) => {
     setEventSchedules((prev) => prev.filter((e) => e.id !== id));
+    removeEventSchedule(id).catch(() => {});
     addToast('Horario de evento eliminado', 'info');
   };
 
