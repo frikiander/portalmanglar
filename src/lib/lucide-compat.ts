@@ -129,4 +129,6 @@ export { Cpu }                                   from '@phosphor-icons/react';
 export { Robot           as Bot }                from '@phosphor-icons/react';
 export { MusicNotes     as Music }              from '@phosphor-icons/react';
 export { MathOperations  as Calculator }         from '@phosphor-icons/react';
+export { Star }                                  from '@phosphor-icons/react';
+
 

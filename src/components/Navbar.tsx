@@ -24,9 +24,11 @@ import {
   Compass,
   GearSix,
   CaretRight,
+  Star,
 } from '@phosphor-icons/react';
 import { useEduPlan } from '../context/EduPlanContext';
 import { NavigationModule } from '../types';
+import { SchoolYearsManagementModal } from './SchoolYearsManagementModal';
 
 interface NavbarProps {
   onOpenMobileSidebar?: () => void;
@@ -57,6 +59,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileSidebar, onLogout })
     activeModule,
     selectedSchoolYear,
     setSelectedSchoolYear,
+    defaultSchoolYear,
     currentSchoolYear,
     availableSchoolYears,
     isViewingHistoricalYear,
@@ -69,9 +72,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileSidebar, onLogout })
     addToast,
   } = useEduPlan();
 
-  const [isUserMenuOpen, setIsUserMenuOpen]   = useState(false);
-  const [isYearMenuOpen, setIsYearMenuOpen]   = useState(false);
-  const [searchQuery,    setSearchQuery]       = useState('');
+  const [isUserMenuOpen, setIsUserMenuOpen]         = useState(false);
+  const [isYearMenuOpen, setIsYearMenuOpen]         = useState(false);
+  const [isSchoolYearModalOpen, setIsSchoolYearModalOpen] = useState(false);
+  const [searchQuery,    setSearchQuery]             = useState('');
 
   // ─── Breadcrumb ──────────────────────────────────────────────────────────────
   const currentMeta = MODULE_META[activeModule] ?? MODULE_META['dashboard'];
@@ -144,20 +148,42 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileSidebar, onLogout })
                 {isYearMenuOpen && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setIsYearMenuOpen(false)} />
-                    <div className="absolute right-0 top-full mt-1.5 w-40 bg-white rounded-xl border border-slate-200 shadow-xl z-50 py-1">
-                      {availableSchoolYears.map((year) => (
+                    <div className="absolute right-0 top-full mt-1.5 w-48 bg-white rounded-xl border border-slate-200 shadow-xl z-50 py-1">
+                      {availableSchoolYears.map((year) => {
+                        const isDefault = year === defaultSchoolYear;
+                        return (
+                          <button
+                            key={year}
+                            onClick={() => { setSelectedSchoolYear(year); setIsYearMenuOpen(false); }}
+                            className={`w-full flex items-center justify-between text-left px-3 py-2 text-xs rounded-lg transition-colors ${
+                              selectedSchoolYear === year
+                                ? 'text-indigo-700 font-bold bg-indigo-50'
+                                : 'text-slate-600 hover:bg-slate-50'
+                            }`}
+                          >
+                            <span>{year}</span>
+                            {isDefault && (
+                              <span className="flex items-center gap-1 text-[10px] text-amber-700 font-semibold bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                                <Star weight="fill" className="w-3 h-3 text-amber-500" />
+                                Base
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+
+                      {(viewMode === 'coordinator' || currentUser.role === 'coordinator') && (
                         <button
-                          key={year}
-                          onClick={() => { setSelectedSchoolYear(year); setIsYearMenuOpen(false); }}
-                          className={`w-full text-left px-3 py-2 text-xs rounded-lg mx-0.5 transition-colors
-                            ${selectedSchoolYear === year
-                              ? 'text-indigo-700 font-bold bg-indigo-50'
-                              : 'text-slate-600 hover:bg-slate-50'
-                          }`}
+                          onClick={() => {
+                            setIsSchoolYearModalOpen(true);
+                            setIsYearMenuOpen(false);
+                          }}
+                          className="w-full flex items-center justify-between text-left px-3 py-2.5 text-xs font-semibold text-indigo-600 hover:bg-indigo-50 border-t border-slate-100 rounded-b-xl transition-colors mt-1"
                         >
-                          {year}
+                          <span>Gestionar Años Escolares</span>
+                          <GearSix className="w-3.5 h-3.5" />
                         </button>
-                      ))}
+                      )}
                     </div>
                   </>
                 )}
@@ -340,6 +366,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileSidebar, onLogout })
           </div>
         </div>
       </header>
+
+      <SchoolYearsManagementModal
+        isOpen={isSchoolYearModalOpen}
+        onClose={() => setIsSchoolYearModalOpen(false)}
+      />
     </>
   );
 };

@@ -76,8 +76,12 @@ interface EduPlanContextType {
   updateFieldTripStatus: (fieldTripId: string, status: FieldTripStatus, feedback?: string) => void;
   // Gestión Global de Año Escolar
   currentSchoolYear: string;
+  defaultSchoolYear: string;
   selectedSchoolYear: string;
   setSelectedSchoolYear: (year: string) => void;
+  setDefaultSchoolYear: (year: string) => void;
+  addSchoolYear: (year: string) => void;
+  deleteSchoolYear: (year: string) => void;
   availableSchoolYears: string[];
   isViewingHistoricalYear: boolean;
   // Módulo de Evaluación y Calificaciones
@@ -145,10 +149,31 @@ export const AVAILABLE_SCHOOL_YEARS = ['2026-2027', '2025-2026', '2024-2025', '2
 const EduPlanContext = createContext<EduPlanContextType | undefined>(undefined);
 
 export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Gestión Global de Año Escolar
+  // Gestión Global y Dinámica de Años Escolares
+  const [defaultSchoolYear, setDefaultSchoolYearState] = useState<string>(() => {
+    const saved = localStorage.getItem('eduplan_default_school_year');
+    return saved || '2026-2027';
+  });
+
+  const [availableSchoolYears, setAvailableSchoolYears] = useState<string[]>(() => {
+    const saved = localStorage.getItem('eduplan_available_school_years');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {
+        console.error('Error al cargar años escolares guardados:', e);
+      }
+    }
+    return ['2026-2027', '2025-2026', '2024-2025', '2023-2024'];
+  });
+
   const [selectedSchoolYear, setSelectedSchoolYearState] = useState<string>(() => {
     const saved = localStorage.getItem('eduplan_school_year');
-    return saved || CURRENT_SCHOOL_YEAR;
+    if (saved && availableSchoolYears.includes(saved)) {
+      return saved;
+    }
+    return defaultSchoolYear;
   });
 
   const setSelectedSchoolYear = (year: string) => {
@@ -156,7 +181,42 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     localStorage.setItem('eduplan_school_year', year);
   };
 
-  const isViewingHistoricalYear = selectedSchoolYear !== CURRENT_SCHOOL_YEAR;
+  const setDefaultSchoolYear = (year: string) => {
+    setDefaultSchoolYearState(year);
+    localStorage.setItem('eduplan_default_school_year', year);
+    setSelectedSchoolYear(year);
+    addToast(`Año escolar "${year}" establecido como el predeterminado para la plataforma.`, 'success');
+  };
+
+  const addSchoolYear = (year: string) => {
+    const trimmed = year.trim();
+    if (!trimmed) return;
+    if (availableSchoolYears.includes(trimmed)) {
+      addToast(`El año escolar "${trimmed}" ya existe en la lista.`, 'warning');
+      return;
+    }
+    const updated = [trimmed, ...availableSchoolYears].sort((a, b) => b.localeCompare(a));
+    setAvailableSchoolYears(updated);
+    localStorage.setItem('eduplan_available_school_years', JSON.stringify(updated));
+    addToast(`Año escolar "${trimmed}" creado con éxito.`, 'success');
+  };
+
+  const deleteSchoolYear = (year: string) => {
+    if (year === defaultSchoolYear) {
+      addToast(`No se puede eliminar el año escolar predeterminado ("${year}").`, 'warning');
+      return;
+    }
+    const updated = availableSchoolYears.filter((y) => y !== year);
+    setAvailableSchoolYears(updated);
+    localStorage.setItem('eduplan_available_school_years', JSON.stringify(updated));
+    if (selectedSchoolYear === year) {
+      setSelectedSchoolYear(defaultSchoolYear);
+    }
+    addToast(`Año escolar "${year}" eliminado de la lista.`, 'info');
+  };
+
+  const currentSchoolYear = defaultSchoolYear;
+  const isViewingHistoricalYear = selectedSchoolYear !== defaultSchoolYear;
 
   // Catálogo Dinámico de Asignaturas (Ajedrez, Teatro, ADP, Deporte, Ed. Física, etc.)
   const [subjects, setSubjects] = useState<AcademicSubject[]>(() => {
@@ -1463,10 +1523,14 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     updateFieldTrip,
     deleteFieldTrip,
     updateFieldTripStatus,
-    currentSchoolYear: CURRENT_SCHOOL_YEAR,
+    currentSchoolYear,
+    defaultSchoolYear,
     selectedSchoolYear,
     setSelectedSchoolYear,
-    availableSchoolYears: AVAILABLE_SCHOOL_YEARS,
+    setDefaultSchoolYear,
+    addSchoolYear,
+    deleteSchoolYear,
+    availableSchoolYears,
     isViewingHistoricalYear,
     evaluations,
     saveEvaluationRecord,
@@ -1534,6 +1598,8 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     schools,
     fieldTrips,
     selectedSchoolYear,
+    defaultSchoolYear,
+    availableSchoolYears,
     isViewingHistoricalYear,
     evaluations,
     classSchedules,
