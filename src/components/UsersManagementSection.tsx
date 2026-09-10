@@ -18,11 +18,23 @@ import {
   Sparkles,
   BookOpen,
   UserCheck,
-  Power
+  Power,
+  Camera,
+  Upload,
+  Link as LinkIcon
 } from 'lucide-react';
 import { useEduPlan } from '../context/EduPlanContext';
 import { User, UserRole } from '../types';
 import { SCHOOL_GRADES } from '../data/mockRoster';
+
+const PRESET_AVATARS = [
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+];
 
 export const UsersManagementSection: React.FC = () => {
   const {
@@ -117,6 +129,23 @@ export const UsersManagementSection: React.FC = () => {
     } else {
       setFormSubjects([...formSubjects, subjName]);
     }
+  };
+
+  const handleAvatarFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 3 * 1024 * 1024) {
+      addToast('La imagen elegida supera los 3 MB. Elige una foto más pequeña.', 'warning');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        setFormAvatar(event.target.result as string);
+        addToast('Foto de perfil seleccionada.', 'success');
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -535,6 +564,70 @@ export const UsersManagementSection: React.FC = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Profile Photo / Avatar Picker */}
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-3">
+                <label className="block text-xs font-bold text-slate-700">
+                  Fotografía de Perfil del Usuario
+                </label>
+                <div className="flex items-center gap-3">
+                  <div className="relative group shrink-0">
+                    <img
+                      src={formAvatar || PRESET_AVATARS[0]}
+                      alt="Vista previa avatar"
+                      className="w-14 h-14 rounded-2xl object-cover ring-2 ring-indigo-500/30 shadow-xs"
+                    />
+                    <label
+                      htmlFor="avatar-file-input"
+                      className="absolute -bottom-1 -right-1 p-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md cursor-pointer transition-transform hover:scale-105"
+                      title="Subir foto desde tu equipo"
+                    >
+                      <Camera className="w-3.5 h-3.5" />
+                    </label>
+                    <input
+                      id="avatar-file-input"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleAvatarFileChange}
+                      className="hidden"
+                    />
+                  </div>
+
+                  <div className="flex-1 space-y-1.5 min-w-0">
+                    <p className="text-[10px] font-extrabold uppercase text-slate-400">
+                      Elige un avatar predeterminado o sube tu foto:
+                    </p>
+                    <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+                      {PRESET_AVATARS.map((url, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => setFormAvatar(url)}
+                          className={`w-8 h-8 rounded-xl shrink-0 overflow-hidden border-2 transition-all ${
+                            formAvatar === url
+                              ? 'border-indigo-600 scale-105 ring-2 ring-indigo-500/20'
+                              : 'border-transparent opacity-75 hover:opacity-100'
+                          }`}
+                        >
+                          <img src={url} alt={`Preset ${idx + 1}`} className="w-full h-full object-cover" />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <LinkIcon className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    id="user-form-avatar"
+                    type="url"
+                    value={formAvatar}
+                    onChange={(e) => setFormAvatar(e.target.value)}
+                    placeholder="O pega aquí el enlace directo de una foto (https://...)"
+                    className="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-white focus:outline-hidden focus:ring-2 focus:ring-indigo-500 font-mono"
+                  />
+                </div>
+              </div>
+
               {/* Google Email */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
