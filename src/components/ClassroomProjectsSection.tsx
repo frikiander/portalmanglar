@@ -430,7 +430,7 @@ export const ClassroomProjectsSection: React.FC = () => {
 
       {/* CONFIRM DELETE PROJECT MODAL */}
       {projectToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60">
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 text-center space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center mx-auto text-red-600">
               <AlertTriangle className="w-6 h-6" />
@@ -464,7 +464,7 @@ export const ClassroomProjectsSection: React.FC = () => {
 
       {/* CONFIRM CLEAR ALL PROJECTS MODAL */}
       {showClearConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 text-center space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center mx-auto text-red-600">
               <Trash2 className="w-6 h-6" />
@@ -498,7 +498,7 @@ export const ClassroomProjectsSection: React.FC = () => {
 
       {/* CONFIRM RESET BASE PROJECTS MODAL */}
       {showResetConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 text-center space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center mx-auto text-indigo-600">
               <RotateCcw className="w-6 h-6" />
@@ -605,7 +605,7 @@ const ProjectSheetCard: React.FC<ProjectSheetCardProps> = ({
           
           {/* Left badge box: Promo / Grade / IPC or DIEV */}
           <div className="flex items-center space-x-3.5">
-            <div className="bg-white/95 backdrop-blur-xs rounded-2xl px-4 py-2.5 text-center shadow-xs border border-white/60">
+            <div className="bg-white rounded-2xl px-4 py-2.5 text-center shadow-xs border border-white/60">
               {project.promoCohort && (
                 <span className="block text-[11px] font-black uppercase text-slate-600 tracking-wider">
                   {project.promoCohort}
@@ -675,7 +675,7 @@ const ProjectSheetCard: React.FC<ProjectSheetCardProps> = ({
         </div>
 
         {/* PURPOSE BANNER */}
-        <div className="mt-4 p-3.5 rounded-2xl bg-white/95 backdrop-blur-xs border border-white/80 shadow-2xs text-slate-900">
+        <div className="mt-4 p-3.5 rounded-2xl bg-white border border-white/80 shadow-2xs text-slate-900">
           <p className="text-xs sm:text-sm leading-relaxed font-medium">
             <strong className="font-extrabold text-slate-950">Propósito: </strong>
             {project.purpose}
@@ -945,7 +945,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60">
       <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div>
@@ -1174,7 +1174,7 @@ const EditWeekModal: React.FC<EditWeekModalProps> = ({ week, onClose, onSave }) 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60">
       <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div>
@@ -1337,7 +1337,7 @@ const EditProjectInfoModal: React.FC<EditProjectInfoModalProps> = ({ project, on
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60">
       <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <h3 className="text-base font-bold text-slate-900">

@@ -660,7 +660,7 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
       {/* MODAL: CARGAR NUEVO EVENTO ESCOLAR (Coordinador)                          */}
       {/* ========================================================================= */}
       {isCreateModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between pb-4 border-b border-slate-100">
               <div className="flex items-center space-x-2.5">
@@ -796,7 +796,7 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
       {/* MODAL: DETALLE DEL EVENTO                                                 */}
       {/* ========================================================================= */}
       {selectedEvent && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
             {(() => {
               const badge = getEventBadge(selectedEvent.type);

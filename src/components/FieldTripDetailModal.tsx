@@ -51,7 +51,7 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
   const hasPhone = /[0-9]{7,}/.test(fieldTrip.alliancesOrContacts);
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
       <div className="bg-white rounded-2xl sm:rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
         {/* HEADER */}

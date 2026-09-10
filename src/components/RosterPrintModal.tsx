@@ -70,7 +70,7 @@ export const RosterPrintModal: React.FC<Props> = ({ grade, students, onClose }) 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs overflow-y-auto animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 overflow-y-auto animate-fadeIn">
       <div className="bg-white rounded-2xl max-w-4xl w-full border border-slate-200 shadow-2xl overflow-hidden my-4 flex flex-col max-h-[92vh]">
         {/* Top Control Bar (Hidden on print) */}
         <div className="print:hidden flex items-center justify-between px-6 py-3.5 bg-slate-900 text-white shrink-0">
