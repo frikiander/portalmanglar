@@ -370,6 +370,10 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
   });
 
   const [competencies, setCompetencies] = useState<Competency[]>(() => {
+    if (!isDemoMode) {
+      const saved = localStorage.getItem('eduplan_competencies_real');
+      return saved ? JSON.parse(saved) : [];
+    }
     const saved = localStorage.getItem('eduplan_competencies');
     if (!saved) return INITIAL_COMPETENCIES;
     try {
@@ -386,6 +390,10 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
   });
 
   const [events, setEvents] = useState<SchoolEvent[]>(() => {
+    if (!isDemoMode) {
+      const saved = localStorage.getItem('eduplan_events_real');
+      return saved ? JSON.parse(saved) : [];
+    }
     const saved = localStorage.getItem('eduplan_events');
     return saved ? JSON.parse(saved) : INITIAL_SCHOOL_EVENTS;
   });
@@ -502,52 +510,63 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, [viewMode]);
 
   useEffect(() => {
-    localStorage.setItem('eduplan_plans', JSON.stringify(plans));
-  }, [plans]);
+    const key = isDemoMode ? 'eduplan_plans' : 'eduplan_plans_real';
+    localStorage.setItem(key, JSON.stringify(plans));
+  }, [plans, isDemoMode]);
 
   useEffect(() => {
-    localStorage.setItem('eduplan_competencies', JSON.stringify(competencies));
-  }, [competencies]);
+    const key = isDemoMode ? 'eduplan_competencies' : 'eduplan_competencies_real';
+    localStorage.setItem(key, JSON.stringify(competencies));
+  }, [competencies, isDemoMode]);
 
   useEffect(() => {
-    localStorage.setItem('eduplan_events', JSON.stringify(events));
-  }, [events]);
+    const key = isDemoMode ? 'eduplan_events' : 'eduplan_events_real';
+    localStorage.setItem(key, JSON.stringify(events));
+  }, [events, isDemoMode]);
 
   useEffect(() => {
-    localStorage.setItem('eduplan_classroom_projects_v4', JSON.stringify(classroomProjects));
-  }, [classroomProjects]);
+    const key = isDemoMode ? 'eduplan_classroom_projects_v4' : 'eduplan_classroom_projects_real';
+    localStorage.setItem(key, JSON.stringify(classroomProjects));
+  }, [classroomProjects, isDemoMode]);
 
   useEffect(() => {
-    localStorage.setItem('eduplan_duty_slots', JSON.stringify(dutySlots));
-  }, [dutySlots]);
+    const key = isDemoMode ? 'eduplan_duty_slots' : 'eduplan_duty_slots_real';
+    localStorage.setItem(key, JSON.stringify(dutySlots));
+  }, [dutySlots, isDemoMode]);
 
   useEffect(() => {
-    localStorage.setItem('eduplan_students', JSON.stringify(students));
-  }, [students]);
+    const key = isDemoMode ? 'eduplan_students' : 'eduplan_students_real';
+    localStorage.setItem(key, JSON.stringify(students));
+  }, [students, isDemoMode]);
 
   useEffect(() => {
     localStorage.setItem('eduplan_roster_grade', selectedRosterGrade);
   }, [selectedRosterGrade]);
 
   useEffect(() => {
-    localStorage.setItem('eduplan_schools', JSON.stringify(schools));
-  }, [schools]);
+    const key = isDemoMode ? 'eduplan_schools' : 'eduplan_schools_real';
+    localStorage.setItem(key, JSON.stringify(schools));
+  }, [schools, isDemoMode]);
 
   useEffect(() => {
-    localStorage.setItem('eduplan_field_trips', JSON.stringify(fieldTrips));
-  }, [fieldTrips]);
+    const key = isDemoMode ? 'eduplan_field_trips' : 'eduplan_field_trips_real';
+    localStorage.setItem(key, JSON.stringify(fieldTrips));
+  }, [fieldTrips, isDemoMode]);
 
   useEffect(() => {
-    localStorage.setItem('eduplan_evaluations', JSON.stringify(evaluations));
-  }, [evaluations]);
+    const key = isDemoMode ? 'eduplan_evaluations' : 'eduplan_evaluations_real';
+    localStorage.setItem(key, JSON.stringify(evaluations));
+  }, [evaluations, isDemoMode]);
 
   useEffect(() => {
-    localStorage.setItem('eduplan_class_schedules_v1', JSON.stringify(classSchedules));
-  }, [classSchedules]);
+    const key = isDemoMode ? 'eduplan_class_schedules_v1' : 'eduplan_class_schedules_real';
+    localStorage.setItem(key, JSON.stringify(classSchedules));
+  }, [classSchedules, isDemoMode]);
 
   useEffect(() => {
-    localStorage.setItem('eduplan_event_schedules_v1', JSON.stringify(eventSchedules));
-  }, [eventSchedules]);
+    const key = isDemoMode ? 'eduplan_event_schedules_v1' : 'eduplan_event_schedules_real';
+    localStorage.setItem(key, JSON.stringify(eventSchedules));
+  }, [eventSchedules, isDemoMode]);
 
   useEffect(() => {
     localStorage.setItem('eduplan_sched_grade', selectedScheduleGrade);
@@ -685,30 +704,18 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
       ...competencyData,
       id: `comp-${Date.now().toString().slice(-5)}`,
     };
-    setCompetencies((prev) => {
-      const next = [...prev, newComp];
-      localStorage.setItem('eduplan_competencies', JSON.stringify(next));
-      return next;
-    });
+    setCompetencies((prev) => [...prev, newComp]);
     addToast(`Competencia "${newComp.title}" agregada al banco de datos.`, 'success');
     return newComp;
   };
 
   const updateCompetency = (competency: Competency) => {
-    setCompetencies((prev) => {
-      const next = prev.map((c) => (c.id === competency.id ? competency : c));
-      localStorage.setItem('eduplan_competencies', JSON.stringify(next));
-      return next;
-    });
+    setCompetencies((prev) => prev.map((c) => (c.id === competency.id ? competency : c)));
     addToast(`Competencia "${competency.code}" actualizada en el banco.`, 'success');
   };
 
   const deleteCompetency = (id: string) => {
-    setCompetencies((prev) => {
-      const next = prev.filter((c) => c.id !== id);
-      localStorage.setItem('eduplan_competencies', JSON.stringify(next));
-      return next;
-    });
+    setCompetencies((prev) => prev.filter((c) => c.id !== id));
     addToast('Competencia eliminada del banco.', 'info');
   };
 
