@@ -78,7 +78,9 @@ export { ChatCircle      as MessageCircle }      from '@phosphor-icons/react';
 export { Megaphone }                             from '@phosphor-icons/react';
 export { YoutubeLogo     as Youtube }            from '@phosphor-icons/react';
 export { Link            as Link2 }              from '@phosphor-icons/react';
+export { Link }                                  from '@phosphor-icons/react';
 export { ArrowSquareOut  as ExternalLink }       from '@phosphor-icons/react';
+export { Camera }                                from '@phosphor-icons/react';
 
 // ─── People & Auth ────────────────────────────────────────────────────────────
 export { User }                                  from '@phosphor-icons/react';
