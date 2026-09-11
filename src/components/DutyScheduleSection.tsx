@@ -636,8 +636,8 @@ export const DutyScheduleSection: React.FC = () => {
           MODAL: EDITAR ASIGNACIÓN DE GUARDIA
           ========================================================================= */}
       {editingSlot && (
-        <div className="fixed inset-0 bg-slate-900/60 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200">
+        <div className="fixed inset-0 bg-transparent flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-300">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
                 <Edit3 className="w-5 h-5 text-amber-600" />
@@ -717,8 +717,8 @@ export const DutyScheduleSection: React.FC = () => {
           MODAL: PROTOCOLO INSTITUCIONAL DE GUARDIAS ESCOLARES
           ========================================================================= */}
       {showProtocolModal && (
-        <div className="fixed inset-0 bg-slate-900/60 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 shadow-2xl border border-slate-200">
+        <div className="fixed inset-0 bg-transparent flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 shadow-2xl border border-slate-300">
             <div className="flex items-center justify-between pb-4 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
                 <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">

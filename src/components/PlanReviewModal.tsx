@@ -42,8 +42,8 @@ export const PlanReviewModal: React.FC<Props> = ({ plan, competencies, onClose }
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-8 max-h-[92vh] flex flex-col">
+    <div className="fixed inset-0 z-50 bg-transparent flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-300 overflow-hidden my-8 max-h-[92vh] flex flex-col">
         
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50/90">

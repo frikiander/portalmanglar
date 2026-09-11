@@ -97,10 +97,10 @@ export const ScheduleCellModal: React.FC<ScheduleCellModalProps> = ({
   const currentCategoryStyle = CATEGORY_STYLES[category] || CATEGORY_STYLES.otro;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-transparent flex items-center justify-center p-4">
       <div 
         id="schedule-cell-modal-container"
-        className="bg-white rounded-2xl shadow-2xl max-w-lg w-full border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+        className="bg-white rounded-2xl shadow-2xl max-w-lg w-full border border-slate-300 overflow-hidden animate-in fade-in zoom-in-95 duration-200"
       >
         {/* Modal Header */}
         <div className="px-6 py-4 bg-gradient-to-r from-slate-900 to-slate-800 text-white flex items-center justify-between">

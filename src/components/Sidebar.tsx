@@ -262,7 +262,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {isMobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="fixed inset-0 bg-slate-900/50 transition-opacity"
+            className="fixed inset-0 bg-transparent transition-opacity"
             onClick={onCloseMobile}
           />
           <div className="fixed inset-y-0 left-0 w-64 max-w-[85vw] bg-white shadow-2xl z-50">

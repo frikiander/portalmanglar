@@ -434,8 +434,8 @@ export const ClassroomProjectsSection: React.FC = () => {
 
       {/* CONFIRM DELETE PROJECT MODAL */}
       {projectToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60">
-          <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 text-center space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent">
+          <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-300 text-center space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center mx-auto text-red-600">
               <AlertTriangle className="w-6 h-6" />
             </div>
@@ -468,8 +468,8 @@ export const ClassroomProjectsSection: React.FC = () => {
 
       {/* CONFIRM CLEAR ALL PROJECTS MODAL */}
       {showClearConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 text-center space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-300 text-center space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center mx-auto text-red-600">
               <Trash2 className="w-6 h-6" />
             </div>
@@ -502,8 +502,8 @@ export const ClassroomProjectsSection: React.FC = () => {
 
       {/* CONFIRM RESET BASE PROJECTS MODAL */}
       {showResetConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 text-center space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-300 text-center space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center mx-auto text-indigo-600">
               <RotateCcw className="w-6 h-6" />
             </div>
@@ -949,8 +949,8 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60">
-      <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent">
+      <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-300 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div>
             <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">Nuevo Proyecto de Aula</span>
@@ -1178,8 +1178,8 @@ const EditWeekModal: React.FC<EditWeekModalProps> = ({ week, onClose, onSave }) 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60">
-      <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent">
+      <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-300 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div>
             <span className="text-xs font-bold text-indigo-600">Semana {week.weekNumber}</span>
@@ -1341,8 +1341,8 @@ const EditProjectInfoModal: React.FC<EditProjectInfoModalProps> = ({ project, on
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60">
-      <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent">
+      <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-300">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <h3 className="text-base font-bold text-slate-900">
             Editar Información del Proyecto ({project.type})
