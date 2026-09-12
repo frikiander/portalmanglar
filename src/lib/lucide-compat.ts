@@ -130,5 +130,9 @@ export { Robot           as Bot }                from '@phosphor-icons/react';
 export { MusicNotes     as Music }              from '@phosphor-icons/react';
 export { MathOperations  as Calculator }         from '@phosphor-icons/react';
 export { Star }                                  from '@phosphor-icons/react';
+export { Flask           as FlaskConical }       from '@phosphor-icons/react';
+export { Atom }                                  from '@phosphor-icons/react';
+export { Laptop }                                from '@phosphor-icons/react';
+export { MaskHappy       as Theater }            from '@phosphor-icons/react';
 
 

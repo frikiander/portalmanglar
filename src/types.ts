@@ -29,6 +29,8 @@ export interface AcademicSubject {
   description?: string;
   applicableGrades?: string[];
   color?: string;
+  iconUrl?: string; // Imagen personalizada (500x500 px base64 / URL)
+  iconName?: string; // Nombre de icono preestablecido (ej. 'BookOpen', 'Trophy', etc.)
   isCustom?: boolean;
   createdAt?: string;
 }

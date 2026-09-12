@@ -9,6 +9,7 @@ export const INITIAL_INSTITUTIONAL_SUBJECTS: AcademicSubject[] = [
     description: 'Lógica numérica, cálculo, geometría y resolución reflexiva de problemas.',
     applicableGrades: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
     color: '#2563EB',
+    iconName: 'Calculator',
     isCustom: false,
   },
   {
@@ -19,6 +20,7 @@ export const INITIAL_INSTITUTIONAL_SUBJECTS: AcademicSubject[] = [
     description: 'Comprensión lectora, producción escrita, gramática, ortografía y expresión oral.',
     applicableGrades: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
     color: '#DC2626',
+    iconName: 'BookOpen',
     isCustom: false,
   },
   {
@@ -29,6 +31,7 @@ export const INITIAL_INSTITUTIONAL_SUBJECTS: AcademicSubject[] = [
     description: 'Enfoque comunicativo integral: Reading, Phonics, Writing, Listening & Speaking.',
     applicableGrades: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
     color: '#0891B2',
+    iconName: 'Sparkles',
     isCustom: false,
   },
   {
@@ -39,6 +42,7 @@ export const INITIAL_INSTITUTIONAL_SUBJECTS: AcademicSubject[] = [
     description: 'Biología, observación empírica, laboratorio, ecología y sostenibilidad ambiental.',
     applicableGrades: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
     color: '#16A34A',
+    iconName: 'Atom',
     isCustom: false,
   },
   {
@@ -49,6 +53,7 @@ export const INITIAL_INSTITUTIONAL_SUBJECTS: AcademicSubject[] = [
     description: 'Historia, geografía de Venezuela y el mundo, formación ciudadana e identidad.',
     applicableGrades: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
     color: '#D97706',
+    iconName: 'Globe',
     isCustom: false,
   },
   {
@@ -58,7 +63,8 @@ export const INITIAL_INSTITUTIONAL_SUBJECTS: AcademicSubject[] = [
     code: 'AJE',
     description: 'Estrategia, táctica, cálculo mental, concentración y toma de decisiones éticas.',
     applicableGrades: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
-    color: '#4B5563',
+    color: '#7C3AED',
+    iconName: 'Trophy',
     isCustom: false,
   },
   {
@@ -69,6 +75,7 @@ export const INITIAL_INSTITUTIONAL_SUBJECTS: AcademicSubject[] = [
     description: 'Expresión corporal, oratoria, dramatización, juego de roles y seguridad escénica.',
     applicableGrades: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
     color: '#9333EA',
+    iconName: 'Theater',
     isCustom: false,
   },
   {
@@ -79,6 +86,7 @@ export const INITIAL_INSTITUTIONAL_SUBJECTS: AcademicSubject[] = [
     description: 'Aprendizaje y Desarrollo Personal: inteligencia emocional, valores y liderazgo.',
     applicableGrades: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
     color: '#0D9488',
+    iconName: 'HeartHandshake',
     isCustom: false,
   },
   {
@@ -89,6 +97,7 @@ export const INITIAL_INSTITUTIONAL_SUBJECTS: AcademicSubject[] = [
     description: 'Disciplinas deportivas, fútbol, baloncesto, voleibol, atletismo y juego limpio.',
     applicableGrades: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
     color: '#EA580C',
+    iconName: 'Dumbbell',
     isCustom: false,
   },
   {
@@ -99,6 +108,7 @@ export const INITIAL_INSTITUTIONAL_SUBJECTS: AcademicSubject[] = [
     description: 'Acondicionamiento físico, motricidad fina y gruesa, hábitos posturales y salud.',
     applicableGrades: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
     color: '#C2410C',
+    iconName: 'Dumbbell',
     isCustom: false,
   },
   {
@@ -109,6 +119,7 @@ export const INITIAL_INSTITUTIONAL_SUBJECTS: AcademicSubject[] = [
     description: 'Investigación pedagógica interdisciplinaria (IPC / DIEV) orientada al aprendizaje vivencial.',
     applicableGrades: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
     color: '#059669',
+    iconName: 'Compass',
     isCustom: false,
   },
   {
@@ -119,6 +130,7 @@ export const INITIAL_INSTITUTIONAL_SUBJECTS: AcademicSubject[] = [
     description: 'Construcción de prototipos, sensores, mecatrónica y proyectos STEAM.',
     applicableGrades: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
     color: '#4F46E5',
+    iconName: 'Laptop',
     isCustom: false,
   },
   {
@@ -129,6 +141,7 @@ export const INITIAL_INSTITUTIONAL_SUBJECTS: AcademicSubject[] = [
     description: 'Uso ético de herramientas digitales, alfabetización tecnológica e innovación.',
     applicableGrades: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
     color: '#0284C7',
+    iconName: 'Laptop',
     isCustom: false,
   },
   {
@@ -139,6 +152,7 @@ export const INITIAL_INSTITUTIONAL_SUBJECTS: AcademicSubject[] = [
     description: 'Pensamiento computacional, algoritmos, software, ofimática y programación.',
     applicableGrades: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
     color: '#2563EB',
+    iconName: 'Laptop',
     isCustom: false,
   },
   {
@@ -149,6 +163,7 @@ export const INITIAL_INSTITUTIONAL_SUBJECTS: AcademicSubject[] = [
     description: 'Educación auditiva, ritmo, canto coral y ensamble instrumental institucional.',
     applicableGrades: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
     color: '#7C3AED',
+    iconName: 'Music',
     isCustom: false,
   },
   {
@@ -159,6 +174,7 @@ export const INITIAL_INSTITUTIONAL_SUBJECTS: AcademicSubject[] = [
     description: 'Artes visuales, pintura, modelado, teoría del color y patrimonio cultural.',
     applicableGrades: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
     color: '#DB2777',
+    iconName: 'Palette',
     isCustom: false,
   },
   {
@@ -169,6 +185,7 @@ export const INITIAL_INSTITUTIONAL_SUBJECTS: AcademicSubject[] = [
     description: 'Aproximación a la lengua y cultura francesa a través de canciones y dinámicas lúdicas.',
     applicableGrades: ['3er Grado', '4to Grado', '5to Grado', '6to Grado'],
     color: '#2563EB',
+    iconName: 'Sparkles',
     isCustom: false,
   },
   {
@@ -179,6 +196,7 @@ export const INITIAL_INSTITUTIONAL_SUBJECTS: AcademicSubject[] = [
     description: 'Círculo de inicio de jornada, lectura recreativa, metacognición y hábitos socioemocionales.',
     applicableGrades: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
     color: '#64748B',
+    iconName: 'Smile',
     isCustom: false,
   },
 ];
@@ -188,11 +206,11 @@ export const SUBJECT_CATEGORY_LABELS: Record<SubjectCategory, string> = {
   matematica: 'Matemáticas y Lógica',
   ingles: 'Idiomas (Inglés)',
   ciencia: 'Ciencias y Naturaleza',
-  sociales: 'Ciencias Sociales e Historia',
+  sociales: 'Ciencias Sociales',
   deporte: 'Educación Física y Deportes',
   especiales: 'Materias Especiales y Artes',
-  proyecto: 'Proyectos de Aprendizaje',
+  proyecto: 'Proyectos de Aula',
   rutina: 'Rutinas y Hábitos',
-  recreo: 'Descanso y Alimentos',
-  otro: 'Otras Asignaturas',
+  recreo: 'Recreo y Esparcimiento',
+  otro: 'Otras Disciplinas',
 };

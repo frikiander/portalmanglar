@@ -17,12 +17,16 @@ import {
   Dumbbell,
   Palette,
   Compass,
-  Smile
+  Smile,
+  Upload,
+  Image as ImageIcon
 } from 'lucide-react';
 import { useEduPlan } from '../context/EduPlanContext';
 import { AcademicSubject, SubjectCategory } from '../types';
 import { SUBJECT_CATEGORY_LABELS } from '../data/mockSubjects';
 import { SCHOOL_GRADES } from '../data/mockRoster';
+import { SubjectAvatar, PRESET_SUBJECT_ICONS } from './SubjectAvatar';
+import { resizeImageTo500x500 } from '../utils/imageResize';
 
 const CATEGORY_ICONS: Record<SubjectCategory, React.ElementType> = {
   lengua: BookOpen,
@@ -68,6 +72,11 @@ export const SubjectsManagementSection: React.FC = () => {
   const [formCode, setFormCode] = useState('');
   const [formDescription, setFormDescription] = useState('');
   const [formColor, setFormColor] = useState('#4F46E5');
+  const [formIconUrl, setFormIconUrl] = useState<string | undefined>(undefined);
+  const [formIconName, setFormIconName] = useState<string | undefined>(undefined);
+  const [visualMode, setVisualMode] = useState<'preset' | 'upload'>('preset');
+  const [isProcessingImage, setIsProcessingImage] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
   const [formGrades, setFormGrades] = useState<string[]>(displayGrades);
   const [colorMode, setColorMode] = useState<'preset' | 'custom'>('preset');
 
@@ -80,6 +89,9 @@ export const SubjectsManagementSection: React.FC = () => {
     setFormCode('');
     setFormDescription('');
     setFormColor('#4F46E5');
+    setFormIconUrl(undefined);
+    setFormIconName(undefined);
+    setVisualMode('preset');
     setFormGrades(displayGrades);
     setColorMode('preset');
     setIsFormModalOpen(true);
@@ -92,8 +104,34 @@ export const SubjectsManagementSection: React.FC = () => {
     setFormCode(subject.code || '');
     setFormDescription(subject.description || '');
     setFormColor(subject.color || '#4F46E5');
+    setFormIconUrl(subject.iconUrl);
+    setFormIconName(subject.iconName);
+    setVisualMode(subject.iconUrl ? 'upload' : 'preset');
     setFormGrades(subject.applicableGrades || displayGrades);
     setIsFormModalOpen(true);
+  };
+
+  const handleImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsProcessingImage(true);
+      const resizedBase64 = await resizeImageTo500x500(file);
+      setFormIconUrl(resizedBase64);
+      setVisualMode('upload');
+      addToast('Imagen procesada y recortada a 500 × 500 px correctamente.', 'success');
+    } catch (err: any) {
+      addToast(err?.message || 'Error al procesar la imagen.', 'error');
+    } finally {
+      setIsProcessingImage(false);
+      if (e.target) e.target.value = '';
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setFormIconUrl(undefined);
+    setVisualMode('preset');
   };
 
   const handleToggleGrade = (grade: string) => {
@@ -114,6 +152,9 @@ export const SubjectsManagementSection: React.FC = () => {
     e.preventDefault();
     if (!formName.trim()) return;
 
+    const payloadIconUrl = visualMode === 'upload' ? formIconUrl : undefined;
+    const payloadIconName = visualMode === 'preset' ? formIconName : undefined;
+
     if (editingSubject) {
       await updateSubject({
         ...editingSubject,
@@ -122,6 +163,8 @@ export const SubjectsManagementSection: React.FC = () => {
         code: formCode.trim().toUpperCase() || undefined,
         description: formDescription.trim() || undefined,
         color: formColor,
+        iconUrl: payloadIconUrl,
+        iconName: payloadIconName,
         applicableGrades: formGrades,
       });
     } else {
@@ -131,6 +174,8 @@ export const SubjectsManagementSection: React.FC = () => {
         code: formCode.trim().toUpperCase() || undefined,
         description: formDescription.trim() || undefined,
         color: formColor,
+        iconUrl: payloadIconUrl,
+        iconName: payloadIconName,
         applicableGrades: formGrades,
       });
     }
@@ -270,11 +315,10 @@ export const SubjectsManagementSection: React.FC = () => {
                 {/* Card Header */}
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center space-x-2.5 min-w-0">
-                    <div
-                      className={`w-10 h-10 rounded-xl flex items-center justify-center border shrink-0 ${categoryStyle.bg} ${categoryStyle.border} ${categoryStyle.text}`}
-                    >
-                      <CategoryIcon className="w-5 h-5" />
-                    </div>
+                    <SubjectAvatar
+                      subject={subject}
+                      size="md"
+                    />
                     <div className="min-w-0">
                       <div className="flex items-center space-x-2">
                         <h3 className="font-extrabold text-slate-900 text-sm truncate">
@@ -381,9 +425,14 @@ export const SubjectsManagementSection: React.FC = () => {
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-300 max-h-[90vh] overflow-y-auto space-y-5">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div className="flex items-center space-x-2.5">
-                <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 text-[#5EA832] flex items-center justify-center">
-                  <GraduationCap className="w-5 h-5" />
-                </div>
+                <SubjectAvatar
+                  name={formName || 'Asignatura'}
+                  iconUrl={visualMode === 'upload' ? formIconUrl : undefined}
+                  iconName={visualMode === 'preset' ? formIconName : undefined}
+                  category={formCategory}
+                  color={formColor}
+                  size="md"
+                />
                 <div>
                   <h3 className="text-base font-extrabold text-slate-900">
                     {editingSubject ? 'Editar Asignatura' : 'Agregar Nueva Asignatura'}
@@ -452,6 +501,196 @@ export const SubjectsManagementSection: React.FC = () => {
                     className="w-full px-3 py-2.5 text-xs font-mono font-bold rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-[#5EA832]"
                   />
                 </div>
+              </div>
+
+              {/* Visual Identifier Section (Icono Preestablecido o Imagen 500x500) */}
+              <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Sparkles className="w-4 h-4 text-[#5EA832]" />
+                    <label className="text-xs font-bold text-slate-800">
+                      Identificador Visual de la Asignatura
+                    </label>
+                  </div>
+
+                  {/* Toggle between Preset and Upload */}
+                  <div className="flex items-center gap-1 p-0.5 bg-white border border-slate-200 rounded-lg text-[10px] font-bold shadow-2xs">
+                    <button
+                      type="button"
+                      onClick={() => setVisualMode('preset')}
+                      className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                        visualMode === 'preset'
+                          ? 'bg-[#5EA832] text-white shadow-2xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      Icono Preestablecido
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setVisualMode('upload')}
+                      className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                        visualMode === 'upload'
+                          ? 'bg-[#5EA832] text-white shadow-2xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      Subir Imagen (500×500)
+                    </button>
+                  </div>
+                </div>
+
+                {/* Live Preview Box */}
+                <div className="flex items-center justify-between p-2.5 bg-white border border-slate-200/80 rounded-xl">
+                  <div className="flex items-center space-x-3 min-w-0">
+                    <SubjectAvatar
+                      name={formName || 'Asignatura'}
+                      iconUrl={visualMode === 'upload' ? formIconUrl : undefined}
+                      iconName={visualMode === 'preset' ? formIconName : undefined}
+                      category={formCategory}
+                      color={formColor}
+                      size="lg"
+                    />
+                    <div className="min-w-0">
+                      <div className="flex items-center space-x-2">
+                        <h4 className="font-extrabold text-slate-900 text-sm truncate">
+                          {formName || 'Nombre de la Asignatura'}
+                        </h4>
+                        {formCode && (
+                          <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 border border-slate-200">
+                            {formCode.toUpperCase()}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-medium">
+                        {visualMode === 'upload' && formIconUrl
+                          ? 'Imagen personalizada 500 × 500 px vinculada'
+                          : visualMode === 'upload'
+                          ? 'Sin imagen cargada (se usará icono)'
+                          : formIconName
+                          ? `Icono preestablecido: ${formIconName}`
+                          : 'Icono por defecto según categoría'}
+                      </p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-slate-50 text-slate-600 shrink-0">
+                    Vista Previa
+                  </span>
+                </div>
+
+                {/* Preset Icons Gallery */}
+                {visualMode === 'preset' && (
+                  <div className="space-y-2 pt-1">
+                    <div className="flex items-center justify-between text-[11px] text-slate-500">
+                      <span>Selecciona un icono temático:</span>
+                      {formIconName && (
+                        <button
+                          type="button"
+                          onClick={() => setFormIconName(undefined)}
+                          className="text-[10px] font-bold text-slate-400 hover:text-slate-600 underline cursor-pointer"
+                        >
+                          Restablecer por defecto
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-6 sm:grid-cols-8 gap-1.5 max-h-36 overflow-y-auto p-1.5 border border-slate-200 bg-white rounded-xl">
+                      {PRESET_SUBJECT_ICONS.map((opt) => {
+                        const IconComp = opt.icon;
+                        const isSelected = formIconName === opt.name;
+                        return (
+                          <button
+                            key={opt.name}
+                            type="button"
+                            onClick={() => setFormIconName(opt.name)}
+                            title={opt.label}
+                            className={`p-2 rounded-xl flex flex-col items-center justify-center transition-all cursor-pointer ${
+                              isSelected
+                                ? 'bg-emerald-50 text-[#3A6B1F] ring-2 ring-[#5EA832] scale-105 shadow-2xs font-bold'
+                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border border-transparent'
+                            }`}
+                          >
+                            <IconComp className="w-5 h-5" />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Upload Image 500x500 Area */}
+                {visualMode === 'upload' && (
+                  <div className="space-y-2 pt-1">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageFileChange}
+                      className="hidden"
+                    />
+
+                    {formIconUrl ? (
+                      <div className="p-3 bg-white border border-emerald-200 rounded-xl flex items-center justify-between gap-3">
+                        <div className="flex items-center space-x-3 min-w-0">
+                          <div className="w-14 h-14 rounded-xl overflow-hidden border border-slate-200 shadow-xs shrink-0 relative group">
+                            <img src={formIconUrl} alt="Vista 500x500" className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <span className="text-[8px] font-bold text-white uppercase">500×500</span>
+                            </div>
+                          </div>
+                          <div className="min-w-0">
+                            <div className="flex items-center space-x-1.5 text-xs font-bold text-emerald-900">
+                              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                              <span className="truncate">Imagen en 500 × 500 px lista</span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 truncate">
+                              Se reflejará en tarjetas, horarios y evaluaciones.
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row gap-1.5 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold rounded-lg transition-colors cursor-pointer"
+                          >
+                            Cambiar
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleRemoveImage}
+                            className="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-[11px] font-bold rounded-lg transition-colors cursor-pointer"
+                          >
+                            Quitar
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div
+                        onClick={() => fileInputRef.current?.click()}
+                        className={`p-4 border-2 border-dashed border-slate-300 hover:border-[#5EA832] hover:bg-emerald-50/40 rounded-xl text-center cursor-pointer transition-all ${
+                          isProcessingImage ? 'opacity-50 pointer-events-none' : ''
+                        }`}
+                      >
+                        <div className="flex flex-col items-center justify-center text-slate-500">
+                          <div className="w-10 h-10 rounded-full bg-emerald-50 text-[#5EA832] flex items-center justify-center mb-1.5">
+                            <Upload className="w-5 h-5" />
+                          </div>
+                          <p className="text-xs font-bold text-slate-800">
+                            {isProcessingImage ? 'Procesando imagen...' : 'Haz clic o arrastra para subir una imagen'}
+                          </p>
+                          <p className="text-[10px] text-slate-500 mt-0.5">
+                            Dimensión: <strong>500 × 500 px</strong> (JPG, PNG, WebP)
+                          </p>
+                          <p className="text-[9.5px] text-[#285A14] font-medium mt-1">
+                            El sistema la recorta y adapta automáticamente a 500x500 cuadrada
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Color Picker Section (Predeterminados / Personalizado) */}

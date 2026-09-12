@@ -3,6 +3,7 @@ import { X, Check, Trash2, Clock, MapPin, User, Tag, AlertCircle } from 'lucide-
 import { ClassScheduleCell, ScheduleDay, SubjectCategory } from '../types';
 import { CATEGORY_STYLES, COMMON_SUBJECT_SUGGESTIONS, detectSubjectCategory } from '../data/mockSchedules';
 import { useEduPlan } from '../context/EduPlanContext';
+import { SubjectAvatar } from './SubjectAvatar';
 
 interface ScheduleCellModalProps {
   isOpen: boolean;
@@ -141,18 +142,27 @@ export const ScheduleCellModal: React.FC<ScheduleCellModalProps> = ({
                 {(subjects.length > 0 ? subjects.map((s) => s.name) : COMMON_SUBJECT_SUGGESTIONS).map((s) => {
                   const cat = detectSubjectCategory(s);
                   const style = CATEGORY_STYLES[cat] || CATEGORY_STYLES.otro;
+                  const matchedSubj = subjects.find(
+                    (sub) => sub.name.toLowerCase() === s.toLowerCase()
+                  );
                   return (
                     <button
                       key={s}
                       type="button"
                       onClick={() => handleSelectPredefined(s)}
-                      className={`text-xs px-2.5 py-1 rounded-lg border font-medium transition-all ${
+                      className={`text-xs px-2.5 py-1 rounded-lg border font-medium transition-all inline-flex items-center gap-1.5 ${
                         subject.toLowerCase() === s.toLowerCase()
                           ? 'ring-2 ring-indigo-500 font-bold shadow-xs'
                           : 'hover:opacity-80'
                       } ${style.bg} ${style.border} ${style.text}`}
                     >
-                      {s}
+                      <SubjectAvatar
+                        subject={matchedSubj}
+                        name={s}
+                        category={detectSubjectCategory(s)}
+                        size="xs"
+                      />
+                      <span>{s}</span>
                     </button>
                   );
                 })}
@@ -207,16 +217,31 @@ export const ScheduleCellModal: React.FC<ScheduleCellModalProps> = ({
               <label className="block text-xs font-bold text-slate-700 mb-1">
                 Vista Previa de la Tarjeta
               </label>
-              <div
-                className={`p-2.5 rounded-xl border ${currentCategoryStyle.bg} ${currentCategoryStyle.border} ${currentCategoryStyle.text} text-center shadow-2xs`}
-              >
-                <div className="font-bold text-xs truncate">
-                  {subject || 'Nombre de Asignatura'}
-                </div>
-                <div className="text-[10px] opacity-80 truncate">
-                  {classroom || 'Aula / Espacio'} · {teacherName || 'Docente'}
-                </div>
-              </div>
+              {(() => {
+                const currentMatched = subjects.find(
+                  (s) => s.name.toLowerCase() === (subject || '').trim().toLowerCase()
+                );
+                return (
+                  <div
+                    className={`p-2.5 rounded-xl border ${currentCategoryStyle.bg} ${currentCategoryStyle.border} ${currentCategoryStyle.text} shadow-2xs flex items-center gap-2.5`}
+                  >
+                    <SubjectAvatar
+                      subject={currentMatched}
+                      name={subject || 'Asignatura'}
+                      category={category}
+                      size="sm"
+                    />
+                    <div className="min-w-0 flex-1 text-left">
+                      <div className="font-bold text-xs truncate">
+                        {subject || 'Nombre de Asignatura'}
+                      </div>
+                      <div className="text-[10px] opacity-80 truncate">
+                        {classroom || 'Aula / Espacio'} · {teacherName || 'Docente'}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           </div>
 

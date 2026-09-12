@@ -94,6 +94,8 @@ export function mapDbSubjectToSubject(row: Record<string, unknown>): AcademicSub
     description:      row.description != null ? String(row.description) : undefined,
     applicableGrades: Array.isArray(row.applicable_grades) ? (row.applicable_grades as string[]) : [],
     color:            row.color       != null ? String(row.color)       : undefined,
+    iconUrl:          row.icon_url    != null ? String(row.icon_url)    : undefined,
+    iconName:         row.icon_name   != null ? String(row.icon_name)   : undefined,
     isCustom:         Boolean(row.is_custom ?? false),
     createdAt:        row.created_at  != null ? String(row.created_at)  : undefined,
   };
@@ -108,6 +110,8 @@ export function mapSubjectToDb(subject: AcademicSubject): Record<string, unknown
     description:      subject.description || null,
     applicable_grades:subject.applicableGrades ?? [],
     color:            subject.color        || null,
+    icon_url:         subject.iconUrl      || null,
+    icon_name:        subject.iconName     || null,
     is_custom:        subject.isCustom     ?? false,
   };
 }

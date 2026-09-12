@@ -16,12 +16,16 @@ import {
 import { ClassScheduleCell, SubjectCategory } from '../types';
 import { CATEGORY_STYLES, detectSubjectCategory } from '../data/mockSchedules';
 import { useEduPlan } from '../context/EduPlanContext';
+import { SubjectAvatar } from './SubjectAvatar';
 
 export interface QuickPaletteItem {
   id: string;
   name: string;
   category: SubjectCategory;
   defaultRoom?: string;
+  color?: string;
+  iconUrl?: string;
+  iconName?: string;
 }
 
 export const INSTITUTIONAL_PALETTE_ITEMS: QuickPaletteItem[] = [
@@ -79,6 +83,9 @@ export const ScheduleLateralDrawer: React.FC<ScheduleLateralDrawerProps> = ({
         id: `pal-${s.id}`,
         name: s.name,
         category: s.category,
+        color: s.color,
+        iconUrl: s.iconUrl,
+        iconName: s.iconName,
       }))
     : INSTITUTIONAL_PALETTE_ITEMS;
 
@@ -240,6 +247,9 @@ export const ScheduleLateralDrawer: React.FC<ScheduleLateralDrawerProps> = ({
                 <div className="space-y-2 mt-2 max-h-56 overflow-y-auto pr-1">
                   {unassignedSubjects.map((item, idx) => {
                     const catStyle = CATEGORY_STYLES[item.category || 'otro'] || CATEGORY_STYLES.otro;
+                    const matchedSubj = subjects.find(
+                      (s) => s.name.toLowerCase() === (item.subject || '').toLowerCase()
+                    );
                     return (
                       <div
                         key={idx}
@@ -257,6 +267,12 @@ export const ScheduleLateralDrawer: React.FC<ScheduleLateralDrawerProps> = ({
                       >
                         <div className="flex items-center space-x-2 min-w-0">
                           <GripVertical className="w-3.5 h-3.5 text-slate-400 shrink-0 group-hover:text-slate-600" />
+                          <SubjectAvatar
+                            subject={matchedSubj}
+                            name={item.subject}
+                            category={item.category}
+                            size="xs"
+                          />
                           <div className="min-w-0">
                             <div className="text-xs font-extrabold text-slate-900 truncate">
                               {item.subject}
@@ -367,6 +383,14 @@ export const ScheduleLateralDrawer: React.FC<ScheduleLateralDrawerProps> = ({
                     >
                       <div className="flex items-center space-x-2 min-w-0">
                         <GripVertical className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 shrink-0" />
+                        <SubjectAvatar
+                          name={item.name}
+                          iconUrl={item.iconUrl}
+                          iconName={item.iconName}
+                          category={item.category}
+                          color={item.color}
+                          size="xs"
+                        />
                         <span className={`text-xs font-bold truncate ${catStyle.text}`}>
                           {item.name}
                         </span>
