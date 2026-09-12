@@ -8,11 +8,13 @@ import {
   User, 
   Award, 
   MessageSquare,
-  Sparkles
+  Sparkles,
+  Printer
 } from 'lucide-react';
 import { LessonPlan, Competency } from '../types';
 import { useEduPlan } from '../context/EduPlanContext';
 import { getGradeBadgeStyle, getGradeLeftAccentStyle } from '../utils/gradeColors';
+import { LessonPlanPreviewModal } from './LessonPlanPreviewModal';
 
 interface Props {
   plan: LessonPlan;
@@ -24,6 +26,7 @@ export const PlanReviewModal: React.FC<Props> = ({ plan, competencies, onClose }
   const { reviewPlan } = useEduPlan();
   const [feedback, setFeedback] = useState<string>(plan.coordinatorFeedback || '');
   const [showFeedbackWarning, setShowFeedbackWarning] = useState(false);
+  const [showPrintPreview, setShowPrintPreview] = useState(false);
 
   const selectedComps = competencies.filter((c) => plan.competencyIds.includes(c.id));
 
@@ -76,12 +79,22 @@ export const PlanReviewModal: React.FC<Props> = ({ plan, competencies, onClose }
             </div>
           </div>
 
-          <button
-            onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200/60"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setShowPrintPreview(true)}
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer"
+              title="Imprimir / Exportar PDF de la Ficha"
+            >
+              <Printer className="w-3.5 h-3.5 text-slate-600" />
+              <span className="hidden sm:inline">Imprimir Ficha</span>
+            </button>
+            <button
+              onClick={onClose}
+              className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200/60 cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Scrollable Content */}
@@ -251,6 +264,15 @@ export const PlanReviewModal: React.FC<Props> = ({ plan, competencies, onClose }
         </div>
 
       </div>
+
+      {/* Official Print Preview Modal */}
+      {showPrintPreview && (
+        <LessonPlanPreviewModal
+          plan={plan}
+          competencies={competencies}
+          onClose={() => setShowPrintPreview(false)}
+        />
+      )}
     </div>
   );
 };
