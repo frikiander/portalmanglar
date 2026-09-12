@@ -18,6 +18,7 @@ export interface User {
   authUid?: string;
   createdAt?: string;
   lastLoginAt?: string;
+  supervisorIds?: string[]; // IDs de coordinadores supervisores asignados (solo para docentes)
 }
 
 export interface AcademicSubject {

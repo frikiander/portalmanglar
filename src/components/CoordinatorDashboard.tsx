@@ -26,7 +26,7 @@ import { PlanReviewModal } from './PlanReviewModal';
 import { CompetencyManagerModal } from './CompetencyManagerModal';
 
 export const CoordinatorDashboard: React.FC = () => {
-  const { plans, competencies, activeModule, setActiveModule, users, availableSubjectNames, availableGradeNames } = useEduPlan();
+  const { plans, competencies, activeModule, setActiveModule, users, availableSubjectNames, availableGradeNames, currentUser, getTeachersForCoordinator } = useEduPlan();
 
   const displayGrades = availableGradeNames?.length > 0 ? availableGradeNames : AVAILABLE_GRADES;
 
@@ -47,16 +47,21 @@ export const CoordinatorDashboard: React.FC = () => {
   const totalRejected = plans.filter((p) => p.status === 'rejected').length;
   const totalDrafts = plans.filter((p) => p.status === 'draft').length;
 
-  // Teachers list
-  const teachers = (users?.length > 0 ? users : MOCK_USERS).filter((u) => u.role === 'teacher');
+  // Teachers list (only teachers assigned to this coordinator, or all if none assigned)
+  const assignedTeachers = getTeachersForCoordinator(currentUser.id);
+  const hasAssignedTeachers = assignedTeachers.length > 0;
+  const teachers = hasAssignedTeachers ? assignedTeachers : (users?.length > 0 ? users : MOCK_USERS).filter((u) => u.role === 'teacher');
+  const assignedTeacherIds = new Set(teachers.map((t) => t.id));
 
-  // Filter plans
+  // Filter plans — restrict to assigned teachers if any are configured
   const filteredPlans = plans.filter((plan) => {
+    // Scope to assigned teachers (if any are configured for this coordinator)
+    if (hasAssignedTeachers && !assignedTeacherIds.has(plan.teacherId)) return false;
     const matchesGrade = filterGrade === 'all' || plan.grade === filterGrade;
     const matchesTeacher = filterTeacher === 'all' || plan.teacherId === filterTeacher;
     const matchesSubject = filterSubject === 'all' || plan.subject === filterSubject;
     const matchesStatus = filterStatus === 'all' || plan.status === filterStatus;
-    const matchesSearch = 
+    const matchesSearch =
       plan.topic.toLowerCase().includes(searchQuery.toLowerCase()) ||
       plan.teacherName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       plan.subject.toLowerCase().includes(searchQuery.toLowerCase());
@@ -94,6 +99,20 @@ export const CoordinatorDashboard: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Assigned Teachers Notice */}
+      {hasAssignedTeachers && (
+        <div className="bg-purple-50 border border-purple-200 rounded-2xl px-4 py-3 flex items-start gap-3">
+          <ShieldAlert className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
+          <div className="text-xs text-purple-800">
+            <span className="font-bold">Vista filtrada: </span>
+            Estás supervisando a{' '}
+            <span className="font-bold">{assignedTeachers.length} docente{assignedTeachers.length !== 1 ? 's' : ''}</span>:{' '}
+            {assignedTeachers.map((t) => t.fullName.split(' ')[0]).join(', ')}.{' '}
+            Solo verás sus planificaciones en este panel.
+          </div>
+        </div>
+      )}
 
       {/* 4 Clean Status Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">

@@ -21,7 +21,9 @@ import {
   Power,
   Camera,
   Upload,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Link2,
+  UserCog
 } from 'lucide-react';
 import { useEduPlan } from '../context/EduPlanContext';
 import { User, UserRole } from '../types';
@@ -41,6 +43,8 @@ export const UsersManagementSection: React.FC = () => {
     addUser,
     updateUser,
     deleteUser,
+    assignSupervisors,
+    getTeachersForCoordinator,
     setCurrentUser,
     setViewMode,
     currentUser,
@@ -62,6 +66,8 @@ export const UsersManagementSection: React.FC = () => {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [deleteConfirmUser, setDeleteConfirmUser] = useState<User | null>(null);
+  const [supervisorModalTeacher, setSupervisorModalTeacher] = useState<User | null>(null);
+  const [pendingSupervisorIds, setPendingSupervisorIds] = useState<string[]>([]);
 
   // Form states
   const [formEmail, setFormEmail] = useState('');
@@ -207,6 +213,25 @@ export const UsersManagementSection: React.FC = () => {
       setViewMode('teacher');
     }
   };
+
+  const handleOpenSupervisorModal = (teacher: User) => {
+    setSupervisorModalTeacher(teacher);
+    setPendingSupervisorIds(teacher.supervisorIds || []);
+  };
+
+  const handleToggleSupervisor = (coordId: string) => {
+    setPendingSupervisorIds((prev) =>
+      prev.includes(coordId) ? prev.filter((id) => id !== coordId) : [...prev, coordId]
+    );
+  };
+
+  const handleSaveSupervisors = async () => {
+    if (!supervisorModalTeacher) return;
+    await assignSupervisors(supervisorModalTeacher.id, pendingSupervisorIds);
+    setSupervisorModalTeacher(null);
+  };
+
+  const coordinators = users.filter((u) => u.role === 'coordinator');
 
   const filteredUsers = users.filter((u) => {
     const matchesSearch =
@@ -499,6 +524,33 @@ export const UsersManagementSection: React.FC = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Supervisores asignados (solo para docentes) */}
+                {user.role === 'teacher' && (
+                  <div className="space-y-1 text-xs">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      Supervisores Asignados:
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {(user.supervisorIds && user.supervisorIds.length > 0) ? (
+                        user.supervisorIds.map((sid) => {
+                          const coord = users.find((u) => u.id === sid);
+                          return coord ? (
+                            <span
+                              key={sid}
+                              className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-purple-50 text-purple-800 border border-purple-200/60 flex items-center gap-1"
+                            >
+                              <UserCog className="w-2.5 h-2.5" />
+                              {coord.fullName.split(' ')[0]}
+                            </span>
+                          ) : null;
+                        })
+                      ) : (
+                        <span className="text-[10px] italic text-slate-400">Sin supervisor asignado</span>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Card Footer: Quick simulate / test button */}
@@ -508,18 +560,31 @@ export const UsersManagementSection: React.FC = () => {
                   <span>Google Habilitado</span>
                 </span>
 
-                <button
-                  onClick={() => handleSimulateLogin(user)}
-                  disabled={isCurrent}
-                  className={`text-xs font-bold px-3 py-1.5 rounded-xl transition-all flex items-center space-x-1.5 ${
-                    isCurrent
-                      ? 'bg-slate-100 text-slate-400 cursor-default'
-                      : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'
-                  }`}
-                >
-                  <LogIn className="w-3 h-3" />
-                  <span>{isCurrent ? 'Sesión Actual' : 'Usar Perfil'}</span>
-                </button>
+                <div className="flex items-center gap-1.5">
+                  {/* Assign supervisors button (only for teachers) */}
+                  {user.role === 'teacher' && coordinators.length > 0 && (
+                    <button
+                      onClick={() => handleOpenSupervisorModal(user)}
+                      title="Asignar Supervisores"
+                      className="text-xs font-bold px-2.5 py-1.5 rounded-xl transition-all flex items-center space-x-1 bg-purple-50 text-purple-700 hover:bg-purple-100"
+                    >
+                      <Link2 className="w-3 h-3" />
+                      <span>Supervisor</span>
+                    </button>
+                  )}
+                  <button
+                    onClick={() => handleSimulateLogin(user)}
+                    disabled={isCurrent}
+                    className={`text-xs font-bold px-3 py-1.5 rounded-xl transition-all flex items-center space-x-1.5 ${
+                      isCurrent
+                        ? 'bg-slate-100 text-slate-400 cursor-default'
+                        : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'
+                    }`}
+                  >
+                    <LogIn className="w-3 h-3" />
+                    <span>{isCurrent ? 'Sesión Actual' : 'Usar Perfil'}</span>
+                  </button>
+                </div>
               </div>
             </div>
           );
@@ -852,6 +917,91 @@ export const UsersManagementSection: React.FC = () => {
                 className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-sm transition-colors"
               >
                 Revocar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Supervisor Assignment Modal */}
+      {supervisorModalTeacher && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent animate-in fade-in duration-150">
+          <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-300 space-y-5">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-2xl bg-purple-50 border border-purple-200 flex items-center justify-center">
+                  <Link2 className="w-5 h-5 text-purple-600" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-extrabold text-slate-900">Asignar Supervisores</h3>
+                  <p className="text-[11px] text-slate-500">Docente: <strong>{supervisorModalTeacher.fullName}</strong></p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSupervisorModalTeacher(null)}
+                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Explanation */}
+            <p className="text-[11px] text-slate-500 bg-purple-50 rounded-xl p-3 border border-purple-100">
+              Los coordinadores seleccionados podrán ver y supervisar las planificaciones de este docente en su panel.
+            </p>
+
+            {/* Coordinator List */}
+            <div className="space-y-2 max-h-60 overflow-y-auto">
+              {coordinators.length === 0 ? (
+                <p className="text-xs text-center text-slate-400 py-4">No hay coordinadores registrados aún.</p>
+              ) : (
+                coordinators.map((coord) => {
+                  const isSelected = pendingSupervisorIds.includes(coord.id);
+                  return (
+                    <button
+                      key={coord.id}
+                      type="button"
+                      onClick={() => handleToggleSupervisor(coord.id)}
+                      className={`w-full flex items-center space-x-3 p-3 rounded-2xl border-2 transition-all text-left ${
+                        isSelected
+                          ? 'border-purple-500 bg-purple-50'
+                          : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
+                      }`}
+                    >
+                      <img
+                        src={coord.avatar}
+                        alt={coord.fullName}
+                        className="w-9 h-9 rounded-xl object-cover ring-2 ring-slate-100 shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-slate-900 truncate">{coord.fullName}</p>
+                        <p className="text-[10px] text-slate-500 truncate">{coord.specialty || 'Coordinación'}</p>
+                      </div>
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                        isSelected ? 'border-purple-600 bg-purple-600' : 'border-slate-300'
+                      }`}>
+                        {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
+                      </div>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center space-x-3 pt-2 border-t border-slate-100">
+              <button
+                onClick={() => setSupervisorModalTeacher(null)}
+                className="flex-1 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSaveSupervisors}
+                className="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-sm transition-colors"
+              >
+                Guardar Asignación
               </button>
             </div>
           </div>

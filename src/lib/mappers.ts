@@ -59,6 +59,7 @@ export function mapDbUserToUser(row: Record<string, unknown>): User {
     authUid:          row.auth_uid  != null ? String(row.auth_uid)  : undefined,
     createdAt:        row.created_at != null ? String(row.created_at) : undefined,
     lastLoginAt:      row.last_login_at != null ? String(row.last_login_at) : undefined,
+    supervisorIds:    Array.isArray(row.supervisor_ids) ? (row.supervisor_ids as string[]) : [],
   };
 }
 
@@ -78,6 +79,7 @@ export function mapUserToDb(user: User): Record<string, unknown> {
     status:           user.status    || 'active',
     auth_uid:         user.authUid   || null,
     last_login_at:    user.lastLoginAt || null,
+    supervisor_ids:   user.supervisorIds ?? [],
   };
 }
 

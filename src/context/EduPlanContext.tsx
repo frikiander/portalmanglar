@@ -190,6 +190,8 @@ interface EduPlanContextType {
   addUser: (userData: Omit<User, 'id' | 'createdAt'>) => Promise<User>;
   updateUser: (user: User) => Promise<void>;
   deleteUser: (userId: string) => Promise<void>;
+  assignSupervisors: (teacherId: string, supervisorIds: string[]) => Promise<void>;
+  getTeachersForCoordinator: (coordinatorId: string) => User[];
   loginWithGoogleHandler: () => Promise<boolean>;
   logoutHandler: () => Promise<void>;
   authError: string | null;
@@ -1754,6 +1756,33 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     addToast(`Usuario '${target?.fullName || userId}' revocado de los accesos autorizados.`, 'info');
   };
 
+  // Asignación de Supervisores (coordinadores) a Docentes
+  const assignSupervisors = async (teacherId: string, supervisorIds: string[]): Promise<void> => {
+    const teacher = users.find((u) => u.id === teacherId);
+    if (!teacher) return;
+    const updatedTeacher: User = { ...teacher, supervisorIds };
+    const updated = users.map((u) => (u.id === teacherId ? updatedTeacher : u));
+    setUsers(updated);
+    localStorage.setItem('eduplan_users_list', JSON.stringify(updated));
+    await upsertUser(mapUserToDb(updatedTeacher));
+    const names = supervisorIds
+      .map((id) => users.find((u) => u.id === id)?.fullName || id)
+      .join(', ');
+    addToast(
+      supervisorIds.length === 0
+        ? `Supervisores desvinculados de ${teacher.fullName}.`
+        : `${teacher.fullName} asignado(a) a: ${names}.`,
+      'success'
+    );
+  };
+
+  // Retorna todos los docentes asignados a un coordinador
+  const getTeachersForCoordinator = (coordinatorId: string): User[] => {
+    return users.filter(
+      (u) => u.role === 'teacher' && Array.isArray(u.supervisorIds) && u.supervisorIds.includes(coordinatorId)
+    );
+  };
+
   // Gestión de Asignaturas Dinámicas por Coordinación
   const addSubject = async (subjectData: Omit<AcademicSubject, 'id' | 'createdAt'>): Promise<AcademicSubject> => {
     const newId = `sub-${Date.now()}`;
@@ -1876,6 +1905,8 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     addUser,
     updateUser,
     deleteUser,
+    assignSupervisors,
+    getTeachersForCoordinator,
     loginWithGoogleHandler,
     logoutHandler,
     authError,
