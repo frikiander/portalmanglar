@@ -448,8 +448,8 @@ export const LessonPlanWizard: React.FC<Props> = ({ initialWeek = 1, onExit }) =
                     <label className="text-xs font-bold text-slate-800 uppercase tracking-wider">
                       1. Asignatura Curricular
                     </label>
-                    <div className="flex items-center gap-1.5 text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700">
-                      {subject && <SubjectAvatar subjectName={subject} size="xs" />}
+                    <div className="flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-200/80 text-indigo-900 shadow-2xs">
+                      {subject && <SubjectAvatar subjectName={subject} size="sm" />}
                       <span>{subject ? `Seleccionada: ${subject}` : 'Sin seleccionar'}</span>
                     </div>
                   </div>
@@ -500,33 +500,47 @@ export const LessonPlanWizard: React.FC<Props> = ({ initialWeek = 1, onExit }) =
                   ))}
                 </div>
 
-                {/* Compact Subject Chips Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-56 overflow-y-auto pr-1 scrollbar-thin">
+                {/* Grid Ampliada de Asignaturas con Avatares Destacados */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 max-h-96 overflow-y-auto pr-1.5 scrollbar-thin">
                   {filteredSubjects.map((s) => {
                     const isSelected = subject === s;
                     const catKey = detectSubjectCategory(s);
+                    const subjectObj = subjects?.find(
+                      (sub) => sub.name.trim().toLowerCase() === s.trim().toLowerCase()
+                    );
 
                     return (
                       <button
                         key={s}
                         type="button"
                         onClick={() => setSubject(s)}
-                        className={`p-2 rounded-xl border text-left transition-all duration-150 flex items-center justify-between gap-2 cursor-pointer ${
+                        className={`p-3 rounded-2xl border text-left transition-all duration-150 flex items-center justify-between gap-3 cursor-pointer group ${
                           isSelected
-                            ? 'border-indigo-600 bg-indigo-50/90 ring-2 ring-indigo-500/20 shadow-xs text-indigo-950 font-bold'
-                            : 'border-slate-200 bg-white hover:bg-slate-100/80 hover:border-slate-300 text-slate-700 font-medium'
+                            ? 'border-indigo-600 bg-indigo-50/90 ring-2 ring-indigo-500/20 shadow-sm text-indigo-950 font-bold'
+                            : 'border-slate-200/90 bg-white hover:bg-slate-50/90 hover:border-slate-300 hover:shadow-2xs text-slate-700'
                         }`}
                       >
-                        <div className="flex items-center gap-2 min-w-0">
-                          <SubjectAvatar subjectName={s} category={catKey} size="chip" />
-                          <span className="text-xs font-semibold truncate leading-tight">{s}</span>
+                        <div className="flex items-center gap-3 min-w-0">
+                          <SubjectAvatar subjectName={s} category={catKey} size="md" />
+                          <div className="min-w-0 flex-1">
+                            <span className="text-xs sm:text-sm font-bold truncate block leading-snug">
+                              {s}
+                            </span>
+                            <span className="text-[10px] text-slate-400 font-medium capitalize truncate block mt-0.5">
+                              {subjectObj?.code || catKey}
+                            </span>
+                          </div>
                         </div>
-                        {isSelected && <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0" />}
+                        {isSelected && (
+                          <div className="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs shrink-0 shadow-2xs font-bold">
+                            ✓
+                          </div>
+                        )}
                       </button>
                     );
                   })}
                   {filteredSubjects.length === 0 && (
-                    <div className="col-span-full py-6 text-center text-xs text-slate-400">
+                    <div className="col-span-full py-8 text-center text-xs text-slate-400">
                       No se encontraron asignaturas con "{subjectSearch}"
                     </div>
                   )}
