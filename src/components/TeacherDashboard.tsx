@@ -19,6 +19,7 @@ import {
 import { useEduPlan } from '../context/EduPlanContext';
 import { LessonPlanWizard } from './LessonPlanWizard';
 import { LessonPlanPreviewModal } from './LessonPlanPreviewModal';
+import { SubjectAvatar } from './SubjectAvatar';
 import { LessonPlan } from '../types';
 import { getGradeLeftAccentStyle, GradeBadge } from '../utils/gradeColors';
 
@@ -162,8 +163,9 @@ export const TeacherDashboard: React.FC = () => {
                   <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <GradeBadge grade={plan.grade} size="xs" />
-                      <span className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-bold">
-                        Semana {plan.weekNumber} · {plan.subject}
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-bold">
+                        <SubjectAvatar subjectName={plan.subject} size="xs" />
+                        <span>Semana {plan.weekNumber} · {plan.subject}</span>
                       </span>
                     </div>
                     <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold capitalize ${

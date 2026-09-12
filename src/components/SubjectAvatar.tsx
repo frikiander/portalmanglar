@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BookOpen,
   Calculator,
@@ -20,6 +20,8 @@ import {
   Tag
 } from 'lucide-react';
 import { AcademicSubject, SubjectCategory } from '../types';
+import { useEduPlan } from '../context/EduPlanContext';
+import { detectSubjectCategory } from '../data/mockSchedules';
 
 export interface PresetIconOption {
   name: string;
@@ -99,17 +101,19 @@ const CATEGORY_COLORS: Record<SubjectCategory, { bg: string; text: string; borde
 
 interface SubjectAvatarProps {
   subject?: AcademicSubject;
+  subjectName?: string;
   name?: string;
   iconUrl?: string;
   iconName?: string;
   category?: SubjectCategory;
   color?: string;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'xs' | 'chip' | 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
 }
 
 const SIZE_STYLES = {
   xs: { box: 'w-5 h-5 rounded-md', icon: 'w-3 h-3' },
+  chip: { box: 'w-6 h-6 rounded-lg', icon: 'w-3.5 h-3.5' },
   sm: { box: 'w-7 h-7 rounded-lg', icon: 'w-4 h-4' },
   md: { box: 'w-10 h-10 rounded-xl', icon: 'w-5 h-5' },
   lg: { box: 'w-14 h-14 rounded-2xl', icon: 'w-7 h-7' },
@@ -118,6 +122,7 @@ const SIZE_STYLES = {
 
 export const SubjectAvatar: React.FC<SubjectAvatarProps> = ({
   subject,
+  subjectName,
   name: propName,
   iconUrl: propIconUrl,
   iconName: propIconName,
@@ -126,13 +131,26 @@ export const SubjectAvatar: React.FC<SubjectAvatarProps> = ({
   size = 'md',
   className = '',
 }) => {
+  const { subjects } = useEduPlan();
   const [imgError, setImgError] = useState(false);
 
-  const iconUrl = propIconUrl ?? subject?.iconUrl;
-  const iconName = propIconName ?? subject?.iconName;
-  const category = propCategory ?? subject?.category ?? 'otro';
-  const name = propName ?? subject?.name ?? 'Asignatura';
-  const color = propColor ?? subject?.color;
+  const targetName = propName ?? subjectName ?? subject?.name ?? '';
+  
+  // Buscar en subjects si no se pasó el objeto completo
+  const matchedSubject = subject || (targetName ? subjects?.find(
+    (s) => s.name.trim().toLowerCase() === targetName.trim().toLowerCase()
+  ) : undefined);
+
+  const iconUrl = propIconUrl ?? matchedSubject?.iconUrl;
+  const iconName = propIconName ?? matchedSubject?.iconName;
+  const category = propCategory ?? matchedSubject?.category ?? (targetName ? detectSubjectCategory(targetName) : 'otro');
+  const name = targetName || matchedSubject?.name || 'Asignatura';
+  const color = propColor ?? matchedSubject?.color;
+
+  // Reset error si cambia la URL
+  useEffect(() => {
+    setImgError(false);
+  }, [iconUrl]);
 
   const style = SIZE_STYLES[size] || SIZE_STYLES.md;
   const catStyle = CATEGORY_COLORS[category] || CATEGORY_COLORS.otro;
@@ -142,7 +160,8 @@ export const SubjectAvatar: React.FC<SubjectAvatarProps> = ({
     return (
       <div
         className={`${style.box} shrink-0 overflow-hidden border border-slate-200/80 bg-white shadow-2xs relative flex items-center justify-center ${className}`}
-        style={color ? { borderColor: `${color}40` } : undefined}
+        style={color ? { borderColor: `${color}50` } : undefined}
+        title={name}
       >
         <img
           src={iconUrl}
@@ -163,9 +182,11 @@ export const SubjectAvatar: React.FC<SubjectAvatarProps> = ({
   return (
     <div
       className={`${style.box} shrink-0 flex items-center justify-center border shadow-2xs ${catStyle.bg} ${catStyle.border} ${catStyle.text} ${className}`}
-      style={color ? { color: color, borderColor: `${color}30`, backgroundColor: `${color}12` } : undefined}
+      style={color ? { color: color, borderColor: `${color}35`, backgroundColor: `${color}15` } : undefined}
+      title={name}
     >
       <IconComponent className={style.icon} />
     </div>
   );
 };
+

@@ -50,6 +50,7 @@ import {
 import { ScheduleCellModal } from './ScheduleCellModal';
 import { EventScheduleModal } from './EventScheduleModal';
 import { ScheduleLateralDrawer } from './ScheduleLateralDrawer';
+import { SubjectAvatar } from './SubjectAvatar';
 import { GRADE_COLORS } from '../utils/gradeColors';
 
 type ActiveScheduleTab = 'class_schedules' | 'event_schedules';
@@ -971,9 +972,12 @@ export const ScheduleSection: React.FC = () => {
                                         <GripVertical className="w-3 h-3" />
                                       </div>
 
-                                      {/* Subject Name */}
-                                      <div className="font-extrabold text-xs tracking-tight line-clamp-2 px-2">
-                                        {cell.subject}
+                                      {/* Subject Avatar & Name */}
+                                      <div className="flex items-center justify-center gap-1.5 px-1 mb-0.5">
+                                        <SubjectAvatar subjectName={cell.subject} category={cell.category} size="xs" />
+                                        <span className="font-extrabold text-xs tracking-tight line-clamp-2">
+                                          {cell.subject}
+                                        </span>
                                       </div>
 
                                       {/* Classroom / Teacher Subtitle */}

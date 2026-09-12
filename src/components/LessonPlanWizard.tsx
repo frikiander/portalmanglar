@@ -35,6 +35,7 @@ import { useEduPlan } from '../context/EduPlanContext';
 import { AVAILABLE_SUBJECTS, AVAILABLE_GRADES } from '../data/mockData';
 import { LessonPlanPreviewModal } from './LessonPlanPreviewModal';
 import { CompetencyManagerModal } from './CompetencyManagerModal';
+import { SubjectAvatar } from './SubjectAvatar';
 import { matchSubjects, matchGrades } from '../utils/curricularMatcher';
 import { getGradeBadgeStyle, getGradeLeftAccentStyle, getGradeColorConfig, GRADE_COLOR_MAP } from '../utils/gradeColors';
 import { detectSubjectCategory, CATEGORY_STYLES } from '../data/mockSchedules';
@@ -53,6 +54,7 @@ export const LessonPlanWizard: React.FC<Props> = ({ initialWeek = 1, onExit }) =
     savePlan, 
     submitPlanToCoordination,
     addToast,
+    subjects,
     availableSubjectNames,
     availableGradeNames
   } = useEduPlan();
@@ -306,9 +308,18 @@ export const LessonPlanWizard: React.FC<Props> = ({ initialWeek = 1, onExit }) =
                 </span>
               )}
             </div>
-            <p className="text-xs text-slate-500">
-              {currentUser.fullName} · {subject} · {grade} · <strong>Semana {selectedWeek}</strong>
-            </p>
+            <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-0.5 flex-wrap">
+              <span>{currentUser.fullName}</span>
+              <span>·</span>
+              <span className="inline-flex items-center gap-1.5 font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md">
+                <SubjectAvatar subjectName={subject} size="xs" />
+                <span>{subject}</span>
+              </span>
+              <span>·</span>
+              <span>{grade}</span>
+              <span>·</span>
+              <span><strong>Semana {selectedWeek}</strong></span>
+            </div>
           </div>
         </div>
 
@@ -409,26 +420,6 @@ export const LessonPlanWizard: React.FC<Props> = ({ initialWeek = 1, onExit }) =
             return true;
           });
 
-          const getSubjectIcon = (sName: string) => {
-            const cat = detectSubjectCategory(sName);
-            switch (cat) {
-              case 'lengua': return BookOpen;
-              case 'matematica': return Calculator;
-              case 'ingles': return Globe;
-              case 'ciencia': return Compass;
-              case 'sociales': return Tag;
-              case 'deporte': return Dumbbell;
-              case 'especiales':
-                if (sName.toLowerCase().includes('música') || sName.toLowerCase().includes('musica')) return Music;
-                if (sName.toLowerCase().includes('arte') || sName.toLowerCase().includes('teatro')) return Palette;
-                return Sparkles;
-              default:
-                if (sName.toLowerCase().includes('robót') || sName.toLowerCase().includes('robot')) return Bot;
-                if (sName.toLowerCase().includes('comput') || sName.toLowerCase().includes('tecno')) return Cpu;
-                return Layers;
-            }
-          };
-
           const getGradeStyleConfig = (g: string, idx: number) => {
             const config = getGradeColorConfig(g);
             if (config) return config;
@@ -457,9 +448,10 @@ export const LessonPlanWizard: React.FC<Props> = ({ initialWeek = 1, onExit }) =
                     <label className="text-xs font-bold text-slate-800 uppercase tracking-wider">
                       1. Asignatura Curricular
                     </label>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700">
-                      {subject ? `Seleccionada: ${subject}` : 'Sin seleccionar'}
-                    </span>
+                    <div className="flex items-center gap-1.5 text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700">
+                      {subject && <SubjectAvatar subjectName={subject} size="xs" />}
+                      <span>{subject ? `Seleccionada: ${subject}` : 'Sin seleccionar'}</span>
+                    </div>
                   </div>
 
                   {/* Search input */}
@@ -513,30 +505,20 @@ export const LessonPlanWizard: React.FC<Props> = ({ initialWeek = 1, onExit }) =
                   {filteredSubjects.map((s) => {
                     const isSelected = subject === s;
                     const catKey = detectSubjectCategory(s);
-                    const catStyle = CATEGORY_STYLES[catKey];
-                    const IconComp = getSubjectIcon(s);
 
                     return (
                       <button
                         key={s}
                         type="button"
                         onClick={() => setSubject(s)}
-                        className={`p-2.5 rounded-xl border text-left transition-all duration-150 flex items-center justify-between gap-2 cursor-pointer ${
+                        className={`p-2 rounded-xl border text-left transition-all duration-150 flex items-center justify-between gap-2 cursor-pointer ${
                           isSelected
                             ? 'border-indigo-600 bg-indigo-50/90 ring-2 ring-indigo-500/20 shadow-xs text-indigo-950 font-bold'
                             : 'border-slate-200 bg-white hover:bg-slate-100/80 hover:border-slate-300 text-slate-700 font-medium'
                         }`}
                       >
                         <div className="flex items-center gap-2 min-w-0">
-                          <span
-                            className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 text-xs"
-                            style={{
-                              backgroundColor: isSelected ? '#4f46e5' : catStyle?.bg || '#f1f5f9',
-                              color: isSelected ? '#ffffff' : catStyle?.text || '#475569',
-                            }}
-                          >
-                            <IconComp className="w-3.5 h-3.5" />
-                          </span>
+                          <SubjectAvatar subjectName={s} category={catKey} size="chip" />
                           <span className="text-xs font-semibold truncate leading-tight">{s}</span>
                         </div>
                         {isSelected && <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0" />}

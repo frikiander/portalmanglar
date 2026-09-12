@@ -24,6 +24,7 @@ import { LessonPlan } from '../types';
 import { getGradeLeftAccentStyle, GradeBadge } from '../utils/gradeColors';
 import { PlanReviewModal } from './PlanReviewModal';
 import { CompetencyManagerModal } from './CompetencyManagerModal';
+import { SubjectAvatar } from './SubjectAvatar';
 
 export const CoordinatorDashboard: React.FC = () => {
   const { plans, competencies, activeModule, setActiveModule, users, availableSubjectNames, availableGradeNames, currentUser, getTeachersForCoordinator } = useEduPlan();
@@ -472,7 +473,10 @@ export const CoordinatorDashboard: React.FC = () => {
                     </td>
 
                     <td className="px-6 py-4">
-                      <div className="text-slate-800 font-semibold">{plan.subject}</div>
+                      <div className="flex items-center gap-1.5 text-slate-800 font-semibold">
+                        <SubjectAvatar subjectName={plan.subject} size="xs" />
+                        <span>{plan.subject}</span>
+                      </div>
                       <div className="mt-1">
                         <GradeBadge grade={plan.grade} size="xs" />
                       </div>
@@ -559,8 +563,9 @@ const KanbanCard: React.FC<KanbanCardProps> = ({ plan, onSelect, highlight }) =>
       <div className="flex items-center justify-between gap-2 mb-2">
         <div className="flex items-center gap-1.5 flex-wrap">
           <GradeBadge grade={plan.grade} size="xs" />
-          <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700">
-            {plan.subject}
+          <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700">
+            <SubjectAvatar subjectName={plan.subject} size="xs" />
+            <span>{plan.subject}</span>
           </span>
         </div>
         <span className="text-xs font-bold text-slate-700">
