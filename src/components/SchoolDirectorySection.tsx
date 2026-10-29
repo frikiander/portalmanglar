@@ -147,7 +147,7 @@ export const SchoolDirectorySection: React.FC = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    addToast('Directorio de Colegios exportado a CSV.', 'success');
+    addToast('Directorio de colegios exportado a CSV.', 'success');
   };
 
   const handlePrint = () => {
@@ -155,15 +155,15 @@ export const SchoolDirectorySection: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn pb-12">
+    <div className="space-y-6 pb-12">
       {/* Simple Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-            Directorio de Colegios
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-raiz">
+            Directorio de colegios
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Colegio Integral El Manglar · Relaciones institucionales y convocatorias
+          <p className="text-sm text-slate-600 mt-1">
+            Relaciones institucionales y convocatorias intercolegiales.
           </p>
         </div>
 
@@ -172,7 +172,7 @@ export const SchoolDirectorySection: React.FC = () => {
             onClick={handlePrint}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 shadow-2xs transition-all cursor-pointer"
           >
-            <Printer className="w-4 h-4 text-emerald-700" />
+            <Printer className="w-4 h-4 text-success-700" />
             <span>Imprimir</span>
           </button>
 
@@ -180,14 +180,14 @@ export const SchoolDirectorySection: React.FC = () => {
             onClick={handleExportCSV}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 shadow-2xs transition-all cursor-pointer"
           >
-            <Download className="w-4 h-4 text-emerald-700" />
+            <Download className="w-4 h-4 text-success-700" />
             <span>Exportar Excel</span>
           </button>
 
           {isCoordinator && (
             <button
               onClick={() => setShowAddModal(true)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#285A14] hover:bg-[#1f4710] shadow-xs transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-primary-800 hover:bg-primary-900 shadow-xs transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>Registrar Colegio</span>
@@ -202,16 +202,16 @@ export const SchoolDirectorySection: React.FC = () => {
           onClick={() => setSelectedEventFilter('ALL')}
           className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
             selectedEventFilter === 'ALL'
-              ? 'bg-gradient-to-br from-emerald-800 to-[#3A6B1F] text-white shadow-sm border-emerald-900'
+              ? 'bg-raiz text-white shadow-sm border-success-900'
               : 'bg-white hover:bg-slate-50 border-slate-200/90 text-slate-800'
           }`}
         >
-          <span className={`text-[10px] font-bold uppercase tracking-wider block ${selectedEventFilter === 'ALL' ? 'text-emerald-100' : 'text-slate-400'}`}>
-            Total Colegios
+          <span className={`text-xs font-bold block ${selectedEventFilter === 'ALL' ? 'text-success-100' : 'text-slate-500'}`}>
+            Total colegios
           </span>
           <div className="flex items-baseline gap-1.5 mt-1">
             <span className="text-xl sm:text-2xl font-black">{stats.total}</span>
-            <span className={`text-[11px] ${selectedEventFilter === 'ALL' ? 'text-emerald-100' : 'text-slate-500'}`}>planteles</span>
+            <span className={`text-xs ${selectedEventFilter === 'ALL' ? 'text-success-100' : 'text-slate-500'}`}>planteles</span>
           </div>
         </div>
 
@@ -224,25 +224,25 @@ export const SchoolDirectorySection: React.FC = () => {
               onClick={() => setSelectedEventFilter(def.key)}
               className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
                 isSelected
-                  ? 'bg-gradient-to-br from-emerald-800 to-[#3A6B1F] text-white shadow-sm border-emerald-900'
+                  ? 'bg-raiz text-white shadow-sm border-success-900'
                   : 'bg-white hover:bg-slate-50 border-slate-200/90 text-slate-800'
               }`}
             >
               <div className="flex items-center justify-between">
-                <span className={`text-[10px] font-bold uppercase tracking-wider truncate block ${isSelected ? 'text-emerald-100' : 'text-slate-400'}`}>
+                <span className={`text-xs font-bold truncate block ${isSelected ? 'text-success-100' : 'text-slate-500'}`}>
                   {def.shortLabel}
                 </span>
-                <span className={`text-[9px] px-1 py-0.2 rounded font-bold uppercase ${
+                <span className={`text-xs px-1 py-0.2 rounded font-bold ${
                   isSelected 
                     ? 'bg-white/20 text-white' 
-                    : def.type === 'deporte' ? 'bg-emerald-50 text-emerald-700' : 'bg-blue-50 text-blue-700'
+                    : def.type === 'deporte' ? 'bg-success-50 text-success-700' : 'bg-blue-50 text-blue-700'
                 }`}>
                   {def.type === 'deporte' ? 'Dep.' : 'Acad.'}
                 </span>
               </div>
               <div className="flex items-baseline gap-1.5 mt-1">
                 <span className="text-xl sm:text-2xl font-black">{count}</span>
-                <span className={`text-[10px] ${isSelected ? 'text-emerald-100' : 'text-slate-400'}`}>
+                <span className={`text-xs ${isSelected ? 'text-success-100' : 'text-slate-500'}`}>
                   ({Math.round((count / stats.total) * 100)}%)
                 </span>
               </div>
@@ -256,18 +256,18 @@ export const SchoolDirectorySection: React.FC = () => {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           {/* Buscador */}
           <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Buscar por colegio, correo, persona de contacto o teléfono..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden transition-all"
+              className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-primary-500 focus:outline-hidden transition-all"
             />
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 font-bold cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500 hover:text-slate-600 font-bold cursor-pointer"
               >
                 Limpiar
               </button>
@@ -278,10 +278,10 @@ export const SchoolDirectorySection: React.FC = () => {
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={handleCopyAllEmails}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-[#3A6B1F] border border-emerald-200 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-success-50 hover:bg-success-100 text-primary-700 border border-success-200 rounded-xl text-xs font-bold transition-colors cursor-pointer"
               title="Copiar lista de correos separados por punto y coma listo para CCO en Gmail/Outlook"
             >
-              {copiedEmails ? <Check className="w-3.5 h-3.5 text-emerald-700" /> : <Copy className="w-3.5 h-3.5" />}
+              {copiedEmails ? <Check className="w-3.5 h-3.5 text-success-700" /> : <Copy className="w-3.5 h-3.5" />}
               <span>{copiedEmails ? '¡Copiados!' : `Copiar Correos (${activeEmails.length})`}</span>
             </button>
 
@@ -290,8 +290,8 @@ export const SchoolDirectorySection: React.FC = () => {
               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
               title="Abrir tu cliente de correo con plantilla de invitación"
             >
-              <Send className="w-3.5 h-3.5 text-[#FACD00]" />
-              <span>Convocatoria Masiva</span>
+              <Send className="w-3.5 h-3.5 text-attention-400" />
+              <span>Convocatoria masiva</span>
             </button>
 
             <div className="flex items-center bg-slate-100 p-1 rounded-xl ml-auto sm:ml-0">
@@ -317,8 +317,8 @@ export const SchoolDirectorySection: React.FC = () => {
 
         {/* Chips de filtro por evento */}
         <div className="flex items-center gap-1.5 overflow-x-auto pt-2 border-t border-slate-100">
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1 shrink-0">
-            Filtrar por Disciplina:
+          <span className="text-xs font-bold text-slate-500 mr-1 shrink-0">
+            Filtrar por disciplina:
           </span>
           <button
             onClick={() => setSelectedEventFilter('ALL')}
@@ -338,12 +338,12 @@ export const SchoolDirectorySection: React.FC = () => {
                 onClick={() => setSelectedEventFilter(def.key)}
                 className={`px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
                   isSelected
-                    ? 'bg-[#5EA832] text-white shadow-2xs'
+                    ? 'bg-primary-600 text-white shadow-2xs'
                     : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                 }`}
               >
                 <span>{def.label}</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                <span className={`text-xs px-1.5 py-0.2 rounded-full font-bold ${
                   isSelected ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'
                 }`}>
                   {stats[def.key]}
@@ -369,7 +369,7 @@ export const SchoolDirectorySection: React.FC = () => {
             }}
             className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold cursor-pointer transition-colors"
           >
-            Restablecer Filtros
+            Restablecer filtros
           </button>
         </div>
       ) : (
@@ -380,14 +380,14 @@ export const SchoolDirectorySection: React.FC = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-xs text-left border-collapse">
                   <thead>
-                    <tr className="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px] tracking-wider">
+                    <tr className="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold text-xs">
                       <th className="py-3 px-3 text-center w-10">#</th>
-                      <th className="py-3 px-4 min-w-[200px]">Colegio / Institución</th>
-                      <th className="py-3 px-3 min-w-[190px]">Correo Electrónico</th>
-                      <th className="py-3 px-3 min-w-[190px]">Contacto Principal</th>
+                      <th className="py-3 px-4 min-w-[200px]">Colegio / institución</th>
+                      <th className="py-3 px-3 min-w-[190px]">Correo electrónico</th>
+                      <th className="py-3 px-3 min-w-[190px]">Contacto principal</th>
                       {EVENT_DEFINITIONS.map((def) => (
                         <th key={def.key} className="py-3 px-2 text-center min-w-[85px]">
-                          <span className="block text-[10px] leading-tight" title={def.label}>
+                          <span className="block text-xs leading-tight" title={def.label}>
                             {def.shortLabel}
                           </span>
                         </th>
@@ -401,15 +401,15 @@ export const SchoolDirectorySection: React.FC = () => {
                         key={school.id} 
                         className="hover:bg-slate-50/80 transition-colors group"
                       >
-                        <td className="py-3 px-3 text-center font-bold text-slate-400">
+                        <td className="py-3 px-3 text-center font-bold text-slate-500">
                           {index + 1}
                         </td>
                         <td className="py-3 px-4">
-                          <div className="font-bold text-slate-900 group-hover:text-emerald-800 transition-colors text-xs sm:text-sm">
+                          <div className="font-bold text-slate-900 group-hover:text-success-800 transition-colors text-xs sm:text-sm">
                             {school.name}
                           </div>
                           {school.notes && (
-                            <div className="text-[10px] text-slate-400 font-medium mt-0.5">
+                            <div className="text-xs text-slate-500 font-medium mt-0.5">
                               {school.notes}
                             </div>
                           )}
@@ -418,11 +418,11 @@ export const SchoolDirectorySection: React.FC = () => {
                           {school.emails.length > 0 ? (
                             <div className="space-y-1">
                               {school.emails.map((email, idx) => (
-                                <div key={idx} className="flex items-center gap-1.5 font-mono text-[11px] text-slate-700">
-                                  <Mail className="w-3 h-3 text-slate-400 shrink-0" />
+                                <div key={idx} className="flex items-center gap-1.5 tabular-nums text-xs text-slate-700">
+                                  <Mail className="w-3 h-3 text-slate-500 shrink-0" />
                                   <a
                                     href={`mailto:${email}`}
-                                    className="hover:text-[#5EA832] truncate max-w-[170px]"
+                                    className="hover:text-primary-600 truncate max-w-[170px]"
                                     title={`Enviar correo a ${email}`}
                                   >
                                     {email}
@@ -431,19 +431,19 @@ export const SchoolDirectorySection: React.FC = () => {
                               ))}
                             </div>
                           ) : (
-                            <span className="text-[11px] text-slate-400 italic">Sin correo registrado</span>
+                            <span className="text-xs text-slate-500 italic">Sin correo registrado</span>
                           )}
                         </td>
                         <td className="py-3 px-3">
                           <div className="space-y-1">
                             {school.contactName && (
-                              <div className="font-bold text-slate-800 text-[11px]">
+                              <div className="font-bold text-slate-800 text-xs">
                                 {school.contactName}
                               </div>
                             )}
                             {school.contactPhone && (
                               <div className="flex items-center gap-1.5">
-                                <span className="font-mono text-[11px] text-slate-600">{school.contactPhone}</span>
+                                <span className="tabular-nums text-xs text-slate-600">{school.contactPhone}</span>
                                 <a
                                   href={`tel:${school.contactPhone}`}
                                   className="p-1 hover:bg-slate-100 text-slate-600 rounded"
@@ -455,7 +455,7 @@ export const SchoolDirectorySection: React.FC = () => {
                                   href={getWhatsAppLink(school.contactPhone, school.name)}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="p-1 hover:bg-emerald-50 text-emerald-700 rounded"
+                                  className="p-1 hover:bg-success-50 text-success-700 rounded"
                                   title="WhatsApp"
                                 >
                                   <MessageCircle className="w-3 h-3" />
@@ -463,7 +463,7 @@ export const SchoolDirectorySection: React.FC = () => {
                               </div>
                             )}
                             {school.secondaryContact && (
-                              <div className="text-[10px] text-slate-500 line-clamp-1 max-w-[180px]" title={school.secondaryContact}>
+                              <div className="text-xs text-slate-500 line-clamp-1 max-w-[180px]" title={school.secondaryContact}>
                                 Secundario: {school.secondaryContact}
                               </div>
                             )}
@@ -482,7 +482,7 @@ export const SchoolDirectorySection: React.FC = () => {
                                 onClick={() => toggleSchoolEvent(school.id, def.key)}
                                 className={`w-6 h-6 rounded-lg flex items-center justify-center mx-auto transition-all cursor-pointer ${
                                   isChecked
-                                    ? 'bg-[#5EA832] text-white shadow-2xs hover:bg-[#498925]'
+                                    ? 'bg-primary-600 text-white shadow-2xs hover:bg-primary-600'
                                     : 'bg-slate-100 text-slate-300 hover:bg-slate-200 hover:text-slate-400'
                                 }`}
                                 title={`Alternar ${def.label} para ${school.name}`}
@@ -496,7 +496,7 @@ export const SchoolDirectorySection: React.FC = () => {
                         <td className="py-3 px-3 text-right">
                           <button
                             onClick={() => setSelectedSchoolForEdit(school)}
-                            className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                            className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
                             title="Editar Colegio"
                           >
                             <Edit3 className="w-4 h-4" />
@@ -518,28 +518,28 @@ export const SchoolDirectorySection: React.FC = () => {
                 return (
                   <div
                     key={school.id}
-                    className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-[#5EA832]/40 transition-all flex flex-col justify-between space-y-4"
+                    className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-primary-500/40 transition-all flex flex-col justify-between space-y-4"
                   >
                     <div>
                       {/* Top bar of Card */}
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-center space-x-2.5">
-                          <div className="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0">
-                            <Building2 className="w-4 h-4 text-[#5EA832]" />
+                          <div className="w-8 h-8 rounded-xl bg-success-50 border border-success-100 flex items-center justify-center shrink-0">
+                            <Building2 className="w-4 h-4 text-primary-600" />
                           </div>
                           <div>
                             <h4 className="text-sm font-black text-slate-900 leading-tight">
                               {school.name}
                             </h4>
                             {school.notes && (
-                              <span className="text-[10px] text-slate-400 block">{school.notes}</span>
+                              <span className="text-xs text-slate-500 block">{school.notes}</span>
                             )}
                           </div>
                         </div>
 
                         <button
                           onClick={() => setSelectedSchoolForEdit(school)}
-                          className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer shrink-0"
+                          className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer shrink-0"
                           title="Editar Colegio"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
@@ -550,14 +550,14 @@ export const SchoolDirectorySection: React.FC = () => {
                       <div className="mt-3.5 space-y-2 bg-slate-50/70 p-3 rounded-xl border border-slate-100 text-xs">
                         {school.contactName && (
                           <div className="flex items-center gap-1.5 text-slate-800 font-bold">
-                            <Users className="w-3.5 h-3.5 text-slate-400" />
+                            <Users className="w-3.5 h-3.5 text-slate-500" />
                             <span>{school.contactName}</span>
                           </div>
                         )}
 
                         {school.contactPhone && (
                           <div className="flex items-center justify-between pt-0.5">
-                            <span className="font-mono text-slate-700 font-bold">{school.contactPhone}</span>
+                            <span className="tabular-nums text-slate-700 font-bold">{school.contactPhone}</span>
                             <div className="flex items-center gap-1">
                               <a
                                 href={`tel:${school.contactPhone}`}
@@ -570,7 +570,7 @@ export const SchoolDirectorySection: React.FC = () => {
                                 href={getWhatsAppLink(school.contactPhone, school.name)}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md"
+                                className="p-1 bg-success-600 hover:bg-success-700 text-white rounded-md"
                                 title="WhatsApp"
                               >
                                 <MessageCircle className="w-3 h-3" />
@@ -582,9 +582,9 @@ export const SchoolDirectorySection: React.FC = () => {
                         {school.emails.length > 0 && (
                           <div className="pt-1 border-t border-slate-200/60 space-y-1">
                             {school.emails.map((email, idx) => (
-                              <div key={idx} className="flex items-center gap-1.5 text-[11px] font-mono text-slate-600 truncate">
-                                <Mail className="w-3 h-3 text-slate-400 shrink-0" />
-                                <a href={`mailto:${email}`} className="hover:text-[#5EA832] truncate">
+                              <div key={idx} className="flex items-center gap-1.5 text-xs tabular-nums text-slate-600 truncate">
+                                <Mail className="w-3 h-3 text-slate-500 shrink-0" />
+                                <a href={`mailto:${email}`} className="hover:text-primary-600 truncate">
                                   {email}
                                 </a>
                               </div>
@@ -593,7 +593,7 @@ export const SchoolDirectorySection: React.FC = () => {
                         )}
 
                         {school.secondaryContact && (
-                          <div className="text-[10px] text-slate-500 pt-1 border-t border-slate-200/60">
+                          <div className="text-xs text-slate-500 pt-1 border-t border-slate-200/60">
                             <strong>Secundario:</strong> {school.secondaryContact}
                           </div>
                         )}
@@ -602,7 +602,7 @@ export const SchoolDirectorySection: React.FC = () => {
 
                     {/* Event Badges List */}
                     <div className="pt-2 border-t border-slate-100">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
+                      <span className="text-xs font-bold text-slate-500 block mb-2">
                         Participación en Eventos ({totalEventsParticipating})
                       </span>
                       <div className="flex flex-wrap gap-1.5">
@@ -612,10 +612,10 @@ export const SchoolDirectorySection: React.FC = () => {
                             <button
                               key={def.key}
                               onClick={() => toggleSchoolEvent(school.id, def.key)}
-                              className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
+                              className={`px-2 py-0.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                                 isChecked
                                   ? `${def.badgeBg} ${def.badgeText} border ${def.badgeBorder}`
-                                  : 'bg-slate-100 text-slate-400 border border-slate-200/60 line-through opacity-60'
+                                  : 'bg-slate-100 text-slate-500 border border-slate-200/60 line-through opacity-60'
                               }`}
                               title="Haz clic para alternar participación"
                             >

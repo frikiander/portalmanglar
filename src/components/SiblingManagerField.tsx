@@ -60,7 +60,7 @@ export const SiblingManagerField: React.FC<Props> = ({
   // Handle adding an existing enrolled student as sibling
   const handleAddEnrolledStudent = () => {
     if (!selectedStudentId) {
-      addToast('Por favor selecciona un estudiante de la lista.', 'warning');
+      addToast('Selecciona un estudiante de la lista.', 'warning');
       return;
     }
 
@@ -155,13 +155,13 @@ export const SiblingManagerField: React.FC<Props> = ({
   return (
     <div className="space-y-3 bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-2xs">
       <div className="flex items-center justify-between">
-        <label className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-          <Users className="w-3.5 h-3.5 text-[#5EA832]" />
+        <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+          <Users className="w-3.5 h-3.5 text-primary-600" />
           Hermanos en el Colegio
         </label>
 
         {currentSiblingsList.length > 0 && (
-          <span className="text-[11px] font-semibold text-slate-500">
+          <span className="text-xs font-semibold text-slate-500">
             {currentSiblingsList.length} {currentSiblingsList.length === 1 ? 'hermano vinculado' : 'hermanos vinculados'}
           </span>
         )}
@@ -177,9 +177,9 @@ export const SiblingManagerField: React.FC<Props> = ({
             return (
               <div
                 key={index}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50/70 border border-emerald-200 text-xs text-slate-800 shadow-2xs group"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-success-50/70 border border-success-200 text-xs text-slate-800 shadow-2xs group"
               >
-                <div className="w-2 h-2 rounded-full bg-[#5EA832]" />
+                <div className="w-2 h-2 rounded-full bg-primary-600" />
                 <span className="font-semibold text-slate-900">{sib}</span>
 
                 {/* Botón de Sincronizar Representantes si está disponible */}
@@ -187,10 +187,10 @@ export const SiblingManagerField: React.FC<Props> = ({
                   <button
                     type="button"
                     onClick={() => handleCopyParentsFromSibling(sib)}
-                    className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-bold text-[#3A6B1F] bg-white hover:bg-emerald-100 border border-emerald-200 rounded-md transition-colors cursor-pointer ml-1"
+                    className="inline-flex items-center gap-1 px-1.5 py-0.5 text-xs font-bold text-primary-700 bg-white hover:bg-success-100 border border-success-200 rounded-md transition-colors cursor-pointer ml-1"
                     title="Autocompletar teléfono, cédula y nombres de los padres con los datos de este hermano"
                   >
-                    {isCopied ? <Check className="w-3 h-3 text-emerald-700" /> : <Copy className="w-3 h-3" />}
+                    {isCopied ? <Check className="w-3 h-3 text-success-700" /> : <Copy className="w-3 h-3" />}
                     <span>{isCopied ? '¡Sincronizado!' : 'Copiar Padres'}</span>
                   </button>
                 )}
@@ -198,7 +198,7 @@ export const SiblingManagerField: React.FC<Props> = ({
                 <button
                   type="button"
                   onClick={() => handleRemoveSibling(index)}
-                  className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors cursor-pointer"
+                  className="p-1 text-slate-500 hover:text-danger-600 hover:bg-danger-50 rounded-md transition-colors cursor-pointer"
                   title="Desvincular hermano"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -208,7 +208,7 @@ export const SiblingManagerField: React.FC<Props> = ({
           })}
         </div>
       ) : (
-        <p className="text-[11px] text-slate-400 italic">
+        <p className="text-xs text-slate-500 italic">
           Sin hermanos vinculados actualmente. Selecciona el grado y el alumno a continuación:
         </p>
       )}
@@ -218,8 +218,8 @@ export const SiblingManagerField: React.FC<Props> = ({
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-2">
           {/* 1. Selector de Grado */}
           <div className="sm:col-span-5">
-            <label className="block text-[11px] font-bold text-slate-600 mb-1">
-              1. Grado / Salón del Hermano
+            <label className="block text-xs font-bold text-slate-600 mb-1">
+              1. Grado / salón del hermano
             </label>
             <div className="relative">
               <select
@@ -228,9 +228,9 @@ export const SiblingManagerField: React.FC<Props> = ({
                   setSelectedGrade(e.target.value);
                   setSelectedStudentId('');
                 }}
-                className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden appearance-none pr-7 cursor-pointer"
+                className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:outline-hidden appearance-none pr-7 cursor-pointer"
               >
-                <option value="">-- Seleccionar Grado --</option>
+                <option value="">-- seleccionar grado --</option>
                 {displayGrades.map((grade) => {
                   const count = students.filter(
                     (s) => s.grade === grade && s.id !== currentStudentId
@@ -242,21 +242,21 @@ export const SiblingManagerField: React.FC<Props> = ({
                   );
                 })}
               </select>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <ChevronDown className="w-3.5 h-3.5 text-slate-500 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
           </div>
 
           {/* 2. Selector de Estudiante de ese Salón */}
           <div className="sm:col-span-5">
-            <label className="block text-[11px] font-bold text-slate-600 mb-1">
-              2. Estudiante de ese Salón
+            <label className="block text-xs font-bold text-slate-600 mb-1">
+              2. Estudiante de ese salón
             </label>
             <div className="relative">
               <select
                 disabled={!selectedGrade || studentsInGrade.length === 0}
                 value={selectedStudentId}
                 onChange={(e) => setSelectedStudentId(e.target.value)}
-                className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden appearance-none pr-7 disabled:bg-slate-100 disabled:text-slate-400 cursor-pointer"
+                className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:outline-hidden appearance-none pr-7 disabled:bg-slate-100 disabled:text-slate-400 cursor-pointer"
               >
                 <option value="">
                   {!selectedGrade
@@ -271,7 +271,7 @@ export const SiblingManagerField: React.FC<Props> = ({
                   </option>
                 ))}
               </select>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <ChevronDown className="w-3.5 h-3.5 text-slate-500 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
           </div>
 
@@ -281,7 +281,7 @@ export const SiblingManagerField: React.FC<Props> = ({
               type="button"
               disabled={!selectedStudentId}
               onClick={handleAddEnrolledStudent}
-              className="w-full py-1.5 px-3 text-xs font-bold text-white bg-[#5EA832] hover:bg-[#498925] disabled:bg-slate-300 disabled:cursor-not-allowed rounded-lg shadow-2xs transition-all flex items-center justify-center gap-1 cursor-pointer"
+              className="w-full py-1.5 px-3 text-xs font-bold text-white bg-primary-600 hover:bg-primary-600 disabled:bg-slate-300 disabled:cursor-not-allowed rounded-lg shadow-2xs transition-all flex items-center justify-center gap-1 cursor-pointer"
               title="Vincular este hermano y autocompletar representantes"
             >
               <Plus className="w-3.5 h-3.5" />
@@ -291,21 +291,21 @@ export const SiblingManagerField: React.FC<Props> = ({
         </div>
 
         {/* Opción alternativa para ingresar texto manual si está en maternal externo o egresado */}
-        <div className="pt-1 flex items-center justify-between text-[11px]">
+        <div className="pt-1 flex items-center justify-between text-xs">
           <button
             type="button"
             onClick={() => setShowManualInput(!showManualInput)}
-            className="text-slate-500 hover:text-[#3A6B1F] font-semibold underline underline-offset-2 cursor-pointer flex items-center gap-1"
+            className="text-slate-500 hover:text-primary-700 font-semibold underline underline-offset-2 cursor-pointer flex items-center gap-1"
           >
             <span>{showManualInput ? 'Cerrar ingreso manual' : '+ ¿Hermano en nivel no matriculado o egresado? (Texto manual)'}</span>
           </button>
-          <span className="text-[10px] text-slate-400">
+          <span className="text-xs text-slate-500">
             Al vincular, se copian los datos de los padres automáticamente
           </span>
         </div>
 
         {showManualInput && (
-          <div className="flex items-center gap-2 pt-1 animate-fadeIn">
+          <div className="flex items-center gap-2 pt-1">
             <input
               type="text"
               placeholder="ej. 3er Grado, PREMATERNAL, Egresado Promo XXIV..."
@@ -317,7 +317,7 @@ export const SiblingManagerField: React.FC<Props> = ({
                   handleAddManual();
                 }
               }}
-              className="flex-1 px-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+              className="flex-1 px-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
             />
             <button
               type="button"

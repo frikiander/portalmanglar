@@ -42,7 +42,7 @@ export const EvaluationAuditModal: React.FC<EvaluationAuditModalProps> = ({
 
   const handleRequestCorrections = () => {
     if (!auditNotes.trim()) {
-      addToast('Por favor escribe las observaciones o motivos para regresar a borrador', 'warning');
+      addToast('Escribe las observaciones o motivos para regresar a borrador', 'warning');
       return;
     }
     setEvaluationStatus(evaluation.id, 'draft', auditNotes.trim());
@@ -50,17 +50,17 @@ export const EvaluationAuditModal: React.FC<EvaluationAuditModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent overflow-y-auto">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-xl w-full flex flex-col overflow-hidden border border-slate-300 animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-raiz/40 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-xl w-full flex flex-col overflow-hidden border border-slate-300">
         {/* Header */}
         <div className="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-emerald-600 rounded-lg">
+            <div className="p-2 bg-success-600 rounded-lg">
               <ShieldCheck className="w-5 h-5 text-white" />
             </div>
             <div>
               <h3 className="text-base font-bold text-white">
-                Auditoría Pedagógica y Visto Bueno
+                Auditoría pedagógica y visto bueno
               </h3>
               <p className="text-xs text-slate-300">
                 {evaluation.grade} · {evaluation.subject} · {evaluation.lapso}
@@ -69,7 +69,7 @@ export const EvaluationAuditModal: React.FC<EvaluationAuditModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+            className="p-1.5 text-slate-500 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -80,8 +80,8 @@ export const EvaluationAuditModal: React.FC<EvaluationAuditModalProps> = ({
           {/* Status Indicator */}
           <div className="flex items-center justify-between p-3.5 bg-slate-50 rounded-xl border border-slate-200">
             <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                Estado Actual
+              <span className="text-xs font-bold text-slate-500 block">
+                Estado actual
               </span>
               <span className="font-bold text-sm text-slate-900">
                 {evaluation.status === 'audited'
@@ -92,7 +92,7 @@ export const EvaluationAuditModal: React.FC<EvaluationAuditModalProps> = ({
               </span>
             </div>
             <div className="text-right">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+              <span className="text-xs font-bold text-slate-500 block">
                 Docente
               </span>
               <span className="font-medium text-slate-800">{evaluation.teacherName}</span>
@@ -101,24 +101,24 @@ export const EvaluationAuditModal: React.FC<EvaluationAuditModalProps> = ({
 
           {/* Audit Verification Checklist */}
           <div className="space-y-2">
-            <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider flex items-center gap-1.5">
-              <FileText className="w-4 h-4 text-[#285A14]" />
-              <span>Verificaciones de Control y Calidad</span>
+            <h4 className="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+              <FileText className="w-4 h-4 text-primary-800" />
+              <span>Verificaciones de control y calidad</span>
             </h4>
 
             {/* Check 1: Graded completeness */}
             <div
               className={`p-3 rounded-xl border flex items-center justify-between ${
                 isComplete
-                  ? 'bg-emerald-50/60 border-emerald-200 text-emerald-900'
-                  : 'bg-amber-50/60 border-amber-200 text-amber-900'
+                  ? 'bg-success-50/60 border-success-200 text-success-900'
+                  : 'bg-warning-50/60 border-warning-200 text-warning-900'
               }`}
             >
               <div className="flex items-center gap-2">
                 {isComplete ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-success-600 shrink-0" />
                 ) : (
-                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                  <AlertTriangle className="w-4 h-4 text-warning-600 shrink-0" />
                 )}
                 <span className="font-medium">
                   {isComplete
@@ -126,7 +126,7 @@ export const EvaluationAuditModal: React.FC<EvaluationAuditModalProps> = ({
                     : `Faltan ${pendingStudents} estudiantes por calificar (${gradedStudents}/${totalStudents}).`}
                 </span>
               </div>
-              <span className="font-bold text-xs font-mono">
+              <span className="font-bold text-xs tabular-nums">
                 {Math.round((gradedStudents / (totalStudents || 1)) * 100)}%
               </span>
             </div>
@@ -134,17 +134,17 @@ export const EvaluationAuditModal: React.FC<EvaluationAuditModalProps> = ({
             {/* Check 2: Adaptations AC+/AC- check */}
             <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Award className="w-4 h-4 text-teal-600 shrink-0" />
+                <Award className="w-4 h-4 text-info-600 shrink-0" />
                 <span>
-                  Estudiantes con Adaptación Curricular: <strong>{acCount}</strong> alumnos (AC+ / AC-)
+                  Estudiantes con adaptación curricular: <strong>{acCount}</strong> alumnos (AC+ / AC-)
                 </span>
               </div>
               {acWithoutNotes > 0 ? (
-                <span className="text-amber-700 bg-amber-100 px-2 py-0.5 rounded text-[10px] font-bold">
+                <span className="text-warning-700 bg-warning-100 px-2 py-0.5 rounded text-xs font-bold">
                   {acWithoutNotes} sin observación
                 </span>
               ) : (
-                <span className="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded text-[10px] font-bold">
+                <span className="text-success-700 bg-success-100 px-2 py-0.5 rounded text-xs font-bold">
                   Justificados
                 </span>
               )}
@@ -152,14 +152,14 @@ export const EvaluationAuditModal: React.FC<EvaluationAuditModalProps> = ({
 
             {/* Check 3: Sin Evaluación (SE) check */}
             {seCount > 0 && (
-              <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 flex items-center justify-between text-amber-900">
+              <div className="p-3 bg-warning-50 rounded-xl border border-warning-200 flex items-center justify-between text-warning-900">
                 <div className="flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                  <AlertTriangle className="w-4 h-4 text-warning-600 shrink-0" />
                   <span>
-                    Estudiantes marcados <strong>SE (Sin Evaluación)</strong>: {seCount} alumnos.
+                    Estudiantes marcados <strong>SE (sin evaluación)</strong>: {seCount} alumnos.
                   </span>
                 </div>
-                <span className="text-[10px] bg-amber-200/80 px-2 py-0.5 rounded font-bold">
+                <span className="text-xs bg-warning-200/80 px-2 py-0.5 rounded font-bold">
                   Requiere justificación
                 </span>
               </div>
@@ -169,20 +169,20 @@ export const EvaluationAuditModal: React.FC<EvaluationAuditModalProps> = ({
           {/* Audit Notes Input */}
           <div>
             <label className="block text-xs font-bold text-slate-800 mb-1.5">
-              Dictamen y Observaciones de Coordinación Pedagógica
+              Dictamen y observaciones de Coordinación pedagógica
             </label>
             <textarea
               value={auditNotes}
               onChange={(e) => setAuditNotes(e.target.value)}
               placeholder="Escribe comentarios pedagógicos, validación de adaptaciones curriculares, acuerdos de repetición de pruebas pendientes o felicitaciones docentes..."
               rows={3}
-              className="w-full text-xs p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#5EA832] focus:border-transparent transition-all"
+              className="w-full text-xs p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
             />
           </div>
 
           {/* Last audit metadata if already audited */}
           {evaluation.auditedAt && (
-            <div className="text-[11px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+            <div className="text-xs text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
               Certificado previamente por: <strong>{evaluation.auditedBy}</strong> el {evaluation.auditedAt}
             </div>
           )}
@@ -193,10 +193,10 @@ export const EvaluationAuditModal: React.FC<EvaluationAuditModalProps> = ({
           <button
             type="button"
             onClick={handleRequestCorrections}
-            className="flex items-center gap-1.5 px-3 py-2 text-amber-800 bg-amber-100 hover:bg-amber-200 font-medium text-xs rounded-xl transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 text-warning-800 bg-warning-100 hover:bg-warning-200 font-medium text-xs rounded-xl transition-all"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span>Devolver a Borrador</span>
+            <span>Devolver a borrador</span>
           </button>
 
           <div className="flex items-center gap-2">
@@ -210,10 +210,10 @@ export const EvaluationAuditModal: React.FC<EvaluationAuditModalProps> = ({
             <button
               type="button"
               onClick={handleApproveAudit}
-              className="flex items-center gap-1.5 px-4 py-2 bg-[#285A14] hover:bg-[#1f4610] text-white font-bold text-xs rounded-xl shadow-md transition-all"
+              className="flex items-center gap-1.5 px-4 py-2 bg-primary-800 hover:bg-primary-900 text-white font-bold text-xs rounded-xl shadow-md transition-all"
             >
-              <ShieldCheck className="w-4 h-4 text-emerald-300" />
-              <span>Certificar y Dar Visto Bueno</span>
+              <ShieldCheck className="w-4 h-4 text-success-300" />
+              <span>Certificar y dar visto bueno</span>
             </button>
           </div>
         </div>

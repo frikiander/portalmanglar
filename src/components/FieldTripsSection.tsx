@@ -119,11 +119,11 @@ export const FieldTripsSection: React.FC = () => {
       {/* 1. SIMPLE HEADER WITH ACTIONS */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-            Salidas de Campo e Invitados Especiales
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-raiz">
+            Salidas de campo e invitados
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Colegio Integral El Manglar · Experiencias vivenciales y alianzas institucionales
+          <p className="text-sm text-slate-600 mt-1">
+            Experiencias vivenciales y alianzas institucionales.
           </p>
         </div>
 
@@ -132,16 +132,16 @@ export const FieldTripsSection: React.FC = () => {
             onClick={() => window.print()}
             className="px-3.5 py-2 text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer"
           >
-            <Printer className="w-4 h-4 text-emerald-700" />
+            <Printer className="w-4 h-4 text-success-700" />
             <span>Imprimir</span>
           </button>
 
           <button
             onClick={handleOpenNew}
-            className="px-4 py-2 text-xs font-bold text-white bg-[#285A14] hover:bg-[#1f4710] rounded-xl shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+            className="px-4 py-2 text-xs font-bold text-white bg-primary-800 hover:bg-primary-900 rounded-xl shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span>Registrar Experiencia</span>
+            <span>Registrar experiencia</span>
           </button>
         </div>
       </div>
@@ -151,50 +151,50 @@ export const FieldTripsSection: React.FC = () => {
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
           
           <div className="bg-slate-50/80 p-3 rounded-2xl border border-slate-200/70">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-              Total Registros
+            <span className="text-xs font-bold text-slate-500 block">
+              Total registros
             </span>
             <span className="text-lg font-black text-slate-900">{stats.total}</span>
-            <span className="text-[10px] text-slate-500 block">planificadas</span>
+            <span className="text-xs text-slate-500 block">planificadas</span>
           </div>
 
-          <div className="bg-emerald-50/50 p-3 rounded-2xl border border-emerald-100">
-            <span className="text-[10px] font-bold text-[#3A6B1F] uppercase tracking-wider flex items-center gap-1">
+          <div className="bg-success-50/50 p-3 rounded-2xl border border-success-100">
+            <span className="text-xs font-bold text-primary-700 flex items-center gap-1">
               <Bus className="w-3 h-3" />
-              Salidas de Campo
+              Salidas de campo
             </span>
-            <span className="text-lg font-black text-[#285A14]">{stats.salidas}</span>
-            <span className="text-[10px] text-[#3A6B1F]">
+            <span className="text-lg font-black text-primary-800">{stats.salidas}</span>
+            <span className="text-xs text-primary-700">
               {stats.transporte} con transporte
             </span>
           </div>
 
-          <div className="bg-amber-50/60 p-3 rounded-2xl border border-amber-100">
-            <span className="text-[10px] font-bold text-amber-800 uppercase tracking-wider flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-amber-600" />
-              Invitados Aula
+          <div className="bg-warning-50/60 p-3 rounded-2xl border border-warning-100">
+            <span className="text-xs font-bold text-warning-800 flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-warning-600" />
+              Invitados aula
             </span>
-            <span className="text-lg font-black text-amber-950">{stats.invitados}</span>
-            <span className="text-[10px] text-amber-700">talleres y ponentes</span>
+            <span className="text-lg font-black text-warning-950">{stats.invitados}</span>
+            <span className="text-xs text-warning-700">talleres y ponentes</span>
           </div>
 
           <div className="bg-blue-50/50 p-3 rounded-2xl border border-blue-100">
-            <span className="text-[10px] font-bold text-blue-800 uppercase tracking-wider block">
-              Visto Bueno
+            <span className="text-xs font-bold text-blue-800 block">
+              Visto bueno
             </span>
             <span className="text-lg font-black text-blue-950">{stats.aprobadas}</span>
-            <span className="text-[10px] text-blue-700">{stats.pendientes} en revisión</span>
+            <span className="text-xs text-blue-700">{stats.pendientes} en revisión</span>
           </div>
 
           {/* PILARES DEL MANGLAR BADGES */}
-          <div className="col-span-2 bg-gradient-to-br from-amber-50/80 via-white to-emerald-50/50 p-3 rounded-2xl border border-amber-200/60 flex flex-col justify-between">
-            <span className="text-[10px] font-black text-amber-950 uppercase tracking-wider block mb-1">
-              Pilares Institucionales Impactados
+          <div className="col-span-2 bg-slate-50 p-3 rounded-2xl border border-warning-200/60 flex flex-col justify-between">
+            <span className="text-xs font-black text-warning-950 block mb-1">
+              Pilares institucionales impactados
             </span>
-            <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-[11px] font-semibold text-slate-700">
+            <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs font-semibold text-slate-700">
               <div className="flex items-center justify-between">
                 <span className="truncate">Resp. Social:</span>
-                <span className="font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.2 rounded">{stats.social}</span>
+                <span className="font-bold text-success-800 bg-success-100 px-1.5 py-0.2 rounded">{stats.social}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="truncate">Part. Ciudadana:</span>
@@ -202,7 +202,7 @@ export const FieldTripsSection: React.FC = () => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="truncate">Ident. Nacional:</span>
-                <span className="font-bold text-amber-800 bg-amber-100 px-1.5 py-0.2 rounded">{stats.nacional}</span>
+                <span className="font-bold text-warning-800 bg-warning-100 px-1.5 py-0.2 rounded">{stats.nacional}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="truncate">Introspección:</span>
@@ -219,18 +219,18 @@ export const FieldTripsSection: React.FC = () => {
         
         {/* Left: Search input */}
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Buscar por destino, invitado, docente, contacto, materia..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden transition-all"
+            className="w-full pl-9 pr-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-primary-500 focus:outline-hidden transition-all"
           />
           {searchTerm && (
             <button
               onClick={() => setSearchTerm('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 font-bold"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-500 hover:text-slate-600 font-bold"
             >
               x
             </button>
@@ -246,9 +246,9 @@ export const FieldTripsSection: React.FC = () => {
             onChange={(e) => setSelectedType(e.target.value as FieldTripType | 'ALL')}
             className="px-2.5 py-2 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden cursor-pointer"
           >
-            <option value="ALL">Todos los Tipos</option>
-            <option value="salida_campo">🚌 Solo Salidas de Campo</option>
-            <option value="invitado_especial">🌟 Solo Invitados Especiales</option>
+            <option value="ALL">Todos los tipos</option>
+            <option value="salida_campo">🚌 solo salidas de campo</option>
+            <option value="invitado_especial">🌟 solo invitados especiales</option>
           </select>
 
           {/* Filter Grade */}
@@ -257,7 +257,7 @@ export const FieldTripsSection: React.FC = () => {
             onChange={(e) => setSelectedGrade(e.target.value)}
             className="px-2.5 py-2 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden cursor-pointer"
           >
-            <option value="ALL">Todos los Grados</option>
+            <option value="ALL">Todos los grados</option>
             {allGrades.map((g) => (
               <option key={g} value={g}>{g}</option>
             ))}
@@ -269,7 +269,7 @@ export const FieldTripsSection: React.FC = () => {
             onChange={(e) => setSelectedLapso(e.target.value)}
             className="px-2.5 py-2 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden cursor-pointer"
           >
-            <option value="ALL">Todos los Lapsos</option>
+            <option value="ALL">Todos los lapsos</option>
             <option value="1er Lapso">1er Lapso</option>
             <option value="2do Lapso">2do Lapso</option>
             <option value="3er Lapso">3er Lapso</option>
@@ -281,9 +281,9 @@ export const FieldTripsSection: React.FC = () => {
             onChange={(e) => setSelectedStatus(e.target.value as FieldTripStatus | 'ALL')}
             className="px-2.5 py-2 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden cursor-pointer"
           >
-            <option value="ALL">Todos los Estados</option>
+            <option value="ALL">Todos los estados</option>
             <option value="approved">Aprobadas</option>
-            <option value="submitted">En Revisión</option>
+            <option value="submitted">En revisión</option>
             <option value="completed">Realizadas</option>
             <option value="draft">Borrador</option>
           </select>
@@ -297,8 +297,8 @@ export const FieldTripsSection: React.FC = () => {
               }`}
               title="Vista Matriz Oficial (Tabla estructurada El Manglar)"
             >
-              <FileSpreadsheet className="w-3.5 h-3.5 text-[#5EA832]" />
-              <span className="hidden sm:inline">Matriz Oficial</span>
+              <FileSpreadsheet className="w-3.5 h-3.5 text-primary-600" />
+              <span className="hidden sm:inline">Matriz oficial</span>
             </button>
             <button
               onClick={() => setViewStyle('cards')}
@@ -307,7 +307,7 @@ export const FieldTripsSection: React.FC = () => {
               }`}
               title="Vista Fichas Didácticas"
             >
-              <LayoutGrid className="w-3.5 h-3.5 text-amber-600" />
+              <LayoutGrid className="w-3.5 h-3.5 text-warning-600" />
               <span className="hidden sm:inline">Fichas</span>
             </button>
           </div>
@@ -319,7 +319,7 @@ export const FieldTripsSection: React.FC = () => {
       {/* 4. CONTENT DISPLAY */}
       {filteredTrips.length === 0 ? (
         <div className="bg-white rounded-3xl p-12 text-center border border-slate-200 space-y-3">
-          <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto text-slate-400">
+          <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto text-slate-500">
             <Bus className="w-6 h-6" />
           </div>
           <h3 className="text-base font-bold text-slate-800">No se encontraron registros</h3>
@@ -328,10 +328,10 @@ export const FieldTripsSection: React.FC = () => {
           </p>
           <button
             onClick={handleOpenNew}
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-[#5EA832] hover:bg-[#498925] rounded-xl shadow-xs transition-colors cursor-pointer mt-2"
+            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-primary-600 hover:bg-primary-600 rounded-xl shadow-xs transition-colors cursor-pointer mt-2"
           >
             <Plus className="w-4 h-4" />
-            <span>Registrar Experiencia</span>
+            <span>Registrar experiencia</span>
           </button>
         </div>
       ) : viewStyle === 'matrix' ? (
@@ -346,18 +346,18 @@ export const FieldTripsSection: React.FC = () => {
               {/* TWO-LEVEL TABLE HEADER */}
               <thead>
                 {/* Level 1: Category Groups */}
-                <tr className="border-b border-slate-200 text-center font-black uppercase text-[10px] tracking-wider">
+                <tr className="border-b border-slate-200 text-center font-black text-xs">
                   <th colSpan={4} className="bg-slate-100/90 py-2.5 px-3 border-r border-slate-200 text-slate-700">
-                    Datos Generales
+                    Datos generales
                   </th>
-                  <th colSpan={5} className="bg-[#285A14]/10 py-2.5 px-3 border-r border-slate-200 text-[#285A14]">
-                    Antes del Paseo o Invitado
+                  <th colSpan={5} className="bg-primary-800/10 py-2.5 px-3 border-r border-slate-200 text-primary-800">
+                    Antes del paseo o invitado
                   </th>
-                  <th colSpan={4} className="bg-amber-100/70 py-2.5 px-3 border-r border-slate-200 text-amber-950">
-                    Enfoques Relacionados (El Manglar)
+                  <th colSpan={4} className="bg-warning-100/70 py-2.5 px-3 border-r border-slate-200 text-warning-950">
+                    Enfoques relacionados (El Manglar)
                   </th>
                   <th colSpan={2} className="bg-slate-100/90 py-2.5 px-3 border-r border-slate-200 text-slate-700">
-                    Metodología y Aprendizajes
+                    Metodología y aprendizajes
                   </th>
                   <th className="bg-slate-100/90 py-2.5 px-3 text-slate-700">
                     Acciones
@@ -365,36 +365,36 @@ export const FieldTripsSection: React.FC = () => {
                 </tr>
 
                 {/* Level 2: Column Titles */}
-                <tr className="bg-slate-50 border-b border-slate-200 font-bold text-[11px] text-slate-700">
-                  <th className="py-2.5 px-3 whitespace-nowrap">Tipo / Estado</th>
+                <tr className="bg-slate-50 border-b border-slate-200 font-bold text-xs text-slate-700">
+                  <th className="py-2.5 px-3 whitespace-nowrap">Tipo / estado</th>
                   <th className="py-2.5 px-3 whitespace-nowrap">Grado</th>
                   <th className="py-2.5 px-3 whitespace-nowrap text-center">Lapso/Sem</th>
                   <th className="py-2.5 px-3 whitespace-nowrap">Fecha</th>
                   
                   {/* Antes del paseo o invitado */}
-                  <th className="py-2.5 px-3 min-w-[180px] text-[#285A14] bg-emerald-50/30">Destino / Invitado</th>
-                  <th className="py-2.5 px-3 min-w-[150px] text-[#285A14] bg-emerald-50/30">Alianza y Contacto</th>
-                  <th className="py-2.5 px-3 min-w-[200px] text-[#285A14] bg-emerald-50/30">Tema / Propósito</th>
-                  <th className="py-2.5 px-3 min-w-[140px] text-[#285A14] bg-emerald-50/30">Contexto del proyecto</th>
-                  <th className="py-2.5 px-3 min-w-[140px] text-[#285A14] bg-emerald-50/30 border-r border-slate-200">Docente Resp.</th>
+                  <th className="py-2.5 px-3 min-w-[180px] text-primary-800 bg-success-50/30">Destino / invitado</th>
+                  <th className="py-2.5 px-3 min-w-[150px] text-primary-800 bg-success-50/30">Alianza y contacto</th>
+                  <th className="py-2.5 px-3 min-w-[200px] text-primary-800 bg-success-50/30">Tema / propósito</th>
+                  <th className="py-2.5 px-3 min-w-[140px] text-primary-800 bg-success-50/30">Contexto del proyecto</th>
+                  <th className="py-2.5 px-3 min-w-[140px] text-primary-800 bg-success-50/30 border-r border-slate-200">Docente resp.</th>
                   
                   {/* Enfoques Relacionados */}
-                  <th className="py-2.5 px-2 text-center text-[10px] text-amber-950 bg-amber-50/50" title="Responsabilidad Social">
+                  <th className="py-2.5 px-2 text-center text-xs text-warning-950 bg-warning-50/50" title="Responsabilidad Social">
                     Resp. Social
                   </th>
-                  <th className="py-2.5 px-2 text-center text-[10px] text-amber-950 bg-amber-50/50" title="Participación Ciudadana">
+                  <th className="py-2.5 px-2 text-center text-xs text-warning-950 bg-warning-50/50" title="Participación Ciudadana">
                     Part. Ciudadana
                   </th>
-                  <th className="py-2.5 px-2 text-center text-[10px] text-amber-950 bg-amber-50/50" title="Identidad Nacional">
+                  <th className="py-2.5 px-2 text-center text-xs text-warning-950 bg-warning-50/50" title="Identidad Nacional">
                     Ident. Nacional
                   </th>
-                  <th className="py-2.5 px-2 text-center text-[10px] text-amber-950 bg-amber-50/50 border-r border-slate-200" title="Introspección">
+                  <th className="py-2.5 px-2 text-center text-xs text-warning-950 bg-warning-50/50 border-r border-slate-200" title="Introspección">
                     Introspección
                   </th>
 
                   {/* Metodología */}
                   <th className="py-2.5 px-3 min-w-[220px]">¿CÓMO? (Metodología)</th>
-                  <th className="py-2.5 px-3 min-w-[160px] border-r border-slate-200">Aprendizajes Claves</th>
+                  <th className="py-2.5 px-3 min-w-[160px] border-r border-slate-200">Aprendizajes claves</th>
 
                   {/* Acciones */}
                   <th className="py-2.5 px-3 text-center whitespace-nowrap">Gestión</th>
@@ -414,23 +414,23 @@ export const FieldTripsSection: React.FC = () => {
                       {/* Tipo / Estado */}
                       <td className="py-3 px-3 align-top whitespace-nowrap">
                         <div className="space-y-1">
-                          <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-bold text-[10px] ${
+                          <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-bold text-xs ${
                             isSalida
-                              ? 'bg-emerald-100 text-[#285A14]'
-                              : 'bg-amber-100 text-amber-900'
+                              ? 'bg-success-100 text-primary-800'
+                              : 'bg-warning-100 text-warning-900'
                           }`}>
                             {isSalida ? <Bus className="w-3 h-3" /> : <Sparkles className="w-3 h-3" />}
                             <span>{isSalida ? 'Salida' : 'Invitado'}</span>
                           </div>
 
                           <div>
-                            <span className={`inline-block px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider ${
+                            <span className={`inline-block px-1.5 py-0.2 rounded text-xs font-bold ${
                               trip.status === 'approved'
-                                ? 'text-[#3A6B1F] bg-emerald-50'
+                                ? 'text-primary-700 bg-success-50'
                                 : trip.status === 'completed'
                                 ? 'text-blue-700 bg-blue-50'
                                 : trip.status === 'submitted'
-                                ? 'text-amber-700 bg-amber-50'
+                                ? 'text-warning-700 bg-warning-50'
                                 : 'text-slate-500 bg-slate-100'
                             }`}>
                               {trip.status === 'approved' ? 'Aprobada' :
@@ -448,65 +448,65 @@ export const FieldTripsSection: React.FC = () => {
 
                       {/* Lapso/Semana (ej. 1/8) */}
                       <td className="py-3 px-3 align-top text-center font-black text-slate-800 whitespace-nowrap">
-                        <span className="px-2 py-0.5 bg-slate-100 rounded-md font-mono text-[11px]">
+                        <span className="px-2 py-0.5 bg-slate-100 rounded-md tabular-nums text-xs">
                           {trip.lapsoSemanaLabel || `${trip.lapso.slice(0, 1)}/${trip.weekNumber}`}
                         </span>
                       </td>
 
                       {/* Fecha */}
-                      <td className="py-3 px-3 align-top font-medium text-slate-600 whitespace-nowrap text-[11px]">
+                      <td className="py-3 px-3 align-top font-medium text-slate-600 whitespace-nowrap text-xs">
                         {trip.date}
                       </td>
 
                       {/* Destino / Invitado */}
-                      <td className="py-3 px-3 align-top bg-emerald-50/10">
+                      <td className="py-3 px-3 align-top bg-success-50/10">
                         <div className="font-bold text-slate-900 leading-snug">
                           {trip.destinationOrGuest}
                         </div>
                         {trip.transportRequired && (
-                          <span className="inline-flex items-center gap-0.5 text-[10px] text-indigo-700 font-semibold mt-1">
+                          <span className="inline-flex items-center gap-0.5 text-xs text-primary-700 font-semibold mt-1">
                             <Bus className="w-3 h-3" /> Transporte requerido
                           </span>
                         )}
                       </td>
 
                       {/* Alianza y Contacto */}
-                      <td className="py-3 px-3 align-top text-slate-700 text-[11px] bg-emerald-50/10">
+                      <td className="py-3 px-3 align-top text-slate-700 text-xs bg-success-50/10">
                         <div className="font-semibold text-slate-900 leading-snug">
                           {trip.allianceName || trip.alliancesOrContacts || '-'}
                         </div>
                         {trip.contactPhone && (
-                          <div className="text-[10px] text-slate-600 font-mono flex items-center gap-1 mt-0.5 font-medium">
-                            <Phone className="w-2.5 h-2.5 text-[#5EA832] shrink-0" />
+                          <div className="text-xs text-slate-600 tabular-nums flex items-center gap-1 mt-0.5 font-medium">
+                            <Phone className="w-2.5 h-2.5 text-primary-600 shrink-0" />
                             <span>{trip.contactPhone}</span>
                           </div>
                         )}
                       </td>
 
                       {/* Tema / Propósito */}
-                      <td className="py-3 px-3 align-top text-slate-700 text-[11px] leading-relaxed bg-emerald-50/10">
+                      <td className="py-3 px-3 align-top text-slate-700 text-xs leading-relaxed bg-success-50/10">
                         <p className="line-clamp-3" title={trip.purpose}>{trip.purpose || '-'}</p>
                       </td>
 
                       {/* Contexto del proyecto */}
-                      <td className="py-3 px-3 align-top text-slate-700 text-[11px] bg-emerald-50/10">
+                      <td className="py-3 px-3 align-top text-slate-700 text-xs bg-success-50/10">
                         <div className="font-semibold text-slate-800">{trip.subjectOrContext || '-'}</div>
                       </td>
 
                       {/* Docente Responsable */}
-                      <td className="py-3 px-3 align-top text-slate-800 text-[11px] border-r border-slate-200 bg-emerald-50/10">
+                      <td className="py-3 px-3 align-top text-slate-800 text-xs border-r border-slate-200 bg-success-50/10">
                         <div className="font-semibold">{trip.responsibleTeacher}</div>
                         {trip.chaperoneTeachers && (
-                          <div className="text-[10px] text-slate-500 mt-0.5">
+                          <div className="text-xs text-slate-500 mt-0.5">
                             Acomp: {trip.chaperoneTeachers}
                           </div>
                         )}
                       </td>
 
                       {/* Enfoque 1: Responsabilidad Social */}
-                      <td className="py-3 px-2 align-top text-center bg-amber-50/20">
+                      <td className="py-3 px-2 align-top text-center bg-warning-50/20">
                         {trip.focus.socialResponsibility ? (
-                          <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-emerald-100 text-[#285A14] font-black text-xs">
+                          <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-success-100 text-primary-800 font-black text-xs">
                             ✓
                           </span>
                         ) : (
@@ -515,7 +515,7 @@ export const FieldTripsSection: React.FC = () => {
                       </td>
 
                       {/* Enfoque 2: Participación Ciudadana */}
-                      <td className="py-3 px-2 align-top text-center bg-amber-50/20">
+                      <td className="py-3 px-2 align-top text-center bg-warning-50/20">
                         {trip.focus.citizenParticipation ? (
                           <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 text-blue-800 font-black text-xs">
                             ✓
@@ -526,9 +526,9 @@ export const FieldTripsSection: React.FC = () => {
                       </td>
 
                       {/* Enfoque 3: Identidad Nacional */}
-                      <td className="py-3 px-2 align-top text-center bg-amber-50/20">
+                      <td className="py-3 px-2 align-top text-center bg-warning-50/20">
                         {trip.focus.nationalIdentity ? (
-                          <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-100 text-amber-900 font-black text-xs">
+                          <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-warning-100 text-warning-900 font-black text-xs">
                             ✓
                           </span>
                         ) : (
@@ -537,7 +537,7 @@ export const FieldTripsSection: React.FC = () => {
                       </td>
 
                       {/* Enfoque 4: Introspección */}
-                      <td className="py-3 px-2 align-top text-center border-r border-slate-200 bg-amber-50/20">
+                      <td className="py-3 px-2 align-top text-center border-r border-slate-200 bg-warning-50/20">
                         {trip.focus.introspection ? (
                           <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-purple-100 text-purple-900 font-black text-xs">
                             ✓
@@ -548,14 +548,14 @@ export const FieldTripsSection: React.FC = () => {
                       </td>
 
                       {/* ¿CÓMO? Metodología */}
-                      <td className="py-3 px-3 align-top text-slate-700 text-[11px] leading-relaxed">
+                      <td className="py-3 px-3 align-top text-slate-700 text-xs leading-relaxed">
                         <p className="line-clamp-3" title={trip.methodology}>
                           {trip.methodology || '-'}
                         </p>
                       </td>
 
                       {/* Aprendizajes Claves */}
-                      <td className="py-3 px-3 align-top text-slate-700 text-[11px] leading-relaxed border-r border-slate-200">
+                      <td className="py-3 px-3 align-top text-slate-700 text-xs leading-relaxed border-r border-slate-200">
                         <p className="line-clamp-3" title={trip.keyLearnings}>
                           {trip.keyLearnings || '-'}
                         </p>
@@ -574,7 +574,7 @@ export const FieldTripsSection: React.FC = () => {
                           
                           <button
                             onClick={() => handleEdit(trip)}
-                            className="p-1 rounded-lg text-slate-500 hover:text-[#5EA832] hover:bg-emerald-50 transition-colors cursor-pointer"
+                            className="p-1 rounded-lg text-slate-500 hover:text-primary-600 hover:bg-success-50 transition-colors cursor-pointer"
                             title="Editar"
                           >
                             <Edit3 className="w-3.5 h-3.5" />
@@ -591,7 +591,7 @@ export const FieldTripsSection: React.FC = () => {
                           {isCoordinator && trip.status === 'submitted' && (
                             <button
                               onClick={() => updateFieldTripStatus(trip.id, 'approved')}
-                              className="p-1 rounded-lg text-emerald-600 hover:bg-emerald-100 transition-colors cursor-pointer font-bold text-[10px]"
+                              className="p-1 rounded-lg text-success-600 hover:bg-success-100 transition-colors cursor-pointer font-bold text-xs"
                               title="Aprobar de inmediato"
                             >
                               <Check className="w-3.5 h-3.5" />
@@ -600,7 +600,7 @@ export const FieldTripsSection: React.FC = () => {
 
                           <button
                             onClick={() => handleDelete(trip.id, trip.destinationOrGuest)}
-                            className="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                            className="p-1 rounded-lg text-slate-500 hover:text-danger-600 hover:bg-danger-50 transition-colors cursor-pointer"
                             title="Eliminar"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -636,7 +636,7 @@ export const FieldTripsSection: React.FC = () => {
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-1.5">
                       <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                        isSalida ? 'bg-emerald-100 text-[#285A14]' : 'bg-amber-100 text-amber-900'
+                        isSalida ? 'bg-success-100 text-primary-800' : 'bg-warning-100 text-warning-900'
                       }`}>
                         {isSalida ? <Bus className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
                         <span>{isSalida ? 'Salida de Campo' : 'Invitado Especial'}</span>
@@ -647,13 +647,13 @@ export const FieldTripsSection: React.FC = () => {
                       </span>
                     </div>
 
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                       trip.status === 'approved'
-                        ? 'bg-emerald-50 text-[#3A6B1F] border border-emerald-200'
+                        ? 'bg-success-50 text-primary-700 border border-success-200'
                         : trip.status === 'completed'
                         ? 'bg-blue-50 text-blue-800 border border-blue-200'
                         : trip.status === 'submitted'
-                        ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                        ? 'bg-warning-50 text-warning-800 border border-warning-200'
                         : 'bg-slate-100 text-slate-600'
                     }`}>
                       {trip.status === 'approved' ? 'Aprobada' :
@@ -664,12 +664,12 @@ export const FieldTripsSection: React.FC = () => {
 
                   {/* DESTINATION / GUEST TITLE */}
                   <div>
-                    <h3 className="text-base font-black text-slate-900 tracking-tight leading-snug group-hover:text-[#285A14] transition-colors">
+                    <h3 className="text-base font-black text-slate-900 tracking-tight leading-snug group-hover:text-primary-800 transition-colors">
                       {trip.destinationOrGuest}
                     </h3>
                     <div className="flex items-center gap-3 text-xs text-slate-500 font-medium mt-1">
                       <span className="flex items-center gap-1">
-                        <Calendar className="w-3.5 h-3.5 text-[#5EA832]" />
+                        <Calendar className="w-3.5 h-3.5 text-primary-600" />
                         {trip.date}
                       </span>
                       <span>•</span>
@@ -681,15 +681,15 @@ export const FieldTripsSection: React.FC = () => {
 
                   {/* ALLIANCES & CONTACTS */}
                   <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200/80 text-xs space-y-1">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                      Alianza y Contacto
+                    <span className="text-xs font-bold text-slate-500 block">
+                      Alianza y contacto
                     </span>
                     <div className="font-semibold text-slate-900 truncate">
                       {trip.allianceName || trip.alliancesOrContacts || 'Sin contactos externos'}
                     </div>
                     {trip.contactPhone && (
-                      <div className="text-[11px] text-slate-600 font-mono flex items-center gap-1">
-                        <Phone className="w-3 h-3 text-[#5EA832]" />
+                      <div className="text-xs text-slate-600 tabular-nums flex items-center gap-1">
+                        <Phone className="w-3 h-3 text-primary-600" />
                         <span>{trip.contactPhone}</span>
                       </div>
                     )}
@@ -698,7 +698,7 @@ export const FieldTripsSection: React.FC = () => {
                   {/* CONTEXTO DEL PROYECTO */}
                   {trip.subjectOrContext && (
                     <div className="text-xs">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                      <span className="text-xs font-bold text-slate-500 block">
                         Contexto del proyecto
                       </span>
                       <span className="font-medium text-slate-700 block truncate">
@@ -716,32 +716,32 @@ export const FieldTripsSection: React.FC = () => {
 
                   {/* INSTITUTIONAL FOCUS PILLARS */}
                   <div className="space-y-1">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                    <span className="text-xs font-bold text-slate-500 block">
                       Enfoques El Manglar
                     </span>
                     <div className="flex flex-wrap gap-1">
                       {trip.focus.socialResponsibility && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-[#3A6B1F] border border-emerald-200">
+                        <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-success-50 text-primary-700 border border-success-200">
                           Resp. Social
                         </span>
                       )}
                       {trip.focus.citizenParticipation && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-50 text-blue-800 border border-blue-200">
+                        <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-blue-50 text-blue-800 border border-blue-200">
                           Part. Ciudadana
                         </span>
                       )}
                       {trip.focus.nationalIdentity && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-50 text-amber-900 border border-amber-200">
+                        <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-warning-50 text-warning-900 border border-warning-200">
                           Ident. Nacional
                         </span>
                       )}
                       {trip.focus.introspection && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-50 text-purple-900 border border-purple-200">
+                        <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-purple-50 text-purple-900 border border-purple-200">
                           Introspección
                         </span>
                       )}
                       {!trip.focus.socialResponsibility && !trip.focus.citizenParticipation && !trip.focus.nationalIdentity && !trip.focus.introspection && (
-                        <span className="text-[10px] text-slate-400 italic">Sin enfoque marcado</span>
+                        <span className="text-xs text-slate-500 italic">Sin enfoque marcado</span>
                       )}
                     </div>
                   </div>
@@ -752,7 +752,7 @@ export const FieldTripsSection: React.FC = () => {
                       Resp: <strong>{trip.responsibleTeacher}</strong>
                     </span>
                     {trip.transportRequired && (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md shrink-0">
+                      <span className="inline-flex items-center gap-1 text-xs font-bold text-primary-700 bg-primary-50 px-2 py-0.5 rounded-md shrink-0">
                         <Bus className="w-3 h-3" /> Bus
                       </span>
                     )}
@@ -764,14 +764,14 @@ export const FieldTripsSection: React.FC = () => {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => setPrintingTrip(trip)}
-                      className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                      className="p-1.5 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
                       title="Imprimir Ficha"
                     >
                       <Printer className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleEdit(trip)}
-                      className="p-1.5 text-slate-400 hover:text-[#5EA832] hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
+                      className="p-1.5 text-slate-500 hover:text-primary-600 hover:bg-success-50 rounded-lg transition-colors cursor-pointer"
                       title="Editar"
                     >
                       <Edit3 className="w-4 h-4" />
@@ -780,9 +780,9 @@ export const FieldTripsSection: React.FC = () => {
 
                   <button
                     onClick={() => setViewingTrip(trip)}
-                    className="px-3.5 py-1.5 text-xs font-bold text-[#3A6B1F] bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-colors flex items-center gap-1 cursor-pointer"
+                    className="px-3.5 py-1.5 text-xs font-bold text-primary-700 bg-success-50 hover:bg-success-100 rounded-xl transition-colors flex items-center gap-1 cursor-pointer"
                   >
-                    <span>Ver Detalle</span>
+                    <span>Ver detalle</span>
                     <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                 </div>

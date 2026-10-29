@@ -98,19 +98,19 @@ export const ScheduleCellModal: React.FC<ScheduleCellModalProps> = ({
   const currentCategoryStyle = CATEGORY_STYLES[category] || CATEGORY_STYLES.otro;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-transparent flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-raiz/40 flex items-center justify-center p-4">
       <div 
         id="schedule-cell-modal-container"
-        className="bg-white rounded-2xl shadow-2xl max-w-lg w-full border border-slate-300 overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+        className="bg-white rounded-2xl shadow-2xl max-w-lg w-full border border-slate-300 overflow-hidden"
       >
         {/* Modal Header */}
-        <div className="px-6 py-4 bg-gradient-to-r from-slate-900 to-slate-800 text-white flex items-center justify-between">
+        <div className="px-6 py-4 bg-raiz text-white flex items-center justify-between">
           <div>
             <div className="flex items-center space-x-2">
-              <span className="text-xs uppercase tracking-wider font-semibold text-amber-400">
-                Editar Bloque de Clase
+              <span className="text-xs font-semibold text-warning-700">
+                Editar bloque de clase
               </span>
-              <span className="text-slate-400">·</span>
+              <span className="text-slate-500">·</span>
               <span className="text-xs font-medium text-slate-300">
                 {grade}
               </span>
@@ -124,7 +124,7 @@ export const ScheduleCellModal: React.FC<ScheduleCellModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-white/10 transition-colors"
+            className="text-slate-500 hover:text-white p-2 rounded-xl hover:bg-white/10 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -136,7 +136,7 @@ export const ScheduleCellModal: React.FC<ScheduleCellModalProps> = ({
           {!readOnly && (
             <div>
               <label className="block text-xs font-semibold text-slate-600 mb-1.5">
-                Sugerencias Rápidas de Asignatura:
+                Sugerencias rápidas de asignatura:
               </label>
               <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto pr-1">
                 {(subjects.length > 0 ? subjects.map((s) => s.name) : COMMON_SUBJECT_SUGGESTIONS).map((s) => {
@@ -152,7 +152,7 @@ export const ScheduleCellModal: React.FC<ScheduleCellModalProps> = ({
                       onClick={() => handleSelectPredefined(s)}
                       className={`text-xs px-2.5 py-1 rounded-lg border font-medium transition-all inline-flex items-center gap-1.5 ${
                         subject.toLowerCase() === s.toLowerCase()
-                          ? 'ring-2 ring-indigo-500 font-bold shadow-xs'
+                          ? 'ring-2 ring-primary-500 font-bold shadow-xs'
                           : 'hover:opacity-80'
                       } ${style.bg} ${style.border} ${style.text}`}
                     >
@@ -172,8 +172,8 @@ export const ScheduleCellModal: React.FC<ScheduleCellModalProps> = ({
 
           {/* Subject Input */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">
-              Nombre de la Asignatura / Actividad *
+            <label className="block text-xs font-bold text-slate-700 mb-1">
+              Nombre de la asignatura / actividad *
             </label>
             <input
               type="text"
@@ -182,7 +182,7 @@ export const ScheduleCellModal: React.FC<ScheduleCellModalProps> = ({
               value={subject}
               onChange={(e) => handleSubjectChange(e.target.value)}
               placeholder="Ej. MATEMÁTICA, LENGUAJE, INGLÉS..."
-              className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-semibold text-slate-800 disabled:bg-slate-100"
+              className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm font-semibold text-slate-800 disabled:bg-slate-100"
             />
           </div>
 
@@ -190,32 +190,32 @@ export const ScheduleCellModal: React.FC<ScheduleCellModalProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
-                Categoría y Color Temático
+                Categoría y color temático
               </label>
               <select
                 value={category}
                 disabled={readOnly}
                 onChange={(e) => setCategory(e.target.value as SubjectCategory)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-medium text-slate-700 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-medium text-slate-700 focus:outline-hidden focus:ring-2 focus:ring-primary-500"
               >
-                <option value="matematica">Matemática (Azul Cielo)</option>
-                <option value="lengua">Lengua / Literatura (Rosa Suave)</option>
-                <option value="ingles">Inglés (Lavanda / Violeta)</option>
-                <option value="ciencia">Ciencias Naturales (Verde Lima)</option>
-                <option value="sociales">Ciencias Sociales (Naranja)</option>
-                <option value="deporte">Educación Física / Deporte (Ámbar / Oro)</option>
-                <option value="especiales">Especiales (Música, Arte, Robótica, etc.)</option>
-                <option value="proyecto">Proyecto de Aula (Índigo)</option>
-                <option value="rutina">Rutina / Lectura (Crema / Amarillo)</option>
-                <option value="recreo">Recreo / Almuerzo</option>
-                <option value="otro">General / Otra Asignatura</option>
+                <option value="matematica">Matemática (azul cielo)</option>
+                <option value="lengua">Lengua / literatura (rosa suave)</option>
+                <option value="ingles">Inglés (lavanda / violeta)</option>
+                <option value="ciencia">Ciencias naturales (verde lima)</option>
+                <option value="sociales">Ciencias sociales (naranja)</option>
+                <option value="deporte">Educación física / deporte (ámbar / oro)</option>
+                <option value="especiales">Especiales (música, arte, robótica, etc.)</option>
+                <option value="proyecto">Proyecto de aula (índigo)</option>
+                <option value="rutina">Rutina / lectura (crema / amarillo)</option>
+                <option value="recreo">Recreo / almuerzo</option>
+                <option value="otro">General / otra asignatura</option>
               </select>
             </div>
 
             {/* Live Card Preview */}
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
-                Vista Previa de la Tarjeta
+                Vista previa de la tarjeta
               </label>
               {(() => {
                 const currentMatched = subjects.find(
@@ -235,7 +235,7 @@ export const ScheduleCellModal: React.FC<ScheduleCellModalProps> = ({
                       <div className="font-bold text-xs truncate">
                         {subject || 'Nombre de Asignatura'}
                       </div>
-                      <div className="text-[10px] opacity-80 truncate">
+                      <div className="text-xs opacity-80 truncate">
                         {classroom || 'Aula / Espacio'} · {teacherName || 'Docente'}
                       </div>
                     </div>
@@ -250,7 +250,7 @@ export const ScheduleCellModal: React.FC<ScheduleCellModalProps> = ({
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1 flex items-center space-x-1">
                 <MapPin className="w-3.5 h-3.5 text-slate-500" />
-                <span>Aula / Espacio</span>
+                <span>Aula / espacio</span>
               </label>
               <input
                 type="text"
@@ -258,13 +258,13 @@ export const ScheduleCellModal: React.FC<ScheduleCellModalProps> = ({
                 value={classroom}
                 onChange={(e) => setClassroom(e.target.value)}
                 placeholder="Ej. Aula 1A, Cancha, Laboratorio..."
-                className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs text-slate-700 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-100"
+                className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs text-slate-700 focus:outline-hidden focus:ring-2 focus:ring-primary-500 disabled:bg-slate-100"
               />
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1 flex items-center space-x-1">
                 <User className="w-3.5 h-3.5 text-slate-500" />
-                <span>Docente Responsable</span>
+                <span>Docente responsable</span>
               </label>
               <input
                 type="text"
@@ -272,27 +272,27 @@ export const ScheduleCellModal: React.FC<ScheduleCellModalProps> = ({
                 value={teacherName}
                 onChange={(e) => setTeacherName(e.target.value)}
                 placeholder="Ej. Prof. Andrea, Prof. Carlos..."
-                className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs text-slate-700 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-100"
+                className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs text-slate-700 focus:outline-hidden focus:ring-2 focus:ring-primary-500 disabled:bg-slate-100"
               />
             </div>
           </div>
 
           {/* Weekly Variation / Seguimiento de Cambios */}
-          <div className="p-3.5 bg-amber-50/80 rounded-xl border border-amber-200/80 space-y-2">
+          <div className="p-3.5 bg-warning-50/80 rounded-xl border border-warning-200/80 space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-amber-900 flex items-center space-x-1.5">
-                <AlertCircle className="w-4 h-4 text-amber-600" />
-                <span>Variación Especial para esta Semana</span>
+              <label className="text-xs font-bold text-warning-900 flex items-center space-x-1.5">
+                <AlertCircle className="w-4 h-4 text-warning-600" />
+                <span>Variación especial para esta semana</span>
               </label>
               <input
                 type="checkbox"
                 disabled={readOnly}
                 checked={hasVariation}
                 onChange={(e) => setHasVariation(e.target.checked)}
-                className="rounded text-amber-600 focus:ring-amber-500 h-4 w-4"
+                className="rounded text-warning-600 focus:ring-warning-500 h-4 w-4"
               />
             </div>
-            <p className="text-[11px] text-amber-700">
+            <p className="text-xs text-warning-700">
               Marca si en la <strong>Semana {weekNumber}</strong> este bloque tendrá un cambio temporal, evaluación o actividad especial frente al horario regular.
             </p>
             {hasVariation && (
@@ -302,7 +302,7 @@ export const ScheduleCellModal: React.FC<ScheduleCellModalProps> = ({
                 value={variationNote}
                 onChange={(e) => setVariationNote(e.target.value)}
                 placeholder="Ej. Prueba corta de fracciones / Cambio de bloque con Robótica..."
-                className="w-full px-3 py-1.5 rounded-lg border border-amber-300 bg-white text-xs text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-amber-500"
+                className="w-full px-3 py-1.5 rounded-lg border border-warning-300 bg-white text-xs text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-warning-500"
               />
             )}
           </div>
@@ -316,10 +316,10 @@ export const ScheduleCellModal: React.FC<ScheduleCellModalProps> = ({
                   onClear();
                   onClose();
                 }}
-                className="px-3 py-2 text-xs font-bold text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-xl transition-colors flex items-center space-x-1"
+                className="px-3 py-2 text-xs font-bold text-danger-600 hover:text-danger-700 hover:bg-danger-50 rounded-xl transition-colors flex items-center space-x-1"
               >
                 <Trash2 className="w-3.5 h-3.5" />
-                <span>Vaciar Celda</span>
+                <span>Vaciar celda</span>
               </button>
             ) : <div />}
 
@@ -334,10 +334,10 @@ export const ScheduleCellModal: React.FC<ScheduleCellModalProps> = ({
               {!readOnly && (
                 <button
                   type="submit"
-                  className="px-5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs transition-colors flex items-center space-x-1.5"
+                  className="px-5 py-2 text-xs font-bold text-white bg-primary-600 hover:bg-primary-700 rounded-xl shadow-xs transition-colors flex items-center space-x-1.5"
                 >
                   <Check className="w-4 h-4" />
-                  <span>Guardar Bloque</span>
+                  <span>Guardar bloque</span>
                 </button>
               )}
             </div>

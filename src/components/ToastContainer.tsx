@@ -26,31 +26,31 @@ const TOAST_CONFIG: Record<ToastType, {
 }> = {
   success: {
     icon: CheckCircle,
-    iconClass: 'text-emerald-500',
-    barClass: 'bg-emerald-500',
+    iconClass: 'text-success-700',
+    barClass: 'bg-success-500',
     bg: 'bg-white',
-    border: 'border-emerald-200',
+    border: 'border-success-200',
   },
   error: {
     icon: XCircle,
-    iconClass: 'text-rose-500',
-    barClass: 'bg-rose-500',
+    iconClass: 'text-danger-700',
+    barClass: 'bg-danger-500',
     bg: 'bg-white',
-    border: 'border-rose-200',
+    border: 'border-danger-200',
   },
   warning: {
     icon: Warning,
-    iconClass: 'text-amber-500',
-    barClass: 'bg-amber-400',
+    iconClass: 'text-warning-700',
+    barClass: 'bg-warning-400',
     bg: 'bg-white',
-    border: 'border-amber-200',
+    border: 'border-warning-200',
   },
   info: {
     icon: Info,
-    iconClass: 'text-indigo-500',
-    barClass: 'bg-indigo-500',
+    iconClass: 'text-primary-700',
+    barClass: 'bg-primary-500',
     bg: 'bg-white',
-    border: 'border-indigo-200',
+    border: 'border-primary-200',
   },
 };
 
@@ -117,7 +117,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ id, message, type, onRemove }) =>
       {/* Close */}
       <button
         onClick={handleClose}
-        className="shrink-0 p-0.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+        className="shrink-0 p-0.5 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors"
         aria-label="Cerrar notificación"
       >
         <X className="w-4 h-4" />

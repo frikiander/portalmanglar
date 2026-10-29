@@ -51,28 +51,28 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
   const hasPhone = /[0-9]{7,}/.test(fieldTrip.alliancesOrContacts);
 
   return (
-    <div className="fixed inset-0 z-50 bg-transparent flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl sm:rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-300 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 bg-raiz/40 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+      <div className="bg-white rounded-2xl sm:rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-300 overflow-hidden">
         
         {/* HEADER */}
-        <div className="px-5 sm:px-7 py-4 bg-gradient-to-r from-[#285A14] to-[#3A6B1F] text-white flex items-center justify-between shrink-0">
+        <div className="px-5 sm:px-7 py-4 bg-raiz text-white flex items-center justify-between shrink-0">
           <div className="flex items-center space-x-3 min-w-0">
             <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center border border-white/20 shrink-0">
               {fieldTrip.type === 'salida_campo' ? (
                 <Bus className="w-5 h-5 text-white" />
               ) : (
-                <Sparkles className="w-5 h-5 text-[#F8CB0A]" />
+                <Sparkles className="w-5 h-5 text-attention-400" />
               )}
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[10px] px-2 py-0.5 rounded-md bg-white/20 text-white font-bold uppercase tracking-wider">
+                <span className="text-xs px-2 py-0.5 rounded-md bg-white/20 text-white font-bold">
                   {fieldTrip.type === 'salida_campo' ? 'Salida de Campo' : 'Invitado Especial'}
                 </span>
-                <span className="text-[10px] px-2 py-0.5 rounded-md bg-emerald-900/40 text-emerald-200 font-bold">
+                <span className="text-xs px-2 py-0.5 rounded-md bg-success-900/40 text-success-200 font-bold">
                   {fieldTrip.grade}
                 </span>
-                <span className="text-[10px] px-2 py-0.5 rounded-md bg-white/15 text-white font-semibold">
+                <span className="text-xs px-2 py-0.5 rounded-md bg-white/15 text-white font-semibold">
                   Semana {fieldTrip.lapsoSemanaLabel || `${fieldTrip.lapso} Sem ${fieldTrip.weekNumber}`}
                 </span>
               </div>
@@ -105,13 +105,13 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
           {/* STATUS & DATE RIBBON */}
           <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <span className={`text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider flex items-center gap-1.5 ${
+              <span className={`text-xs px-3 py-1 rounded-full font-bold flex items-center gap-1.5 ${
                 fieldTrip.status === 'approved'
-                  ? 'bg-emerald-100 text-[#3A6B1F] border border-emerald-300'
+                  ? 'bg-success-100 text-primary-700 border border-success-300'
                   : fieldTrip.status === 'completed'
                   ? 'bg-blue-100 text-blue-800 border border-blue-300'
                   : fieldTrip.status === 'submitted'
-                  ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                  ? 'bg-warning-100 text-warning-800 border border-warning-300'
                   : 'bg-slate-200 text-slate-700'
               }`}>
                 {fieldTrip.status === 'approved' && <CheckCircle2 className="w-3.5 h-3.5" />}
@@ -123,15 +123,15 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
               </span>
 
               {fieldTrip.transportRequired && (
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 font-semibold flex items-center gap-1">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-primary-50 text-primary-700 border border-primary-200 font-semibold flex items-center gap-1">
                   <Bus className="w-3.5 h-3.5" />
-                  Transporte Solicitado
+                  Transporte solicitado
                 </span>
               )}
             </div>
 
             <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
-              <Calendar className="w-4 h-4 text-[#5EA832]" />
+              <Calendar className="w-4 h-4 text-primary-600" />
               <span>Fecha: <strong className="text-slate-900">{fieldTrip.date}</strong></span>
             </div>
           </div>
@@ -141,11 +141,11 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
             
             {/* Alianzas y Contactos */}
             <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-2">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-                Alianza y Contacto
+              <span className="text-xs font-bold text-slate-500 block">
+                Alianza y contacto
               </span>
               <div>
-                <div className="text-xs text-slate-400 font-medium">Nombre de la Alianza / Especialista:</div>
+                <div className="text-xs text-slate-500 font-medium">Nombre de la alianza / especialista:</div>
                 <div className="text-sm font-bold text-slate-900 mt-0.5">
                   {fieldTrip.allianceName || fieldTrip.alliancesOrContacts || 'Sin alianzas externas registradas'}
                 </div>
@@ -153,9 +153,9 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
 
               {(fieldTrip.contactPhone || hasPhone) && (
                 <div className="pt-1 border-t border-slate-100">
-                  <div className="text-xs text-slate-400 font-medium">Número de Contacto:</div>
-                  <div className="text-xs font-bold text-slate-800 font-mono mt-0.5 flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-[#5EA832]" />
+                  <div className="text-xs text-slate-500 font-medium">Número de contacto:</div>
+                  <div className="text-xs font-bold text-slate-800 tabular-nums mt-0.5 flex items-center gap-1.5">
+                    <Phone className="w-3.5 h-3.5 text-primary-600" />
                     <span>{fieldTrip.contactPhone || fieldTrip.alliancesOrContacts}</span>
                   </div>
                   <div className="pt-2 flex items-center gap-2">
@@ -170,7 +170,7 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
                       href={getWhatsAppLink(fieldTrip.contactPhone || fieldTrip.alliancesOrContacts)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-[#3A6B1F] border border-emerald-200 transition-colors"
+                      className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-success-50 hover:bg-success-100 text-primary-700 border border-success-200 transition-colors"
                     >
                       <MessageCircle className="w-3.5 h-3.5" />
                       <span>WhatsApp</span>
@@ -182,7 +182,7 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
 
             {/* Contexto del proyecto */}
             <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1.5">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+              <span className="text-xs font-bold text-slate-500 block">
                 Contexto del proyecto
               </span>
               <div className="text-sm font-bold text-slate-900">
@@ -195,11 +195,11 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
 
             {/* Docentes */}
             <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1.5">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-                Equipo Docente
+              <span className="text-xs font-bold text-slate-500 block">
+                Equipo docente
               </span>
               <div className="text-xs text-slate-700">
-                <strong className="text-slate-900">Docente Responsable:</strong> {fieldTrip.responsibleTeacher}
+                <strong className="text-slate-900">Docente responsable:</strong> {fieldTrip.responsibleTeacher}
               </div>
               {fieldTrip.chaperoneTeachers && (
                 <div className="text-xs text-slate-600">
@@ -210,15 +210,15 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
 
             {/* Recursos y Representantes */}
             <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1.5">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-                Recursos y Representantes Acompañantes
+              <span className="text-xs font-bold text-slate-500 block">
+                Recursos y representantes acompañantes
               </span>
               <div className="text-xs text-slate-700">
                 <strong className="text-slate-900">Recursos:</strong> {fieldTrip.resources || 'Ninguno especificado'}
               </div>
               {fieldTrip.chaperoneParents && (
                 <div className="text-xs text-slate-600">
-                  <strong>Padres Chaperones:</strong> {fieldTrip.chaperoneParents}
+                  <strong>Padres chaperones:</strong> {fieldTrip.chaperoneParents}
                 </div>
               )}
             </div>
@@ -227,8 +227,8 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
           {/* PROPÓSITO / TEMA */}
           {fieldTrip.purpose && (
             <div className="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/90 space-y-1.5">
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-                Tema / Propósito Pedagógico
+              <span className="text-xs font-bold text-slate-500 block">
+                Tema / propósito pedagógico
               </span>
               <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-medium">
                 {fieldTrip.purpose}
@@ -237,10 +237,10 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
           )}
 
           {/* ENFOQUES RELACIONADOS (PILARES DEL MANGLAR) */}
-          <div className="bg-amber-50/70 p-4 rounded-2xl border border-amber-200/80 space-y-2.5">
-            <span className="text-xs font-bold text-amber-950 uppercase tracking-wider flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-amber-700" />
-              Enfoques Relacionados (Pilares Institucionales El Manglar)
+          <div className="bg-warning-50/70 p-4 rounded-2xl border border-warning-200/80 space-y-2.5">
+            <span className="text-xs font-bold text-warning-950 flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-warning-700" />
+              Enfoques relacionados (pilares institucionales El Manglar)
             </span>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
               {[
@@ -253,8 +253,8 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
                   key={i}
                   className={`px-3 py-2 rounded-xl text-xs font-bold text-center border ${
                     item.checked
-                      ? 'bg-amber-100 text-amber-950 border-amber-300 shadow-2xs ring-1 ring-amber-300'
-                      : 'bg-white/80 text-slate-400 border-slate-200 line-through opacity-60'
+                      ? 'bg-warning-100 text-warning-950 border-warning-300 shadow-2xs ring-1 ring-warning-300'
+                      : 'bg-white/80 text-slate-500 border-slate-200 line-through opacity-60'
                   }`}
                 >
                   {item.label}
@@ -266,9 +266,9 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
           {/* METODOLOGÍA (¿CÓMO?) */}
           {fieldTrip.methodology && (
             <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1.5">
-              <span className="text-xs font-bold text-[#3A6B1F] uppercase tracking-wider flex items-center gap-1.5">
-                <FileText className="w-4 h-4 text-[#5EA832]" />
-                ¿CÓMO? (Metodología Vivencial y Desarrollo de la Actividad)
+              <span className="text-xs font-bold text-primary-700 flex items-center gap-1.5">
+                <FileText className="w-4 h-4 text-primary-600" />
+                ¿CÓMO? (Metodología vivencial y desarrollo de la actividad)
               </span>
               <p className="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line">
                 {fieldTrip.methodology}
@@ -278,11 +278,11 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
 
           {/* APRENDIZAJES CLAVE */}
           {fieldTrip.keyLearnings && (
-            <div className="bg-emerald-50/60 p-4 rounded-2xl border border-emerald-200/80 space-y-1.5">
-              <span className="text-xs font-bold text-emerald-950 uppercase tracking-wider block">
-                Aprendizajes Clave Alcanzados / Proyectados
+            <div className="bg-success-50/60 p-4 rounded-2xl border border-success-200/80 space-y-1.5">
+              <span className="text-xs font-bold text-success-950 block">
+                Aprendizajes clave alcanzados / proyectados
               </span>
-              <p className="text-xs sm:text-sm text-emerald-900 leading-relaxed font-medium">
+              <p className="text-xs sm:text-sm text-success-900 leading-relaxed font-medium">
                 {fieldTrip.keyLearnings}
               </p>
             </div>
@@ -291,7 +291,7 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
           {/* OBSERVACIONES */}
           {fieldTrip.observations && (
             <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-xs text-slate-600">
-              <strong className="text-slate-800">Observaciones Generales:</strong> {fieldTrip.observations}
+              <strong className="text-slate-800">Observaciones generales:</strong> {fieldTrip.observations}
             </div>
           )}
 
@@ -300,7 +300,7 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
             <div className="bg-slate-100 p-4 rounded-2xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <span className="text-xs font-bold text-slate-800 block">Acción de Coordinación</span>
-                <span className="text-[11px] text-slate-500">
+                <span className="text-xs text-slate-500">
                   Actualiza el visto bueno o marca la experiencia como ejecutada.
                 </span>
               </div>
@@ -308,9 +308,9 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
                 {fieldTrip.status !== 'approved' && (
                   <button
                     onClick={() => updateFieldTripStatus(fieldTrip.id, 'approved')}
-                    className="px-3 py-1.5 text-xs font-bold text-white bg-[#5EA832] hover:bg-[#498925] rounded-xl transition-colors cursor-pointer shadow-xs"
+                    className="px-3 py-1.5 text-xs font-bold text-white bg-primary-600 hover:bg-primary-600 rounded-xl transition-colors cursor-pointer shadow-xs"
                   >
-                    Aprobar Salida
+                    Aprobar salida
                   </button>
                 )}
                 {fieldTrip.status !== 'completed' && (
@@ -318,7 +318,7 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
                     onClick={() => updateFieldTripStatus(fieldTrip.id, 'completed')}
                     className="px-3 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors cursor-pointer shadow-xs"
                   >
-                    Marcar Realizada
+                    Marcar realizada
                   </button>
                 )}
               </div>
@@ -331,7 +331,7 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
         <div className="px-5 sm:px-7 py-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-2.5 shrink-0">
           <button
             onClick={handleDelete}
-            className="px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition-colors flex items-center gap-1 cursor-pointer"
+            className="px-3 py-2 text-xs font-bold text-danger-600 hover:bg-danger-50 rounded-xl transition-colors flex items-center gap-1 cursor-pointer"
           >
             <Trash2 className="w-4 h-4" />
             <span>Eliminar</span>
@@ -342,8 +342,8 @@ export const FieldTripDetailModal: React.FC<Props> = ({ fieldTrip, onClose, onEd
               onClick={() => onEdit(fieldTrip)}
               className="px-4 py-2 text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-100 rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
             >
-              <Edit3 className="w-3.5 h-3.5 text-[#5EA832]" />
-              <span>Editar Registro</span>
+              <Edit3 className="w-3.5 h-3.5 text-primary-600" />
+              <span>Editar registro</span>
             </button>
             <button
               onClick={onClose}

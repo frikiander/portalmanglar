@@ -51,7 +51,9 @@ export interface LessonPlan {
   teacherId: string;
   teacherName: string;
   teacherAvatar: string;
-  weekNumber: number; // 1 to 15
+  weekNumber: number; // week of the lapso (1 to the lapso's configured weeks)
+  /** Weekday the class is planned for. Absent on plans saved before days existed. */
+  dayOfWeek?: ScheduleDay;
   subject: string;
   grade: string;
   topic: string;
@@ -176,6 +178,13 @@ export interface Student {
   // Sociograma / Dinámica de Grupos
   sociogramGroup?: 'Grupo 1' | 'Grupo 2';
   grade: string;               // ej. '1er Grado', '2do Grado', etc.
+}
+
+/** One lapso of a school year, as configured by Coordinación. */
+export interface LapsoConfig {
+  name: string;   // '1er Lapso' | '2do Lapso' | '3er Lapso'
+  start: string;  // YYYY-MM-DD, any day of the first week
+  weeks: number;  // number of school weeks in the lapso
 }
 
 export type CalendarViewType = 'day' | 'week' | 'month' | 'year';

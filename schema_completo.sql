@@ -1,6 +1,7 @@
 -- ============================================================
 -- PORTAL MANGLAR — SCHEMA COMPLETO SUPABASE
--- Ejecutar en el SQL Editor de Supabase Dashboard
+-- Ejecutar en el SQL Editor de Supabase Dashboard.
+-- Después ejecutar seguridad_rls.sql: sin ese paso, con RLS activo nadie puede leer ni escribir.
 -- ============================================================
 
 -- ─── EXTENSIONES ────────────────────────────────────────────
@@ -26,7 +27,7 @@ CREATE TABLE IF NOT EXISTS public.users (
 );
 
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "users_all" ON public.users FOR ALL USING (true) WITH CHECK (true);
+-- Políticas por rol: ejecutar seguridad_rls.sql después de este archivo.
 
 -- ─── TABLA: subjects ────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.subjects (
@@ -42,7 +43,7 @@ CREATE TABLE IF NOT EXISTS public.subjects (
 );
 
 ALTER TABLE public.subjects ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "subjects_all" ON public.subjects FOR ALL USING (true) WITH CHECK (true);
+-- Políticas por rol: ejecutar seguridad_rls.sql después de este archivo.
 
 -- ─── TABLA: competencies ────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.competencies (
@@ -61,7 +62,7 @@ CREATE TABLE IF NOT EXISTS public.competencies (
 CREATE INDEX IF NOT EXISTS competencies_subject_grade_idx ON public.competencies(subject, grade);
 
 ALTER TABLE public.competencies ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "competencies_all" ON public.competencies FOR ALL USING (true) WITH CHECK (true);
+-- Políticas por rol: ejecutar seguridad_rls.sql después de este archivo.
 
 -- ─── TABLA: lesson_plans ────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.lesson_plans (
@@ -70,6 +71,7 @@ CREATE TABLE IF NOT EXISTS public.lesson_plans (
   teacher_name          TEXT NOT NULL,
   teacher_avatar        TEXT DEFAULT '',
   week_number           INTEGER NOT NULL,
+  day_of_week           TEXT CHECK (day_of_week IN ('Lunes','Martes','Miércoles','Jueves','Viernes')),
   school_year           TEXT NOT NULL DEFAULT '2026-2027',
   subject               TEXT NOT NULL,
   grade                 TEXT NOT NULL,
@@ -89,11 +91,15 @@ CREATE TABLE IF NOT EXISTS public.lesson_plans (
   updated_at            TIMESTAMPTZ DEFAULT now()
 );
 
+-- Bases creadas antes de planificar por día
+ALTER TABLE public.lesson_plans ADD COLUMN IF NOT EXISTS day_of_week TEXT
+  CHECK (day_of_week IN ('Lunes','Martes','Miércoles','Jueves','Viernes'));
+
 CREATE INDEX IF NOT EXISTS lesson_plans_teacher_year_idx ON public.lesson_plans(teacher_id, school_year);
 CREATE INDEX IF NOT EXISTS lesson_plans_grade_year_idx ON public.lesson_plans(grade, school_year);
 
 ALTER TABLE public.lesson_plans ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "lesson_plans_all" ON public.lesson_plans FOR ALL USING (true) WITH CHECK (true);
+-- Políticas por rol: ejecutar seguridad_rls.sql después de este archivo.
 
 -- ─── TABLA: school_events ───────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.school_events (
@@ -111,7 +117,7 @@ CREATE TABLE IF NOT EXISTS public.school_events (
 );
 
 ALTER TABLE public.school_events ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "school_events_all" ON public.school_events FOR ALL USING (true) WITH CHECK (true);
+-- Políticas por rol: ejecutar seguridad_rls.sql después de este archivo.
 
 -- ─── TABLA: classroom_projects ──────────────────────────────
 CREATE TABLE IF NOT EXISTS public.classroom_projects (
@@ -131,7 +137,7 @@ CREATE TABLE IF NOT EXISTS public.classroom_projects (
 CREATE INDEX IF NOT EXISTS classroom_projects_grade_year_idx ON public.classroom_projects(grade, school_year);
 
 ALTER TABLE public.classroom_projects ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "classroom_projects_all" ON public.classroom_projects FOR ALL USING (true) WITH CHECK (true);
+-- Políticas por rol: ejecutar seguridad_rls.sql después de este archivo.
 
 -- ─── TABLA: duty_slots ──────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.duty_slots (
@@ -148,7 +154,7 @@ CREATE TABLE IF NOT EXISTS public.duty_slots (
 );
 
 ALTER TABLE public.duty_slots ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "duty_slots_all" ON public.duty_slots FOR ALL USING (true) WITH CHECK (true);
+-- Políticas por rol: ejecutar seguridad_rls.sql después de este archivo.
 
 -- ─── TABLA: students ────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.students (
@@ -185,7 +191,7 @@ CREATE TABLE IF NOT EXISTS public.students (
 CREATE INDEX IF NOT EXISTS students_grade_year_idx ON public.students(grade, school_year);
 
 ALTER TABLE public.students ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "students_all" ON public.students FOR ALL USING (true) WITH CHECK (true);
+-- Políticas por rol: ejecutar seguridad_rls.sql después de este archivo.
 
 -- ─── TABLA: schools (directorio intercolegial) ──────────────
 CREATE TABLE IF NOT EXISTS public.schools (
@@ -202,7 +208,7 @@ CREATE TABLE IF NOT EXISTS public.schools (
 );
 
 ALTER TABLE public.schools ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "schools_all" ON public.schools FOR ALL USING (true) WITH CHECK (true);
+-- Políticas por rol: ejecutar seguridad_rls.sql después de este archivo.
 
 -- ─── TABLA: field_trips ─────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.field_trips (
@@ -239,7 +245,7 @@ CREATE TABLE IF NOT EXISTS public.field_trips (
 CREATE INDEX IF NOT EXISTS field_trips_grade_year_idx ON public.field_trips(grade, school_year);
 
 ALTER TABLE public.field_trips ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "field_trips_all" ON public.field_trips FOR ALL USING (true) WITH CHECK (true);
+-- Políticas por rol: ejecutar seguridad_rls.sql después de este archivo.
 
 -- ─── TABLA: evaluations ─────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.evaluations (
@@ -265,7 +271,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS evaluations_unique_idx ON public.evaluations(s
 CREATE INDEX IF NOT EXISTS evaluations_grade_year_idx ON public.evaluations(grade, school_year);
 
 ALTER TABLE public.evaluations ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "evaluations_all" ON public.evaluations FOR ALL USING (true) WITH CHECK (true);
+-- Políticas por rol: ejecutar seguridad_rls.sql después de este archivo.
 
 -- ─── TABLA: class_schedules ─────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.class_schedules (
@@ -286,7 +292,7 @@ CREATE TABLE IF NOT EXISTS public.class_schedules (
 CREATE UNIQUE INDEX IF NOT EXISTS class_schedules_unique_idx ON public.class_schedules(school_year, grade, lapso, week_number);
 
 ALTER TABLE public.class_schedules ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "class_schedules_all" ON public.class_schedules FOR ALL USING (true) WITH CHECK (true);
+-- Políticas por rol: ejecutar seguridad_rls.sql después de este archivo.
 
 -- ─── TABLA: event_schedules ─────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.event_schedules (
@@ -314,18 +320,23 @@ CREATE TABLE IF NOT EXISTS public.event_schedules (
 );
 
 ALTER TABLE public.event_schedules ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "event_schedules_all" ON public.event_schedules FOR ALL USING (true) WITH CHECK (true);
+-- Políticas por rol: ejecutar seguridad_rls.sql después de este archivo.
 
 -- ─── TABLA: school_years (configuración años escolares) ──────
 CREATE TABLE IF NOT EXISTS public.school_years (
   id           TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
   year_label   TEXT NOT NULL UNIQUE,
   is_default   BOOLEAN DEFAULT false,
+  -- [{ "name": "1er Lapso", "start": "2026-08-31", "weeks": 15 }, ...] — editable en Años escolares → Lapsos
+  lapsos       JSONB,
   created_at   TIMESTAMPTZ DEFAULT now()
 );
 
+-- Bases ya creadas antes de existir la columna
+ALTER TABLE public.school_years ADD COLUMN IF NOT EXISTS lapsos JSONB;
+
 ALTER TABLE public.school_years ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "school_years_all" ON public.school_years FOR ALL USING (true) WITH CHECK (true);
+-- Políticas por rol: ejecutar seguridad_rls.sql después de este archivo.
 
 -- Seed inicial de años escolares
 INSERT INTO public.school_years (year_label, is_default) VALUES

@@ -13,13 +13,13 @@ export const FieldTripPrintViewModal: React.FC<Props> = ({ fieldTrip, onClose })
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-transparent flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-raiz/40 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
       <div className="bg-white rounded-2xl sm:rounded-3xl max-w-4xl w-full max-h-[95vh] flex flex-col shadow-2xl border border-slate-300 overflow-hidden">
         
         {/* TOP BAR ACTIONS */}
         <div className="px-6 py-3.5 bg-slate-800 text-white flex items-center justify-between shrink-0 print:hidden">
           <div className="flex items-center space-x-2">
-            <Printer className="w-4 h-4 text-emerald-400" />
+            <Printer className="w-4 h-4 text-success-400" />
             <span className="text-xs font-bold uppercase tracking-wider">
               Vista Previa de Impresión - Planilla Oficial
             </span>
@@ -27,7 +27,7 @@ export const FieldTripPrintViewModal: React.FC<Props> = ({ fieldTrip, onClose })
           <div className="flex items-center space-x-2">
             <button
               onClick={handlePrint}
-              className="px-4 py-1.5 bg-[#5EA832] hover:bg-[#498925] text-white text-xs font-bold rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+              className="px-4 py-1.5 bg-primary-600 hover:bg-primary-600 text-white text-xs font-bold rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>Imprimir / Guardar PDF</span>
@@ -45,13 +45,13 @@ export const FieldTripPrintViewModal: React.FC<Props> = ({ fieldTrip, onClose })
         <div className="flex-1 overflow-y-auto p-8 sm:p-12 text-slate-900 bg-white print:p-0 print:m-0 space-y-6 text-xs sm:text-sm leading-normal">
           
           {/* INSTITUTIONAL HEADER */}
-          <div className="border-b-2 border-[#285A14] pb-4 flex items-center justify-between">
+          <div className="border-b-2 border-primary-800 pb-4 flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-xl bg-[#285A14] flex items-center justify-center text-white font-black text-xl">
+              <div className="w-12 h-12 rounded-xl bg-primary-800 flex items-center justify-center text-white font-black text-xl">
                 M
               </div>
               <div>
-                <h1 className="text-base sm:text-lg font-black tracking-tight text-[#285A14] uppercase">
+                <h1 className="text-base sm:text-lg font-black tracking-tight text-primary-800 uppercase">
                   Colegio Integral El Manglar
                 </h1>
                 <p className="text-[11px] text-slate-500 font-semibold tracking-wide">
@@ -60,10 +60,10 @@ export const FieldTripPrintViewModal: React.FC<Props> = ({ fieldTrip, onClose })
               </div>
             </div>
             <div className="text-right">
-              <div className="inline-block px-3 py-1 bg-emerald-50 border border-emerald-300 rounded-lg text-xs font-black text-[#285A14] uppercase">
+              <div className="inline-block px-3 py-1 bg-success-50 border border-success-300 rounded-lg text-xs font-black text-primary-800 uppercase">
                 {fieldTrip.type === 'salida_campo' ? 'Ficha de Salida de Campo' : 'Ficha de Invitado Especial'}
               </div>
-              <p className="text-[10px] text-slate-400 mt-1">Cód. {fieldTrip.id}</p>
+              <p className="text-[10px] text-slate-500 mt-1">Cód. {fieldTrip.id}</p>
             </div>
           </div>
 
@@ -83,13 +83,13 @@ export const FieldTripPrintViewModal: React.FC<Props> = ({ fieldTrip, onClose })
             </div>
             <div>
               <span className="text-[10px] font-bold text-slate-500 uppercase block">Estado</span>
-              <span className="text-xs font-bold text-[#3A6B1F] uppercase">{fieldTrip.status}</span>
+              <span className="text-xs font-bold text-primary-700 uppercase">{fieldTrip.status}</span>
             </div>
           </div>
 
           {/* ANTES DEL PASEO O INVITADO */}
           <div className="space-y-3">
-            <h3 className="text-xs font-black uppercase tracking-wider text-[#285A14] border-b border-slate-200 pb-1">
+            <h3 className="text-xs font-black uppercase tracking-wider text-primary-800 border-b border-slate-200 pb-1">
               1. Planificación Inicial: {fieldTrip.type === 'salida_campo' ? 'Destino y Logística' : 'Invitado y Contacto'}
             </h3>
             
@@ -137,7 +137,7 @@ export const FieldTripPrintViewModal: React.FC<Props> = ({ fieldTrip, onClose })
 
           {/* ENFOQUES RELACIONADOS */}
           <div className="space-y-2">
-            <h3 className="text-xs font-black uppercase tracking-wider text-[#285A14] border-b border-slate-200 pb-1">
+            <h3 className="text-xs font-black uppercase tracking-wider text-primary-800 border-b border-slate-200 pb-1">
               2. Enfoques Relacionados (Pilares Institucionales El Manglar)
             </h3>
             <div className="grid grid-cols-4 gap-2 pt-1">
@@ -151,8 +151,8 @@ export const FieldTripPrintViewModal: React.FC<Props> = ({ fieldTrip, onClose })
                   key={idx}
                   className={`p-2 rounded border text-center font-bold text-[11px] ${
                     item.checked
-                      ? 'bg-amber-50 border-amber-400 text-amber-950 font-black'
-                      : 'bg-white border-slate-200 text-slate-400'
+                      ? 'bg-warning-50 border-warning-400 text-warning-950 font-black'
+                      : 'bg-white border-slate-200 text-slate-500'
                   }`}
                 >
                   <span className="mr-1">{item.checked ? '[X]' : '[ ]'}</span>
@@ -164,7 +164,7 @@ export const FieldTripPrintViewModal: React.FC<Props> = ({ fieldTrip, onClose })
 
           {/* METODOLOGÍA (¿CÓMO?) */}
           <div className="space-y-2">
-            <h3 className="text-xs font-black uppercase tracking-wider text-[#285A14] border-b border-slate-200 pb-1">
+            <h3 className="text-xs font-black uppercase tracking-wider text-primary-800 border-b border-slate-200 pb-1">
               3. ¿CÓMO? (Metodología Vivencial de la Experiencia)
             </h3>
             <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs leading-relaxed text-slate-800 whitespace-pre-line">
@@ -175,10 +175,10 @@ export const FieldTripPrintViewModal: React.FC<Props> = ({ fieldTrip, onClose })
           {/* APRENDIZAJES CLAVE */}
           {fieldTrip.keyLearnings && (
             <div className="space-y-2">
-              <h3 className="text-xs font-black uppercase tracking-wider text-[#285A14] border-b border-slate-200 pb-1">
+              <h3 className="text-xs font-black uppercase tracking-wider text-primary-800 border-b border-slate-200 pb-1">
                 4. Aprendizajes Clave
               </h3>
-              <div className="p-3 bg-emerald-50/50 border border-emerald-200 rounded-lg text-xs leading-relaxed text-slate-800">
+              <div className="p-3 bg-success-50/50 border border-success-200 rounded-lg text-xs leading-relaxed text-slate-800">
                 {fieldTrip.keyLearnings}
               </div>
             </div>
@@ -188,7 +188,7 @@ export const FieldTripPrintViewModal: React.FC<Props> = ({ fieldTrip, onClose })
           <div className="pt-8 border-t border-slate-300 grid grid-cols-3 gap-8 text-center text-xs">
             <div className="space-y-2">
               <div className="h-16 border-b border-slate-400 flex items-end justify-center pb-1">
-                <span className="text-[10px] text-slate-400 italic">Firma del Docente</span>
+                <span className="text-[10px] text-slate-500 italic">Firma del Docente</span>
               </div>
               <p className="font-bold text-slate-800">{fieldTrip.responsibleTeacher}</p>
               <p className="text-[10px] text-slate-500">Docente Responsable</p>
@@ -196,7 +196,7 @@ export const FieldTripPrintViewModal: React.FC<Props> = ({ fieldTrip, onClose })
 
             <div className="space-y-2">
               <div className="h-16 border-b border-slate-400 flex items-end justify-center pb-1">
-                <span className="text-[10px] text-slate-400 italic">Firma de Coordinación</span>
+                <span className="text-[10px] text-slate-500 italic">Firma de Coordinación</span>
               </div>
               <p className="font-bold text-slate-800">Lic. Elena Rivas</p>
               <p className="text-[10px] text-slate-500">Coordinación Pedagógica</p>
@@ -204,7 +204,7 @@ export const FieldTripPrintViewModal: React.FC<Props> = ({ fieldTrip, onClose })
 
             <div className="space-y-2">
               <div className="h-16 border-b border-slate-400 flex items-end justify-center pb-1">
-                <span className="text-[10px] text-slate-400 italic">Visto Bueno</span>
+                <span className="text-[10px] text-slate-500 italic">Visto Bueno</span>
               </div>
               <p className="font-bold text-slate-800">Dirección General</p>
               <p className="text-[10px] text-slate-500">Colegio Integral El Manglar</p>

@@ -72,26 +72,26 @@ export const StudentFormModal: React.FC<Props> = ({ defaultGrade, onClose }) => 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent overflow-y-auto animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-raiz/40 overflow-y-auto">
       <div className="bg-white rounded-2xl max-w-2xl w-full border border-slate-300 shadow-2xl overflow-hidden my-6 flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-emerald-800 via-emerald-700 to-[#3A6B1F] text-white shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 bg-raiz text-white shrink-0">
           <div className="flex items-center space-x-3.5">
             <div className="w-10 h-10 rounded-xl bg-white p-1 shadow-xs flex items-center justify-center shrink-0">
               <ManglarEmblem className="w-full h-full" />
             </div>
             <div>
-              <span className="text-xs text-emerald-100 font-semibold block">
+              <span className="text-xs text-success-100 font-semibold block">
                 Nómina Escolar · {defaultGrade}
               </span>
               <h3 className="text-base font-bold text-white tracking-tight">
-                Inscribir Nuevo Estudiante
+                Inscribir nuevo estudiante
               </h3>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-emerald-100 hover:text-white hover:bg-white/10 rounded-xl transition-colors cursor-pointer"
+            className="p-2 text-success-100 hover:text-white hover:bg-white/10 rounded-xl transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -101,14 +101,14 @@ export const StudentFormModal: React.FC<Props> = ({ defaultGrade, onClose }) => 
         <form id="new-student-form" onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-5 flex-1">
           {/* Bloque 1 */}
           <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-            <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
-              <User className="w-4 h-4 text-[#5EA832]" />
-              Identificación del Alumno
+            <h4 className="text-xs font-bold text-slate-700 flex items-center gap-2">
+              <User className="w-4 h-4 text-primary-600" />
+              Identificación del alumno
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="sm:col-span-2">
                 <label className="block text-xs font-semibold text-slate-600 mb-1">
-                  Apellidos y Nombres <span className="text-rose-500">*</span>
+                  Apellidos y nombres <span className="text-danger-700">*</span>
                 </label>
                 <input
                   type="text"
@@ -116,12 +116,12 @@ export const StudentFormModal: React.FC<Props> = ({ defaultGrade, onClose }) => 
                   placeholder="ej. Pérez Gómez Alejandro José"
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  className="w-full px-3 py-2 text-xs sm:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                  className="w-full px-3 py-2 text-xs sm:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                 />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">
-                  Cédula Escolar Niño(a) <span className="text-rose-500">*</span>
+                  Cédula escolar Niño(a) <span className="text-danger-700">*</span>
                 </label>
                 <input
                   type="text"
@@ -129,17 +129,17 @@ export const StudentFormModal: React.FC<Props> = ({ defaultGrade, onClose }) => 
                   placeholder="ej. 11820410317"
                   value={formData.schoolId}
                   onChange={(e) => setFormData({ ...formData, schoolId: e.target.value })}
-                  className="w-full px-3 py-2 text-xs sm:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden font-mono"
+                  className="w-full px-3 py-2 text-xs sm:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:outline-hidden tabular-nums"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Fecha de Nacimiento</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Fecha de nacimiento</label>
                 <input
                   type="text"
                   placeholder="DD/MM/AAAA"
                   value={formData.birthDate || ''}
                   onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
-                  className="w-full px-3 py-2 text-xs sm:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                  className="w-full px-3 py-2 text-xs sm:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                 />
               </div>
               <div>
@@ -147,30 +147,30 @@ export const StudentFormModal: React.FC<Props> = ({ defaultGrade, onClose }) => 
                 <select
                   value={formData.condition}
                   onChange={(e) => setFormData({ ...formData, condition: e.target.value as StudentCondition })}
-                  className="w-full px-3 py-2 text-xs sm:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                  className="w-full px-3 py-2 text-xs sm:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                 >
                   <option value="Regular">Regular</option>
                   <option value="NUEVO">NUEVO</option>
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Lugar de Nacimiento</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Lugar de nacimiento</label>
                 <input
                   type="text"
                   placeholder="ej. Diego Bautista Urbaneja, Florida..."
                   value={formData.birthPlace || ''}
                   onChange={(e) => setFormData({ ...formData, birthPlace: e.target.value })}
-                  className="w-full px-3 py-2 text-xs sm:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                  className="w-full px-3 py-2 text-xs sm:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                 />
               </div>
               <div className="sm:col-span-2">
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Estado / País</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Estado / país</label>
                 <input
                   type="text"
                   placeholder="ej. Anzoátegui, Estados Unidos..."
                   value={formData.birthState || ''}
                   onChange={(e) => setFormData({ ...formData, birthState: e.target.value })}
-                  className="w-full px-3 py-2 text-xs sm:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                  className="w-full px-3 py-2 text-xs sm:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                 />
               </div>
 
@@ -188,13 +188,13 @@ export const StudentFormModal: React.FC<Props> = ({ defaultGrade, onClose }) => 
 
           {/* Bloque 2 */}
           <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-            <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+            <h4 className="text-xs font-bold text-slate-700 flex items-center gap-2">
               <Heart className="w-4 h-4 text-pink-600" />
-              Directorio de Padres / Representantes
+              Directorio de padres / representantes
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="p-3 bg-white rounded-lg border border-slate-200 space-y-2">
-                <span className="text-[11px] font-bold text-pink-700 uppercase block">Madre</span>
+                <span className="text-xs font-bold text-pink-700 block">Madre</span>
                 <input
                   type="text"
                   placeholder="Nombre de la Madre"
@@ -207,7 +207,7 @@ export const StudentFormModal: React.FC<Props> = ({ defaultGrade, onClose }) => 
                   placeholder="C.I. Madre (ej. 18.568.973)"
                   value={formData.motherId || ''}
                   onChange={(e) => setFormData({ ...formData, motherId: e.target.value })}
-                  className="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-md font-mono"
+                  className="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-md tabular-nums"
                 />
                 <input
                   type="text"
@@ -226,7 +226,7 @@ export const StudentFormModal: React.FC<Props> = ({ defaultGrade, onClose }) => 
               </div>
 
               <div className="p-3 bg-white rounded-lg border border-slate-200 space-y-2">
-                <span className="text-[11px] font-bold text-blue-700 uppercase block">Padre</span>
+                <span className="text-xs font-bold text-blue-700 block">Padre</span>
                 <input
                   type="text"
                   placeholder="Nombre del Padre"
@@ -239,7 +239,7 @@ export const StudentFormModal: React.FC<Props> = ({ defaultGrade, onClose }) => 
                   placeholder="C.I. Padre (ej. 16.067.289)"
                   value={formData.fatherId || ''}
                   onChange={(e) => setFormData({ ...formData, fatherId: e.target.value })}
-                  className="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-md font-mono"
+                  className="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-md tabular-nums"
                 />
                 <input
                   type="text"
@@ -258,7 +258,7 @@ export const StudentFormModal: React.FC<Props> = ({ defaultGrade, onClose }) => 
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Telf. Habitación / Oficina</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Telf. Habitación / oficina</label>
                 <input
                   type="text"
                   placeholder="ej. 0281-2817808"
@@ -272,13 +272,13 @@ export const StudentFormModal: React.FC<Props> = ({ defaultGrade, onClose }) => 
 
           {/* Bloque 3 */}
           <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-            <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
-              <Shield className="w-4 h-4 text-emerald-600" />
-              Canvas LMS & Dinámica de Grupos
+            <h4 className="text-xs font-bold text-slate-700 flex items-center gap-2">
+              <Shield className="w-4 h-4 text-success-600" />
+              Canvas LMS & dinámica de grupos
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Correo Alumno</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Correo alumno</label>
                 <input
                   type="text"
                   placeholder="alumno@ejemplo.com o vacío"
@@ -288,7 +288,7 @@ export const StudentFormModal: React.FC<Props> = ({ defaultGrade, onClose }) => 
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Grupo de Sociograma</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Grupo de sociograma</label>
                 <select
                   value={formData.sociogramGroup || 'Grupo 1'}
                   onChange={(e) => setFormData({ ...formData, sociogramGroup: e.target.value as 'Grupo 1' | 'Grupo 2' })}
@@ -314,7 +314,7 @@ export const StudentFormModal: React.FC<Props> = ({ defaultGrade, onClose }) => 
           <button
             type="submit"
             form="new-student-form"
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-[#5EA832] hover:bg-[#498925] rounded-xl shadow-xs transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-primary-600 hover:bg-primary-600 rounded-xl shadow-xs transition-colors cursor-pointer"
           >
             <UserPlus className="w-4 h-4" />
             <span>Inscribir en {defaultGrade}</span>

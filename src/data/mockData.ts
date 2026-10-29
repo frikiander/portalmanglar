@@ -516,6 +516,40 @@ export const INITIAL_SCHOOL_EVENTS: SchoolEvent[] = [
     endTime: '13:00',
     targetRole: 'all',
   },
+  {
+    id: 'ev-11',
+    title: 'Límite: Entrega de Planificaciones Semanas 11 y 12',
+    description: 'Entrega en el portal de las planificaciones de las semanas 11 y 12 para revisión de Coordinación.',
+    type: 'planning_deadline',
+    date: '2026-11-06',
+    targetRole: 'teachers',
+  },
+  {
+    id: 'ev-12',
+    title: 'Consejo Técnico Pedagógico Mensual',
+    description: 'Reunión mensual del equipo docente con Coordinación Académica.',
+    type: 'meeting',
+    date: '2026-11-10',
+    startTime: '13:30',
+    endTime: '15:00',
+    targetRole: 'teachers',
+  },
+  {
+    id: 'ev-13',
+    title: 'Límite: Entrega de Planificaciones Semanas 13 a 15',
+    description: 'Última entrega de planificaciones del 1er lapso.',
+    type: 'planning_deadline',
+    date: '2026-11-20',
+    targetRole: 'teachers',
+  },
+  {
+    id: 'ev-14',
+    title: 'Evaluaciones de cierre del 1er Lapso',
+    description: 'Semana de evaluaciones finales del lapso.',
+    type: 'exam',
+    date: '2026-12-01',
+    targetRole: 'all',
+  },
 ];
 
 export { INITIAL_CLASSROOM_PROJECTS } from './classroomProjectsData';

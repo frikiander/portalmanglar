@@ -96,14 +96,14 @@ CREATE TABLE field_trips (
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-transparent flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 bg-raiz/40 flex items-center justify-center p-4">
       <div className="bg-slate-900 text-slate-100 rounded-2xl max-w-2xl w-full border border-slate-600 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-950">
           <div className="flex items-center space-x-2.5">
-            <Database className="w-5 h-5 text-[#F8CB0A]" />
+            <Database className="w-5 h-5 text-attention-400" />
             <div>
               <h3 className="text-sm font-bold text-white">schema.sql (PostgreSQL / Supabase)</h3>
-              <p className="text-[11px] text-slate-400">Portal Manglar · Esquema de Base de Datos Relacional</p>
+              <p className="text-xs text-slate-500">Portal Manglar · Esquema de Base de Datos Relacional</p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
@@ -111,24 +111,24 @@ CREATE TABLE field_trips (
               onClick={handleCopy}
               className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200"
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? <Check className="w-3.5 h-3.5 text-success-400" /> : <Copy className="w-3.5 h-3.5" />}
               <span>{copied ? 'Copiado' : 'Copiar'}</span>
             </button>
-            <button onClick={onClose} className="p-1 text-slate-400 hover:text-white">
+            <button onClick={onClose} className="p-1 text-slate-500 hover:text-white">
               <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        <div className="p-5 overflow-y-auto font-mono text-xs text-indigo-200 leading-relaxed bg-slate-950/80">
+        <div className="p-5 overflow-y-auto font-mono text-xs text-primary-200 leading-relaxed bg-slate-950/80">
           <pre>{schemaSnippet}</pre>
         </div>
 
-        <div className="px-6 py-3 border-t border-slate-800 bg-slate-950 flex justify-between items-center text-xs text-slate-400">
+        <div className="px-6 py-3 border-t border-slate-800 bg-slate-950 flex justify-between items-center text-xs text-slate-500">
           <span>Incluye Row Level Security (RLS) e índices de búsqueda</span>
           <button
             onClick={onClose}
-            className="px-3 py-1.5 bg-[#5EA832] hover:bg-[#498925] text-white rounded-lg font-medium cursor-pointer transition-colors"
+            className="px-3 py-1.5 bg-primary-600 hover:bg-primary-600 text-white rounded-lg font-medium cursor-pointer transition-colors"
           >
             Entendido
           </button>

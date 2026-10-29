@@ -15,6 +15,27 @@ export const supabase: SupabaseClient = SUPABASE_CONFIGURED
     })
   : (createNullClient() as unknown as SupabaseClient);
 
+// ─── Write errors ─────────────────────────────────────────────────────────────
+// Writes are fire-and-forget from the UI, so failures are reported through one listener
+// (the context shows a toast). Row Level Security rejections come back as code 42501.
+
+export type WriteErrorKind = 'permission' | 'other';
+type WriteErrorListener = (kind: WriteErrorKind, message: string, operation: string) => void;
+let writeErrorListener: WriteErrorListener | null = null;
+
+export function setWriteErrorListener(listener: WriteErrorListener | null) {
+  writeErrorListener = listener;
+}
+
+function reportWriteError(operation: string, error: { message: string; code?: string }) {
+  console.warn(`[Supabase] ${operation} error:`, error.message);
+  const kind: WriteErrorKind =
+    error.code === '42501' || /row-level security|permission denied|Solo Coordinación|ya fue (aprobada|auditad)/i.test(error.message)
+      ? 'permission'
+      : 'other';
+  writeErrorListener?.(kind, error.message, operation);
+}
+
 // ─── Auth Helpers ──────────────────────────────────────────────────────────────
 
 export async function signInWithGoogle(): Promise<void> {
@@ -60,16 +81,26 @@ export async function fetchUsers() {
   return data;
 }
 
+/** The portal user for a signed-in email, or null when it is not registered. Throws on network/server errors. */
+export async function fetchUserByEmail(email: string) {
+  if (!SUPABASE_CONFIGURED) return null;
+  // ilike = case-insensitive match; escape its wildcards so "a_b@x" only matches itself
+  const pattern = email.trim().replace(/[\\%_]/g, (c) => `\\${c}`);
+  const { data, error } = await supabase.from('users').select('*').ilike('email', pattern).maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
 export async function upsertUser(row: Record<string, unknown>) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('users').upsert(row, { onConflict: 'id' });
-  if (error) console.warn('[Supabase] upsertUser error:', error.message);
+  if (error) reportWriteError('upsertUser', error);
 }
 
 export async function removeUser(id: string) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('users').delete().eq('id', id);
-  if (error) console.warn('[Supabase] removeUser error:', error.message);
+  if (error) reportWriteError('removeUser', error);
 }
 
 // ─── SUBJECTS ─────────────────────────────────────────────────────────────────
@@ -83,13 +114,13 @@ export async function fetchSubjects() {
 export async function upsertSubject(row: Record<string, unknown>) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('subjects').upsert(row, { onConflict: 'id' });
-  if (error) console.warn('[Supabase] upsertSubject error:', error.message);
+  if (error) reportWriteError('upsertSubject', error);
 }
 
 export async function removeSubject(id: string) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('subjects').delete().eq('id', id);
-  if (error) console.warn('[Supabase] removeSubject error:', error.message);
+  if (error) reportWriteError('removeSubject', error);
 }
 
 // ─── COMPETENCIES ─────────────────────────────────────────────────────────────
@@ -103,13 +134,20 @@ export async function fetchCompetencies() {
 export async function upsertCompetency(row: Record<string, unknown>) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('competencies').upsert(row, { onConflict: 'id' });
-  if (error) console.warn('[Supabase] upsertCompetency error:', error.message);
+  if (error) reportWriteError('upsertCompetency', error);
+}
+
+/** Saves many competencies in one request (batch import). */
+export async function upsertCompetencies(rows: Record<string, unknown>[]) {
+  if (!SUPABASE_CONFIGURED || rows.length === 0) return;
+  const { error } = await supabase.from('competencies').upsert(rows, { onConflict: 'id' });
+  if (error) reportWriteError('upsertCompetencies', error);
 }
 
 export async function removeCompetency(id: string) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('competencies').delete().eq('id', id);
-  if (error) console.warn('[Supabase] removeCompetency error:', error.message);
+  if (error) reportWriteError('removeCompetency', error);
 }
 
 // ─── LESSON PLANS ─────────────────────────────────────────────────────────────
@@ -125,13 +163,13 @@ export async function fetchLessonPlans(schoolYear?: string) {
 export async function upsertLessonPlan(row: Record<string, unknown>) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('lesson_plans').upsert(row, { onConflict: 'id' });
-  if (error) console.warn('[Supabase] upsertLessonPlan error:', error.message);
+  if (error) reportWriteError('upsertLessonPlan', error);
 }
 
 export async function removeLessonPlan(id: string) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('lesson_plans').delete().eq('id', id);
-  if (error) console.warn('[Supabase] removeLessonPlan error:', error.message);
+  if (error) reportWriteError('removeLessonPlan', error);
 }
 
 // ─── SCHOOL EVENTS ────────────────────────────────────────────────────────────
@@ -145,13 +183,13 @@ export async function fetchSchoolEvents() {
 export async function upsertSchoolEvent(row: Record<string, unknown>) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('school_events').upsert(row, { onConflict: 'id' });
-  if (error) console.warn('[Supabase] upsertSchoolEvent error:', error.message);
+  if (error) reportWriteError('upsertSchoolEvent', error);
 }
 
 export async function removeSchoolEvent(id: string) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('school_events').delete().eq('id', id);
-  if (error) console.warn('[Supabase] removeSchoolEvent error:', error.message);
+  if (error) reportWriteError('removeSchoolEvent', error);
 }
 
 // ─── CLASSROOM PROJECTS ───────────────────────────────────────────────────────
@@ -167,13 +205,13 @@ export async function fetchClassroomProjects(schoolYear?: string) {
 export async function upsertClassroomProject(row: Record<string, unknown>) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('classroom_projects').upsert(row, { onConflict: 'id' });
-  if (error) console.warn('[Supabase] upsertClassroomProject error:', error.message);
+  if (error) reportWriteError('upsertClassroomProject', error);
 }
 
 export async function removeClassroomProject(id: string) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('classroom_projects').delete().eq('id', id);
-  if (error) console.warn('[Supabase] removeClassroomProject error:', error.message);
+  if (error) reportWriteError('removeClassroomProject', error);
 }
 
 // ─── DUTY SLOTS ───────────────────────────────────────────────────────────────
@@ -189,13 +227,13 @@ export async function fetchDutySlots(schoolYear?: string) {
 export async function upsertDutySlot(row: Record<string, unknown>) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('duty_slots').upsert(row, { onConflict: 'id' });
-  if (error) console.warn('[Supabase] upsertDutySlot error:', error.message);
+  if (error) reportWriteError('upsertDutySlot', error);
 }
 
 export async function removeDutySlot(id: string) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('duty_slots').delete().eq('id', id);
-  if (error) console.warn('[Supabase] removeDutySlot error:', error.message);
+  if (error) reportWriteError('removeDutySlot', error);
 }
 
 // ─── STUDENTS (ROSTER) ────────────────────────────────────────────────────────
@@ -211,13 +249,13 @@ export async function fetchStudents(schoolYear?: string) {
 export async function upsertStudent(row: Record<string, unknown>) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('students').upsert(row, { onConflict: 'id' });
-  if (error) console.warn('[Supabase] upsertStudent error:', error.message);
+  if (error) reportWriteError('upsertStudent', error);
 }
 
 export async function removeStudent(id: string) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('students').delete().eq('id', id);
-  if (error) console.warn('[Supabase] removeStudent error:', error.message);
+  if (error) reportWriteError('removeStudent', error);
 }
 
 // ─── SCHOOLS (DIRECTORIO EXTERNO) ─────────────────────────────────────────────
@@ -231,13 +269,13 @@ export async function fetchSchools() {
 export async function upsertSchool(row: Record<string, unknown>) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('schools').upsert(row, { onConflict: 'id' });
-  if (error) console.warn('[Supabase] upsertSchool error:', error.message);
+  if (error) reportWriteError('upsertSchool', error);
 }
 
 export async function removeSchool(id: string) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('schools').delete().eq('id', id);
-  if (error) console.warn('[Supabase] removeSchool error:', error.message);
+  if (error) reportWriteError('removeSchool', error);
 }
 
 // ─── FIELD TRIPS ──────────────────────────────────────────────────────────────
@@ -253,13 +291,13 @@ export async function fetchFieldTrips(schoolYear?: string) {
 export async function upsertFieldTrip(row: Record<string, unknown>) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('field_trips').upsert(row, { onConflict: 'id' });
-  if (error) console.warn('[Supabase] upsertFieldTrip error:', error.message);
+  if (error) reportWriteError('upsertFieldTrip', error);
 }
 
 export async function removeFieldTrip(id: string) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('field_trips').delete().eq('id', id);
-  if (error) console.warn('[Supabase] removeFieldTrip error:', error.message);
+  if (error) reportWriteError('removeFieldTrip', error);
 }
 
 // ─── EVALUATIONS ──────────────────────────────────────────────────────────────
@@ -275,13 +313,13 @@ export async function fetchEvaluations(schoolYear?: string) {
 export async function upsertEvaluation(row: Record<string, unknown>) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('evaluations').upsert(row, { onConflict: 'id' });
-  if (error) console.warn('[Supabase] upsertEvaluation error:', error.message);
+  if (error) reportWriteError('upsertEvaluation', error);
 }
 
 export async function removeEvaluation(id: string) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('evaluations').delete().eq('id', id);
-  if (error) console.warn('[Supabase] removeEvaluation error:', error.message);
+  if (error) reportWriteError('removeEvaluation', error);
 }
 
 // ─── CLASS SCHEDULES ──────────────────────────────────────────────────────────
@@ -297,13 +335,13 @@ export async function fetchClassSchedules(schoolYear?: string) {
 export async function upsertClassSchedule(row: Record<string, unknown>) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('class_schedules').upsert(row, { onConflict: 'id' });
-  if (error) console.warn('[Supabase] upsertClassSchedule error:', error.message);
+  if (error) reportWriteError('upsertClassSchedule', error);
 }
 
 export async function removeClassSchedule(id: string) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('class_schedules').delete().eq('id', id);
-  if (error) console.warn('[Supabase] removeClassSchedule error:', error.message);
+  if (error) reportWriteError('removeClassSchedule', error);
 }
 
 // ─── EVENT SCHEDULES ──────────────────────────────────────────────────────────
@@ -319,13 +357,13 @@ export async function fetchEventSchedules(schoolYear?: string) {
 export async function upsertEventSchedule(row: Record<string, unknown>) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('event_schedules').upsert(row, { onConflict: 'id' });
-  if (error) console.warn('[Supabase] upsertEventSchedule error:', error.message);
+  if (error) reportWriteError('upsertEventSchedule', error);
 }
 
 export async function removeEventSchedule(id: string) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('event_schedules').delete().eq('id', id);
-  if (error) console.warn('[Supabase] removeEventSchedule error:', error.message);
+  if (error) reportWriteError('removeEventSchedule', error);
 }
 
 // ─── SCHOOL YEARS ─────────────────────────────────────────────────────────────
@@ -339,19 +377,21 @@ export async function fetchSchoolYears() {
 export async function upsertSchoolYear(row: Record<string, unknown>) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('school_years').upsert(row, { onConflict: 'year_label' });
-  if (error) console.warn('[Supabase] upsertSchoolYear error:', error.message);
+  if (error) reportWriteError('upsertSchoolYear', error);
 }
 
 export async function setDefaultSchoolYearInDb(yearLabel: string) {
   if (!SUPABASE_CONFIGURED) return;
-  await supabase.from('school_years').update({ is_default: false }).neq('year_label', yearLabel);
-  await supabase.from('school_years').update({ is_default: true }).eq('year_label', yearLabel);
+  const off = await supabase.from('school_years').update({ is_default: false }).neq('year_label', yearLabel);
+  if (off.error) { reportWriteError('setDefaultSchoolYear', off.error); return; }
+  const on = await supabase.from('school_years').update({ is_default: true }).eq('year_label', yearLabel);
+  if (on.error) reportWriteError('setDefaultSchoolYear', on.error);
 }
 
 export async function removeSchoolYear(yearLabel: string) {
   if (!SUPABASE_CONFIGURED) return;
   const { error } = await supabase.from('school_years').delete().eq('year_label', yearLabel);
-  if (error) console.warn('[Supabase] removeSchoolYear error:', error.message);
+  if (error) reportWriteError('removeSchoolYear', error);
 }
 
 // ─── Internal: Null/stub client for demo mode ──────────────────────────────────

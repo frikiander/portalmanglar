@@ -80,7 +80,7 @@ export const EvaluationLapsoMatrix: React.FC<EvaluationLapsoMatrixProps> = ({
       <div className="p-4 sm:p-6 border-b border-slate-200 bg-slate-50/70 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <FileSpreadsheet className="w-5 h-5 text-[#285A14]" />
+            <FileSpreadsheet className="w-5 h-5 text-primary-800" />
             <h3 className="text-base font-bold text-slate-900">
               Matriz Consolidada de Evaluaciones · {lapso}
             </h3>
@@ -99,13 +99,13 @@ export const EvaluationLapsoMatrix: React.FC<EvaluationLapsoMatrixProps> = ({
             <button
               key={m.id}
               onClick={() => onSelectMoment(m.id)}
-              className="px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all bg-white hover:bg-emerald-50 hover:border-emerald-300 text-slate-700 shadow-2xs"
+              className="px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all bg-white hover:bg-success-50 hover:border-success-300 text-slate-700 shadow-2xs"
             >
               <span>{m.label.split(' ')[0]}</span>
               {m.record?.status === 'audited' ? (
-                <span className="w-2 h-2 rounded-full bg-emerald-500" title="Auditado" />
+                <span className="w-2 h-2 rounded-full bg-success-500" title="Auditado" />
               ) : m.record?.status === 'submitted' ? (
-                <span className="w-2 h-2 rounded-full bg-amber-500" title="Consolidado" />
+                <span className="w-2 h-2 rounded-full bg-warning-500" title="Consolidado" />
               ) : m.record ? (
                 <span className="w-2 h-2 rounded-full bg-slate-400" title="Borrador" />
               ) : (
@@ -120,30 +120,30 @@ export const EvaluationLapsoMatrix: React.FC<EvaluationLapsoMatrixProps> = ({
       <div className="overflow-x-auto">
         <table className="w-full text-left text-xs border-collapse">
           <thead>
-            <tr className="bg-slate-100/80 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200">
+            <tr className="bg-slate-100/80 text-slate-600 text-xs border-b border-slate-200">
               <th className="py-3 px-3 w-10 text-center font-bold">N°</th>
               <th className="py-3 px-3 min-w-[200px] font-bold text-slate-900">Estudiante</th>
-              <th className="py-3 px-3 w-28 text-center font-semibold bg-emerald-50/20">
+              <th className="py-3 px-3 w-28 text-center font-semibold bg-success-50/20">
                 Mensual I
               </th>
-              <th className="py-3 px-3 w-28 text-center font-semibold bg-sky-50/20">
+              <th className="py-3 px-3 w-28 text-center font-semibold bg-info-50/20">
                 Mensual II
               </th>
-              <th className="py-3 px-3 w-28 text-center font-semibold bg-indigo-50/20">
+              <th className="py-3 px-3 w-28 text-center font-semibold bg-primary-50/20">
                 Mensual III
               </th>
-              <th className="py-3 px-3 w-28 text-center font-semibold bg-amber-50/20">
-                Examen Lapso
+              <th className="py-3 px-3 w-28 text-center font-semibold bg-warning-50/20">
+                Examen lapso
               </th>
-              <th className="py-3 px-3 w-32 text-center font-black text-[#285A14] bg-[#285A14]/5">
-                Logro Estimado
+              <th className="py-3 px-3 w-32 text-center font-black text-primary-800 bg-primary-800/5">
+                Logro estimado
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200">
             {students.length === 0 ? (
               <tr>
-                <td colSpan={7} className="py-8 text-center text-slate-400 text-xs">
+                <td colSpan={7} className="py-8 text-center text-slate-500 text-xs">
                   No hay estudiantes inscritos en este grado.
                 </td>
               </tr>
@@ -163,16 +163,16 @@ export const EvaluationLapsoMatrix: React.FC<EvaluationLapsoMatrixProps> = ({
 
                 return (
                   <tr key={st.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="py-2.5 px-3 text-center text-slate-400 font-mono">
+                    <td className="py-2.5 px-3 text-center text-slate-500 tabular-nums">
                       {st.orderNumber || idx + 1}
                     </td>
                     <td className="py-2.5 px-3 font-semibold text-slate-900">
                       <div>{st.fullName}</div>
-                      <div className="text-[10px] text-slate-400 font-mono">{st.schoolId}</div>
+                      <div className="text-xs text-slate-500 tabular-nums">{st.schoolId}</div>
                     </td>
 
                     {/* M1 */}
-                    <td className="py-2.5 px-3 text-center bg-emerald-50/10">
+                    <td className="py-2.5 px-3 text-center bg-success-50/10">
                       {g1?.gradeValue ? (
                         <span
                           className={`inline-block px-2.5 py-0.5 rounded font-black text-xs border ${
@@ -182,12 +182,12 @@ export const EvaluationLapsoMatrix: React.FC<EvaluationLapsoMatrixProps> = ({
                           {g1.gradeValue}
                         </span>
                       ) : (
-                        <span className="text-slate-300 font-mono">-</span>
+                        <span className="text-slate-300 tabular-nums">-</span>
                       )}
                     </td>
 
                     {/* M2 */}
-                    <td className="py-2.5 px-3 text-center bg-sky-50/10">
+                    <td className="py-2.5 px-3 text-center bg-info-50/10">
                       {g2?.gradeValue ? (
                         <span
                           className={`inline-block px-2.5 py-0.5 rounded font-black text-xs border ${
@@ -197,12 +197,12 @@ export const EvaluationLapsoMatrix: React.FC<EvaluationLapsoMatrixProps> = ({
                           {g2.gradeValue}
                         </span>
                       ) : (
-                        <span className="text-slate-300 font-mono">-</span>
+                        <span className="text-slate-300 tabular-nums">-</span>
                       )}
                     </td>
 
                     {/* M3 */}
-                    <td className="py-2.5 px-3 text-center bg-indigo-50/10">
+                    <td className="py-2.5 px-3 text-center bg-primary-50/10">
                       {g3?.gradeValue ? (
                         <span
                           className={`inline-block px-2.5 py-0.5 rounded font-black text-xs border ${
@@ -212,12 +212,12 @@ export const EvaluationLapsoMatrix: React.FC<EvaluationLapsoMatrixProps> = ({
                           {g3.gradeValue}
                         </span>
                       ) : (
-                        <span className="text-slate-300 font-mono">-</span>
+                        <span className="text-slate-300 tabular-nums">-</span>
                       )}
                     </td>
 
                     {/* Examen de Lapso */}
-                    <td className="py-2.5 px-3 text-center bg-amber-50/10">
+                    <td className="py-2.5 px-3 text-center bg-warning-50/10">
                       {gEx?.gradeValue ? (
                         <span
                           className={`inline-block px-2.5 py-0.5 rounded font-black text-xs border ${
@@ -227,12 +227,12 @@ export const EvaluationLapsoMatrix: React.FC<EvaluationLapsoMatrixProps> = ({
                           {gEx.gradeValue}
                         </span>
                       ) : (
-                        <span className="text-slate-300 font-mono">-</span>
+                        <span className="text-slate-300 tabular-nums">-</span>
                       )}
                     </td>
 
                     {/* Logro Estimado */}
-                    <td className="py-2.5 px-3 text-center bg-[#285A14]/5 font-black">
+                    <td className="py-2.5 px-3 text-center bg-primary-800/5 font-black">
                       {globalGrade !== '-' ? (
                         <span
                           className={`inline-block px-3 py-1 rounded-lg font-black text-xs border ${
@@ -242,7 +242,7 @@ export const EvaluationLapsoMatrix: React.FC<EvaluationLapsoMatrixProps> = ({
                           {globalGrade}
                         </span>
                       ) : (
-                        <span className="text-slate-300 font-mono">-</span>
+                        <span className="text-slate-300 tabular-nums">-</span>
                       )}
                     </td>
                   </tr>

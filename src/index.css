@@ -1,45 +1,207 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 
 @theme {
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-sans: 'Atkinson Hyperlegible Next', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Atkinson Hyperlegible Next', system-ui, sans-serif;
 
-  /* ── Institutional palette ── */
-  --color-manglar-green-50:  #f4faee;
-  --color-manglar-green-100: #e4f4d8;
-  --color-manglar-green-200: #caeab3;
-  --color-manglar-green-300: #a7dc84;
-  --color-manglar-green-400: #7ec54f;
-  --color-manglar-green-500: #5ea832;
-  --color-manglar-green-600: #498925;
-  --color-manglar-green-700: #3a6b1f;
-  --color-manglar-green-800: #30551c;
-  --color-manglar-green-900: #29471b;
+  /* ── Brand tokens ("Raíz y marea") ── */
+  --color-raiz:     #1e2b22;   /* texto principal, barra lateral */
+  --color-fango:    #f2f4ef;   /* fondo de la app */
+  --color-manglar:  #3f7a22;   /* único color de acción */
+  --color-hoja:     #63ab32;   /* verde del logo: rellenos, nunca texto */
+  --color-salobre:  #2c6a6e;   /* información, calendario, eje IPC */
+  --color-polen:    #facd00;   /* requiere atención, eje DIEV */
+  --color-mangle:   #a8322a;   /* errores y observaciones */
 
-  --color-manglar-yellow-50:  #fefde8;
-  --color-manglar-yellow-100: #fefbc2;
-  --color-manglar-yellow-200: #fdf587;
-  --color-manglar-yellow-300: #fce843;
-  --color-manglar-yellow-400: #f8cb0a;
-  --color-manglar-yellow-500: #e5b004;
-  --color-manglar-yellow-600: #c18802;
-  --color-manglar-yellow-700: #9a6305;
+  /* ── Type scale: 12 / 13 / 15 / 17 / 21 / 28 / 36 ── */
+  --text-xs:   0.75rem;    --text-xs--line-height:   1.5;
+  --text-sm:   0.8125rem;  --text-sm--line-height:   1.5;
+  --text-base: 0.9375rem;  --text-base--line-height: 1.55;
+  --text-lg:   1.0625rem;  --text-lg--line-height:   1.45;
+  --text-xl:   1.3125rem;  --text-xl--line-height:   1.3;
+  --text-2xl:  1.75rem;    --text-2xl--line-height:  1.2;
+  --text-3xl:  2.25rem;    --text-3xl--line-height:  1.1;
+
+  /* ── Radius hierarchy: 6px controls, 10px panels ── */
+  --radius-sm:  4px;
+  --radius-md:  6px;
+  --radius-lg:  6px;
+  --radius-xl:  10px;
+  --radius-2xl: 10px;
+  --radius-3xl: 12px;
+
+  /* ── Shadows only lift what floats; resting surfaces use borders ── */
+  --shadow-xs: 0 0 #0000;
+  --shadow-sm: 0 1px 0 rgb(30 43 34 / 0.04);
+  --shadow-md: 0 4px 12px -2px rgb(30 43 34 / 0.10);
+  --shadow-lg: 0 10px 24px -6px rgb(30 43 34 / 0.14);
+  --shadow-xl: 0 18px 40px -10px rgb(30 43 34 / 0.18);
+  --shadow-2xl: 0 28px 60px -16px rgb(30 43 34 / 0.24);
+
+  /* ── Neutrals: slate re-tinted toward raíz/fango ── */
+  --color-slate-50:  #f2f4ef;
+  --color-slate-100: #e7eae3;
+  --color-slate-200: #d6dbd2;
+  --color-slate-300: #b9c0b4;
+  --color-slate-400: #8a9386;
+  --color-slate-500: #646d61;
+  --color-slate-600: #4d5649;
+  --color-slate-700: #3b4437;
+  --color-slate-800: #2b3429;
+  --color-slate-900: #1e2b22;
+  --color-slate-950: #121a14;
+
+  /* ── Semantic scales. Components use these names, never raw palette hues. ── */
+
+  /* primary: acciones (600 = manglar) */
+  --color-primary-50:  #f1f6eb;
+  --color-primary-100: #e1edd4;
+  --color-primary-200: #c4ddad;
+  --color-primary-300: #9fc77d;
+  --color-primary-400: #77ae50;
+  --color-primary-500: #589633;
+  --color-primary-600: #3f7a22;
+  --color-primary-700: #33641a;
+  --color-primary-800: #2a5016;
+  --color-primary-900: #233f14;
+  --color-primary-950: #132410;
+
+  /* success: aprobado, completado — más azulado que primary para distinguirse */
+  --color-success-50:  #eef6f0;
+  --color-success-100: #d7eadc;
+  --color-success-200: #b1d6bc;
+  --color-success-300: #82bb94;
+  --color-success-400: #57996c;
+  --color-success-500: #3b7f52;
+  --color-success-600: #2d6a43;
+  --color-success-700: #255638;
+  --color-success-800: #1f452e;
+  --color-success-900: #1a3a27;
+  --color-success-950: #0f2318;
+
+  /* danger: errores, observaciones (600 = mangle) */
+  --color-danger-50:  #fbf1ef;
+  --color-danger-100: #f5dcd8;
+  --color-danger-200: #ebb8b0;
+  --color-danger-300: #dd8c80;
+  --color-danger-400: #cb6152;
+  --color-danger-500: #b84436;
+  --color-danger-600: #a8322a;
+  --color-danger-700: #8b2922;
+  --color-danger-800: #72231e;
+  --color-danger-900: #5f201c;
+  --color-danger-950: #3a120f;
+
+  /* warning: pendiente, por revisar */
+  --color-warning-50:  #fdf8ec;
+  --color-warning-100: #faedcc;
+  --color-warning-200: #f4d995;
+  --color-warning-300: #ecc05a;
+  --color-warning-400: #e2a52f;
+  --color-warning-500: #c9871a;
+  --color-warning-600: #a86a12;
+  --color-warning-700: #865112;
+  --color-warning-800: #6c4114;
+  --color-warning-900: #5a3614;
+  --color-warning-950: #341d08;
+
+  /* info: calendario, eje IPC (600 = salobre) */
+  --color-info-50:  #eef6f6;
+  --color-info-100: #d5e9ea;
+  --color-info-200: #acd3d5;
+  --color-info-300: #7bb5b9;
+  --color-info-400: #4f9599;
+  --color-info-500: #367b80;
+  --color-info-600: #2c6a6e;
+  --color-info-700: #25575b;
+  --color-info-800: #1f474a;
+  --color-info-900: #1b3b3e;
+  --color-info-950: #0f2426;
+
+  /* attention: requiere tu atención, eje DIEV (400 = polen). Texto siempre raíz. */
+  --color-attention-50:  #fffbe6;
+  --color-attention-100: #fff3bf;
+  --color-attention-200: #ffe680;
+  --color-attention-300: #ffd940;
+  --color-attention-400: #facd00;
+  --color-attention-500: #e0b400;
+  --color-attention-600: #b38f00;
+  --color-attention-700: #8a6e00;
+  --color-attention-800: #614d00;
+  --color-attention-900: #4a3b00;
+  --color-attention-950: #2b2200;
+
+  /* ── Categorical hues kept by name (field-trip types, roster tags), re-tinted to sit with the palette ── */
+  --color-purple-50:  #f7f1f6;
+  --color-purple-100: #eddfeb;
+  --color-purple-200: #dbbfd7;
+  --color-purple-300: #c296bb;
+  --color-purple-400: #a56c9c;
+  --color-purple-500: #8a4f81;
+  --color-purple-600: #743f6c;
+  --color-purple-700: #5f3459;
+  --color-purple-800: #4d2b48;
+  --color-purple-900: #3f253b;
+  --color-purple-950: #261524;
+
+  --color-blue-50:  #eff4f9;
+  --color-blue-100: #dbe6f1;
+  --color-blue-200: #b7cde3;
+  --color-blue-300: #8aaed0;
+  --color-blue-400: #5e8cba;
+  --color-blue-500: #43719f;
+  --color-blue-600: #355c85;
+  --color-blue-700: #2c4c6d;
+  --color-blue-800: #253f5a;
+  --color-blue-900: #20354b;
+  --color-blue-950: #13202e;
+
 }
 
 /* ─── Base ────────────────────────────────────────────────────────────────── */
-:root {
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
 body {
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: #f8fafc;
-  color: #0f172a;
+  font-family: var(--font-sans);
+  background-color: var(--color-fango);
+  color: var(--color-raiz);
+  font-size: var(--text-base);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Figures line up in grades, hours and counters */
+table, input, time, .tabular-nums { font-variant-numeric: tabular-nums; }
+
+::selection { background: var(--color-polen); color: var(--color-raiz); }
+
+/* Keyboard focus is always visible. `!important` because many controls carry
+   `focus:outline-none`, which would otherwise win and hide focus entirely. */
+:focus-visible {
+  outline: 2px solid var(--color-manglar) !important;
+  outline-offset: 2px;
+}
+/* On the dark sidebar and dark headers the green outline needs a lighter partner */
+.bg-raiz :focus-visible,
+.bg-raiz:focus-visible {
+  outline-color: var(--color-polen) !important;
+}
+
+/* Skip link: hidden until focused with the keyboard */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--color-raiz);
+  color: #fff;
+  font-weight: 700;
+  font-size: var(--text-sm);
+}
+.skip-link:focus { top: 0.75rem; }
+/* The skip target receives focus only to move the reading position; no ring needed */
+#contenido:focus-visible { outline: none !important; }
 
 /* ─── Scrollbar styling ───────────────────────────────────────────────────── */
 .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -48,8 +210,8 @@ body {
 /* Custom thin scrollbar for panels */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+::-webkit-scrollbar-thumb { background: var(--color-slate-200); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-slate-300); }
 
 /* ─── Module transition animation ────────────────────────────────────────── */
 @keyframes module-in {
@@ -60,19 +222,30 @@ body {
   animation: module-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* ─── Sidebar nav item active ─────────────────────────────────────────────── */
-.nav-item-active {
-  background-color: #eef2ff;   /* indigo-50 */
-  color: #4338ca;              /* indigo-700 */
-  font-weight: 600;
+/* ─── Lapso tide: elapsed weeks fill once, left to right, on load ────────── */
+@keyframes tide-fill {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
 }
-.nav-item-active .nav-icon {
-  color: #4f46e5;              /* indigo-600 */
+.tide-fill {
+  transform-origin: left;
+  animation: tide-fill 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* ─── Print ───────────────────────────────────────────────────────────────── */
+@page { margin: 14mm 12mm; }
+
 @media print {
-  header, aside, footer, .no-print, button:not(.print-include) {
+  /* App chrome never prints; page/section headers inside content do */
+  .app-header, aside, footer, .no-print, button:not(.print-include) {
     display: none !important;
   }
   body {
@@ -84,10 +257,10 @@ body {
     margin: 0 !important;
     max-width: 100% !important;
   }
-}
-
-/* ─── Desactivar desenfoques de fondo (backdrop blur) para nitidez y estética limpia ─── */
-[class*="backdrop-blur"] {
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
+  /* Sober paper: no shadows or modal scrims; keep institutional colour bands as designed */
+  *, *::before, *::after { box-shadow: none !important; }
+  .fixed.inset-0, [class*="bg-raiz/40"] { background: transparent !important; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  table, tr, img { break-inside: avoid; }
+  h1, h2, h3 { break-after: avoid; }
 }

@@ -43,16 +43,16 @@ const CATEGORY_ICONS: Record<SubjectCategory, React.ElementType> = {
 };
 
 const CATEGORY_COLORS: Record<SubjectCategory, { bg: string; text: string; border: string }> = {
-  lengua: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200' },
+  lengua: { bg: 'bg-danger-50', text: 'text-danger-700', border: 'border-danger-200' },
   matematica: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
   ingles: { bg: 'bg-cyan-50', text: 'text-cyan-700', border: 'border-cyan-200' },
-  ciencia: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
-  sociales: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
+  ciencia: { bg: 'bg-success-50', text: 'text-success-700', border: 'border-success-200' },
+  sociales: { bg: 'bg-warning-50', text: 'text-warning-700', border: 'border-warning-200' },
   deporte: { bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200' },
   especiales: { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200' },
-  proyecto: { bg: 'bg-teal-50', text: 'text-teal-700', border: 'border-teal-200' },
+  proyecto: { bg: 'bg-info-50', text: 'text-info-700', border: 'border-info-200' },
   rutina: { bg: 'bg-slate-50', text: 'text-slate-700', border: 'border-slate-200' },
-  recreo: { bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-200' },
+  recreo: { bg: 'bg-attention-50', text: 'text-attention-700', border: 'border-attention-200' },
   otro: { bg: 'bg-slate-50', text: 'text-slate-700', border: 'border-slate-200' },
 };
 
@@ -198,20 +198,19 @@ export const SubjectsManagementSection: React.FC = () => {
   });
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <div className="space-y-6">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-800 rounded-3xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
-        <div className="absolute right-0 top-0 translate-x-8 -translate-y-8 w-64 h-64 bg-white/5 rounded-full blur-2xl pointer-events-none" />
+      <div className="bg-raiz rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/10 text-emerald-100 text-xs font-semibold">
-              <GraduationCap className="w-3.5 h-3.5 text-[#F8CB0A]" />
-              <span>Pensum y Malla Curricular Dinámica</span>
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/10 text-success-100 text-xs font-semibold">
+              <GraduationCap className="w-3.5 h-3.5 text-attention-400" />
+              <span>Pensum y malla curricular dinámica</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-              Catálogo Institucional de Asignaturas
+              Catálogo institucional de asignaturas
             </h2>
-            <p className="text-sm text-emerald-100 leading-relaxed">
+            <p className="text-sm text-success-100 leading-relaxed">
               Administra todas las materias de la plataforma. Las asignaturas añadidas aquí
               (como <strong>Ajedrez</strong>, <strong>Teatro</strong>, <strong>ADP</strong>, <strong>Deporte</strong> y <strong>Ed. Física</strong>)
               se sincronizan instantáneamente en la planificación semanal, horarios, proyectos de aula y evaluaciones.
@@ -221,22 +220,22 @@ export const SubjectsManagementSection: React.FC = () => {
           <button
             id="add-new-subject-btn"
             onClick={handleOpenAdd}
-            className="inline-flex items-center justify-center space-x-2 px-5 py-3 rounded-2xl bg-[#5EA832] hover:bg-[#4d8c28] text-white font-bold text-sm shadow-md hover:shadow-lg transition-all duration-150 shrink-0 cursor-pointer"
+            className="inline-flex items-center justify-center space-x-2 px-5 py-3 rounded-2xl bg-primary-600 hover:bg-primary-600 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all duration-150 shrink-0 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span>Nueva Asignatura</span>
+            <span>Nueva asignatura</span>
           </button>
         </div>
       </div>
 
       {/* Info Notice */}
-      <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-start space-x-3 text-emerald-900">
-        <Sparkles className="w-5 h-5 text-[#5EA832] shrink-0 mt-0.5" />
+      <div className="bg-success-50 border border-success-200 rounded-2xl p-4 flex items-start space-x-3 text-success-900">
+        <Sparkles className="w-5 h-5 text-primary-600 shrink-0 mt-0.5" />
         <div className="text-xs space-y-1">
           <p className="font-bold">
-            Disponibilidad Global en Toda la Plataforma:
+            Disponibilidad global en toda la plataforma:
           </p>
-          <p className="text-emerald-800 leading-relaxed">
+          <p className="text-success-800 leading-relaxed">
             Cada asignatura creada cuenta con código institucional, categoría de disciplina y grados aplicables.
             Los docentes podrán seleccionarla de inmediato al redactar sus planes semanales, los coordinadores
             al asignarla en los horarios escolares por arrastre, y en el módulo de evaluaciones por lapso.
@@ -248,19 +247,19 @@ export const SubjectsManagementSection: React.FC = () => {
       <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-4">
         {/* Search */}
         <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             id="subject-search-input"
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Buscar por nombre, código o descripción..."
-            className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-[#5EA832] focus:border-transparent"
+            className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           />
           {searchTerm && (
             <button
               onClick={() => setSearchTerm('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -270,12 +269,12 @@ export const SubjectsManagementSection: React.FC = () => {
         {/* Category Filter & New Subject Action */}
         <div className="flex items-center gap-3 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
           <div className="flex items-center space-x-2 shrink-0">
-            <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <Filter className="w-3.5 h-3.5 text-slate-500 shrink-0" />
             <select
               id="subject-category-filter-select"
               value={selectedCategoryFilter}
               onChange={(e) => setSelectedCategoryFilter(e.target.value)}
-              className="text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 focus:outline-hidden focus:ring-2 focus:ring-[#5EA832]"
+              className="text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary-500"
             >
               <option value="all">Todas las Categorías ({subjects.length})</option>
               {Object.entries(SUBJECT_CATEGORY_LABELS).map(([catKey, label]) => {
@@ -292,7 +291,7 @@ export const SubjectsManagementSection: React.FC = () => {
 
           <button
             onClick={handleOpenAdd}
-            className="inline-flex items-center justify-center space-x-1.5 px-4 py-2 rounded-xl bg-[#5EA832] hover:bg-[#4d8c28] text-white font-bold text-xs shadow-xs hover:shadow transition-all shrink-0 cursor-pointer"
+            className="inline-flex items-center justify-center space-x-1.5 px-4 py-2 rounded-xl bg-primary-600 hover:bg-primary-600 text-white font-bold text-xs shadow-xs hover:shadow transition-all shrink-0 cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>+ Asignatura</span>
@@ -325,12 +324,12 @@ export const SubjectsManagementSection: React.FC = () => {
                           {subject.name}
                         </h3>
                         {subject.code && (
-                          <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+                          <span className="text-xs tabular-nums font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
                             {subject.code}
                           </span>
                         )}
                       </div>
-                      <span className={`inline-block text-[11px] font-semibold mt-0.5 ${categoryStyle.text}`}>
+                      <span className={`inline-block text-xs font-semibold mt-0.5 ${categoryStyle.text}`}>
                         {SUBJECT_CATEGORY_LABELS[subject.category] || subject.category}
                       </span>
                     </div>
@@ -342,14 +341,14 @@ export const SubjectsManagementSection: React.FC = () => {
                       <button
                         onClick={() => handleOpenEdit(subject)}
                         title="Editar Asignatura"
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-[#3A6B1F] hover:bg-emerald-50 transition-colors"
+                        className="p-1.5 rounded-lg text-slate-500 hover:text-primary-700 hover:bg-success-50 transition-colors"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => setDeleteConfirmSubject(subject)}
                         title="Eliminar Asignatura"
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                        className="p-1.5 rounded-lg text-slate-500 hover:text-danger-600 hover:bg-danger-50 transition-colors"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -363,14 +362,14 @@ export const SubjectsManagementSection: React.FC = () => {
                     {subject.description}
                   </p>
                 ) : (
-                  <p className="text-xs text-slate-400 italic">
+                  <p className="text-xs text-slate-500 italic">
                     Sin descripción pedagógica detallada.
                   </p>
                 )}
 
                 {/* Applicable Grades */}
                 <div className="space-y-1 pt-1">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <div className="text-xs font-bold text-slate-500">
                     Grados aplicables:
                   </div>
                   <div className="flex flex-wrap gap-1">
@@ -378,13 +377,13 @@ export const SubjectsManagementSection: React.FC = () => {
                       subject.applicableGrades.map((grade) => (
                         <span
                           key={grade}
-                          className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200/80"
+                          className="text-xs font-medium px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200/80"
                         >
                           {grade}
                         </span>
                       ))
                     ) : (
-                      <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-emerald-50 text-[#3A6B1F]">
+                      <span className="text-xs font-medium px-2 py-0.5 rounded-md bg-success-50 text-primary-700">
                         Todos los grados (1ro a 6to)
                       </span>
                     )}
@@ -393,13 +392,13 @@ export const SubjectsManagementSection: React.FC = () => {
               </div>
 
               {/* Card Footer Status */}
-              <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+              <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
                 <span className="inline-flex items-center space-x-1">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-                  <span>Disponible en Horarios & Planes</span>
+                  <CheckCircle2 className="w-3 h-3 text-success-500" />
+                  <span>Disponible en horarios & planes</span>
                 </span>
                 {subject.isCustom && (
-                  <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded">
+                  <span className="text-xs font-semibold text-success-700 bg-success-50 px-1.5 py-0.2 rounded">
                     Personalizada
                   </span>
                 )}
@@ -421,7 +420,7 @@ export const SubjectsManagementSection: React.FC = () => {
 
       {/* Form Modal (Add / Edit Subject) */}
       {isFormModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent animate-in fade-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-raiz/40">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-300 max-h-[90vh] overflow-y-auto space-y-5">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div className="flex items-center space-x-2.5">
@@ -444,7 +443,7 @@ export const SubjectsManagementSection: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsFormModalOpen(false)}
-                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
+                className="p-1.5 text-slate-500 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -454,7 +453,7 @@ export const SubjectsManagementSection: React.FC = () => {
               {/* Name */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Nombre de la Asignatura *
+                  Nombre de la asignatura *
                 </label>
                 <input
                   id="subject-form-name"
@@ -463,7 +462,7 @@ export const SubjectsManagementSection: React.FC = () => {
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
                   placeholder="Ej: Ajedrez, Teatro, ADP, Deporte, Robótica..."
-                  className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-[#5EA832] focus:border-transparent font-medium"
+                  className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-primary-500 focus:border-transparent font-medium"
                 />
               </div>
 
@@ -471,13 +470,13 @@ export const SubjectsManagementSection: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Categoría Pedagógica *
+                    Categoría pedagógica *
                   </label>
                   <select
                     id="subject-form-category"
                     value={formCategory}
                     onChange={(e) => setFormCategory(e.target.value as SubjectCategory)}
-                    className="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-[#5EA832] font-semibold text-slate-800"
+                    className="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-primary-500 font-semibold text-slate-800"
                   >
                     {Object.entries(SUBJECT_CATEGORY_LABELS).map(([catKey, label]) => (
                       <option key={catKey} value={catKey}>
@@ -489,7 +488,7 @@ export const SubjectsManagementSection: React.FC = () => {
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Código / Abreviatura
+                    Código / abreviatura
                   </label>
                   <input
                     id="subject-form-code"
@@ -498,7 +497,7 @@ export const SubjectsManagementSection: React.FC = () => {
                     value={formCode}
                     onChange={(e) => setFormCode(e.target.value.toUpperCase())}
                     placeholder="Ej: AJE, TEA, ADP, EDF"
-                    className="w-full px-3 py-2.5 text-xs font-mono font-bold rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-[#5EA832]"
+                    className="w-full px-3 py-2.5 text-xs tabular-nums font-bold rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-primary-500"
                   />
                 </div>
               </div>
@@ -507,35 +506,35 @@ export const SubjectsManagementSection: React.FC = () => {
               <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Sparkles className="w-4 h-4 text-[#5EA832]" />
+                    <Sparkles className="w-4 h-4 text-primary-600" />
                     <label className="text-xs font-bold text-slate-800">
-                      Identificador Visual de la Asignatura
+                      Identificador visual de la asignatura
                     </label>
                   </div>
 
                   {/* Toggle between Preset and Upload */}
-                  <div className="flex items-center gap-1 p-0.5 bg-white border border-slate-200 rounded-lg text-[10px] font-bold shadow-2xs">
+                  <div className="flex items-center gap-1 p-0.5 bg-white border border-slate-200 rounded-lg text-xs font-bold shadow-2xs">
                     <button
                       type="button"
                       onClick={() => setVisualMode('preset')}
                       className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
                         visualMode === 'preset'
-                          ? 'bg-[#5EA832] text-white shadow-2xs'
+                          ? 'bg-primary-600 text-white shadow-2xs'
                           : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
-                      Icono Preestablecido
+                      Icono preestablecido
                     </button>
                     <button
                       type="button"
                       onClick={() => setVisualMode('upload')}
                       className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
                         visualMode === 'upload'
-                          ? 'bg-[#5EA832] text-white shadow-2xs'
+                          ? 'bg-primary-600 text-white shadow-2xs'
                           : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
-                      Subir Imagen (500×500)
+                      Subir imagen (500×500)
                     </button>
                   </div>
                 </div>
@@ -557,12 +556,12 @@ export const SubjectsManagementSection: React.FC = () => {
                           {formName || 'Nombre de la Asignatura'}
                         </h4>
                         {formCode && (
-                          <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 border border-slate-200">
+                          <span className="text-xs tabular-nums font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 border border-slate-200">
                             {formCode.toUpperCase()}
                           </span>
                         )}
                       </div>
-                      <p className="text-[11px] text-slate-500 font-medium">
+                      <p className="text-xs text-slate-500 font-medium">
                         {visualMode === 'upload' && formIconUrl
                           ? 'Imagen personalizada 500 × 500 px vinculada'
                           : visualMode === 'upload'
@@ -573,21 +572,21 @@ export const SubjectsManagementSection: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-slate-50 text-slate-600 shrink-0">
-                    Vista Previa
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full border bg-slate-50 text-slate-600 shrink-0">
+                    Vista previa
                   </span>
                 </div>
 
                 {/* Preset Icons Gallery */}
                 {visualMode === 'preset' && (
                   <div className="space-y-2 pt-1">
-                    <div className="flex items-center justify-between text-[11px] text-slate-500">
+                    <div className="flex items-center justify-between text-xs text-slate-500">
                       <span>Selecciona un icono temático:</span>
                       {formIconName && (
                         <button
                           type="button"
                           onClick={() => setFormIconName(undefined)}
-                          className="text-[10px] font-bold text-slate-400 hover:text-slate-600 underline cursor-pointer"
+                          className="text-xs font-bold text-slate-500 hover:text-slate-600 underline cursor-pointer"
                         >
                           Restablecer por defecto
                         </button>
@@ -606,7 +605,7 @@ export const SubjectsManagementSection: React.FC = () => {
                             title={opt.label}
                             className={`p-2 rounded-xl flex flex-col items-center justify-center transition-all cursor-pointer ${
                               isSelected
-                                ? 'bg-emerald-50 text-[#3A6B1F] ring-2 ring-[#5EA832] scale-105 shadow-2xs font-bold'
+                                ? 'bg-success-50 text-primary-700 ring-2 ring-primary-500 scale-105 shadow-2xs font-bold'
                                 : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border border-transparent'
                             }`}
                           >
@@ -630,20 +629,20 @@ export const SubjectsManagementSection: React.FC = () => {
                     />
 
                     {formIconUrl ? (
-                      <div className="p-3 bg-white border border-emerald-200 rounded-xl flex items-center justify-between gap-3">
+                      <div className="p-3 bg-white border border-success-200 rounded-xl flex items-center justify-between gap-3">
                         <div className="flex items-center space-x-3 min-w-0">
                           <div className="w-14 h-14 rounded-xl overflow-hidden border border-slate-200 shadow-xs shrink-0 relative group">
                             <img src={formIconUrl} alt="Vista 500x500" className="w-full h-full object-cover" />
                             <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                              <span className="text-[8px] font-bold text-white uppercase">500×500</span>
+                              <span className="text-[8px] font-bold text-white">500×500</span>
                             </div>
                           </div>
                           <div className="min-w-0">
-                            <div className="flex items-center space-x-1.5 text-xs font-bold text-emerald-900">
-                              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                            <div className="flex items-center space-x-1.5 text-xs font-bold text-success-900">
+                              <CheckCircle2 className="w-4 h-4 text-success-600 shrink-0" />
                               <span className="truncate">Imagen en 500 × 500 px lista</span>
                             </div>
-                            <p className="text-[11px] text-slate-500 truncate">
+                            <p className="text-xs text-slate-500 truncate">
                               Se reflejará en tarjetas, horarios y evaluaciones.
                             </p>
                           </div>
@@ -653,14 +652,14 @@ export const SubjectsManagementSection: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
-                            className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold rounded-lg transition-colors cursor-pointer"
+                            className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors cursor-pointer"
                           >
                             Cambiar
                           </button>
                           <button
                             type="button"
                             onClick={handleRemoveImage}
-                            className="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-[11px] font-bold rounded-lg transition-colors cursor-pointer"
+                            className="px-2.5 py-1.5 bg-danger-50 hover:bg-danger-100 text-danger-600 text-xs font-bold rounded-lg transition-colors cursor-pointer"
                           >
                             Quitar
                           </button>
@@ -669,21 +668,21 @@ export const SubjectsManagementSection: React.FC = () => {
                     ) : (
                       <div
                         onClick={() => fileInputRef.current?.click()}
-                        className={`p-4 border-2 border-dashed border-slate-300 hover:border-[#5EA832] hover:bg-emerald-50/40 rounded-xl text-center cursor-pointer transition-all ${
+                        className={`p-4 border-2 border-dashed border-slate-300 hover:border-primary-500 hover:bg-success-50/40 rounded-xl text-center cursor-pointer transition-all ${
                           isProcessingImage ? 'opacity-50 pointer-events-none' : ''
                         }`}
                       >
                         <div className="flex flex-col items-center justify-center text-slate-500">
-                          <div className="w-10 h-10 rounded-full bg-emerald-50 text-[#5EA832] flex items-center justify-center mb-1.5">
+                          <div className="w-10 h-10 rounded-full bg-success-50 text-primary-600 flex items-center justify-center mb-1.5">
                             <Upload className="w-5 h-5" />
                           </div>
                           <p className="text-xs font-bold text-slate-800">
                             {isProcessingImage ? 'Procesando imagen...' : 'Haz clic o arrastra para subir una imagen'}
                           </p>
-                          <p className="text-[10px] text-slate-500 mt-0.5">
+                          <p className="text-xs text-slate-500 mt-0.5">
                             Dimensión: <strong>500 × 500 px</strong> (JPG, PNG, WebP)
                           </p>
-                          <p className="text-[9.5px] text-[#285A14] font-medium mt-1">
+                          <p className="text-[9.5px] text-primary-800 font-medium mt-1">
                             El sistema la recorta y adapta automáticamente a 500x500 cuadrada
                           </p>
                         </div>
@@ -697,9 +696,9 @@ export const SubjectsManagementSection: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="block text-xs font-bold text-slate-700">
-                    Color de Identificación Institucional
+                    Color de identificación institucional
                   </label>
-                  <div className="flex items-center gap-1 p-0.5 bg-slate-100 rounded-lg text-[10px] font-bold">
+                  <div className="flex items-center gap-1 p-0.5 bg-slate-100 rounded-lg text-xs font-bold">
                     <button
                       type="button"
                       onClick={() => setColorMode('preset')}
@@ -760,10 +759,10 @@ export const SubjectsManagementSection: React.FC = () => {
                 ) : (
                   <div className="p-3 bg-slate-900 text-white rounded-2xl space-y-3 shadow-md">
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold text-slate-300">Selector de Color Personalizado</span>
+                      <span className="text-xs font-bold text-slate-300">Selector de color personalizado</span>
                       <div className="flex items-center gap-1.5">
                         <span className="w-4 h-4 rounded-full border border-white/20 shadow-2xs" style={{ backgroundColor: formColor }} />
-                        <span className="text-xs font-mono font-bold uppercase tracking-wider">{formColor}</span>
+                        <span className="text-xs tabular-nums font-bold">{formColor}</span>
                       </div>
                     </div>
 
@@ -781,7 +780,7 @@ export const SubjectsManagementSection: React.FC = () => {
                       {/* HEX Input Field */}
                       <div className="flex-1">
                         <div className="relative">
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-mono font-bold">#</span>
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs tabular-nums font-bold">#</span>
                           <input
                             type="text"
                             maxLength={7}
@@ -791,7 +790,7 @@ export const SubjectsManagementSection: React.FC = () => {
                               setFormColor(`#${val.toUpperCase()}`);
                             }}
                             placeholder="80B042"
-                            className="w-full bg-slate-800 border border-slate-700 text-white text-xs font-mono font-bold rounded-xl pl-7 pr-3 py-2 focus:ring-2 focus:ring-emerald-400 focus:outline-hidden"
+                            className="w-full bg-slate-800 border border-slate-700 text-white text-xs tabular-nums font-bold rounded-xl pl-7 pr-3 py-2 focus:ring-2 focus:ring-success-400 focus:outline-hidden"
                           />
                         </div>
                       </div>
@@ -799,7 +798,7 @@ export const SubjectsManagementSection: React.FC = () => {
 
                     {/* Popular Custom Shades Row */}
                     <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
-                      <span className="text-[10px] text-slate-400 font-semibold">Tonos sugeridos:</span>
+                      <span className="text-xs text-slate-500 font-semibold">Tonos sugeridos:</span>
                       <div className="flex items-center gap-1.5">
                         {['#80B042', '#3B82F6', '#8B5CF6', '#EC4899', '#F59E0B', '#10B981', '#64748B'].map((hex) => (
                           <button
@@ -821,7 +820,7 @@ export const SubjectsManagementSection: React.FC = () => {
               {/* Description */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Descripción o Alcance Formativo
+                  Descripción o alcance formativo
                 </label>
                 <textarea
                   id="subject-form-description"
@@ -829,7 +828,7 @@ export const SubjectsManagementSection: React.FC = () => {
                   value={formDescription}
                   onChange={(e) => setFormDescription(e.target.value)}
                   placeholder="Enfoque pedagógico, competencias que desarrolla o metodología institucional..."
-                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-[#5EA832] resize-none"
+                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-primary-500 resize-none"
                 />
               </div>
 
@@ -842,7 +841,7 @@ export const SubjectsManagementSection: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleSelectAllGrades}
-                    className="text-[11px] font-semibold text-[#5EA832] hover:text-[#4d8c28]"
+                    className="text-xs font-semibold text-primary-600 hover:text-primary-600"
                   >
                     Seleccionar todos
                   </button>
@@ -857,12 +856,12 @@ export const SubjectsManagementSection: React.FC = () => {
                         onClick={() => handleToggleGrade(grade)}
                         className={`text-left px-3 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center justify-between ${
                           isChecked
-                            ? 'bg-emerald-50 border-emerald-300 text-[#3A6B1F]'
+                            ? 'bg-success-50 border-success-300 text-primary-700'
                             : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
                         }`}
                       >
                         <span>{grade}</span>
-                        {isChecked && <CheckCircle2 className="w-3.5 h-3.5 text-[#5EA832]" />}
+                        {isChecked && <CheckCircle2 className="w-3.5 h-3.5 text-primary-600" />}
                       </button>
                     );
                   })}
@@ -880,7 +879,7 @@ export const SubjectsManagementSection: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-[#5EA832] hover:bg-[#4d8c28] text-white text-xs font-bold shadow-sm hover:shadow transition-all"
+                  className="px-5 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-600 text-white text-xs font-bold shadow-sm hover:shadow transition-all"
                 >
                   {editingSubject ? 'Guardar Cambios' : 'Crear Asignatura'}
                 </button>
@@ -892,14 +891,14 @@ export const SubjectsManagementSection: React.FC = () => {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirmSubject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent animate-in fade-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-raiz/40">
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-300 space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-red-50 border border-red-200 text-red-600 flex items-center justify-center mx-auto">
+            <div className="w-12 h-12 rounded-2xl bg-danger-50 border border-danger-200 text-danger-600 flex items-center justify-center mx-auto">
               <AlertCircle className="w-6 h-6" />
             </div>
             <div className="text-center space-y-1">
               <h3 className="text-base font-extrabold text-slate-900">
-                ¿Eliminar Asignatura?
+                ¿Eliminar asignatura?
               </h3>
               <p className="text-xs text-slate-500">
                 ¿Estás seguro de que deseas eliminar <strong>{deleteConfirmSubject.name}</strong>?
@@ -915,7 +914,7 @@ export const SubjectsManagementSection: React.FC = () => {
               </button>
               <button
                 onClick={() => handleDelete(deleteConfirmSubject)}
-                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-sm transition-colors"
+                className="flex-1 py-2.5 rounded-xl bg-danger-600 hover:bg-danger-700 text-white text-xs font-bold shadow-sm transition-colors"
               >
                 Eliminar
               </button>
