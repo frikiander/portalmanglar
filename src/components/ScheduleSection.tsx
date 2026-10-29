@@ -32,6 +32,7 @@ import {
   CalendarCheck
 } from 'lucide-react';
 import { useEduPlan } from '../context/EduPlanContext';
+import { PageHeader, Tabs } from './ui';
 import {
   ScheduleDay,
   ClassScheduleCell,
@@ -64,6 +65,7 @@ export const ScheduleSection: React.FC = () => {
     selectedScheduleGrade,
     setSelectedScheduleGrade,
     selectedScheduleLapso,
+    getLapsoWeeks,
     setSelectedScheduleLapso,
     selectedScheduleWeek,
     setSelectedScheduleWeek,
@@ -119,8 +121,13 @@ export const ScheduleSection: React.FC = () => {
 
   // Lapsos available
   const LAPSOS = ['1er Lapso', '2do Lapso', '3er Lapso'];
-  // Weeks 1 to 15
-  const WEEKS = Array.from({ length: 15 }, (_, i) => i + 1);
+  // Weeks of the selected lapso (configured in Años escolares)
+  const lapsoWeeks = getLapsoWeeks(selectedScheduleLapso);
+  const WEEKS = Array.from({ length: lapsoWeeks }, (_, i) => i + 1);
+
+  useEffect(() => {
+    if (selectedScheduleWeek > lapsoWeeks) setSelectedScheduleWeek(lapsoWeeks);
+  }, [lapsoWeeks, selectedScheduleWeek, setSelectedScheduleWeek]);
 
   // 1. Filter class schedules for the currently selected school year
   const yearClassSchedules = useMemo(() => {
@@ -479,63 +486,23 @@ export const ScheduleSection: React.FC = () => {
 
   return (
     <div id="schedule-module-container" className="space-y-6">
-      {/* Header Banner */}
-      <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-xs border border-slate-200">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div>
-            <div className="flex items-center space-x-2">
-              <span className="text-xs uppercase tracking-wider font-bold text-[#00B2A9]">
-                Módulo Académico & Coordinación
-              </span>
-              <span className="text-slate-300">·</span>
-              <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-slate-100 text-slate-700">
-                {viewMode === 'coordinator' ? 'Vista de Coordinación' : 'Vista del Docente'}
-              </span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1 flex items-center space-x-3">
-              <Clock className="w-7 h-7 text-[#00B2A9]" />
-              <span>Gestión de Horarios y Cronogramas</span>
-            </h1>
-            <p className="text-sm text-slate-600 mt-1 max-w-3xl">
-              Horarios semanales de clase con seguimiento de variaciones para docentes, y cronogramas de eventos especiales organizados por Coordinación Pedagógica.
-            </p>
-          </div>
-
-          {/* Tab Switcher Pills */}
-          <div className="flex items-center bg-slate-100 p-1.5 rounded-xl border border-slate-200 self-start lg:self-auto">
-            <button
-              id="tab-class-schedules"
-              onClick={() => setActiveTab('class_schedules')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all ${
-                activeTab === 'class_schedules'
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <FileSpreadsheet className="w-4 h-4 text-[#00B2A9]" />
-              <span>Horarios de Clase</span>
-            </button>
-
-            <button
-              id="tab-event-schedules"
-              onClick={() => setActiveTab('event_schedules')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all relative ${
-                activeTab === 'event_schedules'
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <CalendarDays className="w-4 h-4 text-indigo-600" />
-              <span>Horarios de Eventos</span>
-              {eventSchedules.length > 0 && (
-                <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-indigo-600 text-white">
-                  {eventSchedules.length}
-                </span>
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        title="Horarios"
+        description={viewMode === 'coordinator'
+          ? 'Horario semanal de cada grado y cronogramas de eventos especiales.'
+          : 'Tu horario semanal y los cronogramas de eventos especiales.'}
+        actions={
+          <Tabs
+            label="Tipo de horario"
+            value={activeTab}
+            onChange={setActiveTab}
+            options={[
+              { value: 'class_schedules', label: 'Clases', icon: FileSpreadsheet },
+              { value: 'event_schedules', label: eventSchedules.length > 0 ? `Eventos (${eventSchedules.length})` : 'Eventos', icon: CalendarDays },
+            ]}
+          />
+        }
+      />
 
       {/* ========================================================================= */}
       {/* TAB 1: HORARIOS DE CLASE                                                  */}
@@ -547,8 +514,8 @@ export const ScheduleSection: React.FC = () => {
             {/* Top Tier: Grade Selector & Secondary Actions Toolbar */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3.5 border-b border-slate-100">
               <div className="flex items-center space-x-2.5 flex-wrap gap-y-2">
-                <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider shrink-0">
-                  Grado Escolar:
+                <span className="text-xs font-extrabold text-slate-500 shrink-0">
+                  Grado escolar:
                 </span>
                 <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {GRADE_LIST.map((grade) => {
@@ -582,11 +549,11 @@ export const ScheduleSection: React.FC = () => {
                 <button
                   id="btn-copy-schedule-week"
                   onClick={() => setIsCopyModalOpen(true)}
-                  className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-colors shadow-2xs"
+                  className="px-3 py-1.5 bg-primary-50 hover:bg-primary-100 text-primary-700 border border-primary-200 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-colors shadow-2xs"
                   title="Copiar horario desde otra semana para no empezar de cero"
                 >
                   <Copy className="w-3.5 h-3.5" />
-                  <span>Copiar Semana</span>
+                  <span>Copiar semana</span>
                 </button>
 
                 <button
@@ -600,7 +567,7 @@ export const ScheduleSection: React.FC = () => {
 
                 <button
                   onClick={resetClassSchedules}
-                  className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
+                  className="p-1.5 text-slate-500 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
                   title="Restablecer a plantilla institucional por defecto"
                 >
                   <RotateCcw className="w-4 h-4" />
@@ -612,7 +579,7 @@ export const ScheduleSection: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-0.5">
               {/* Lapso Selector */}
               <div className="flex items-center space-x-2">
-                <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
+                <span className="text-xs font-extrabold text-slate-500">
                   Período:
                 </span>
                 <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200/80">
@@ -622,7 +589,7 @@ export const ScheduleSection: React.FC = () => {
                       onClick={() => setSelectedScheduleLapso(lapso)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                         selectedScheduleLapso === lapso
-                          ? 'bg-white text-[#3A6B1F] shadow-xs'
+                          ? 'bg-white text-primary-700 shadow-xs'
                           : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
@@ -646,14 +613,14 @@ export const ScheduleSection: React.FC = () => {
                 </button>
 
                 <div className="px-3.5 py-1.5 bg-slate-900 text-white rounded-xl text-xs font-black shadow-xs flex items-center space-x-1.5">
-                  <CalendarCheck className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Semana {selectedScheduleWeek} de 15</span>
+                  <CalendarCheck className="w-3.5 h-3.5 text-success-400" />
+                  <span>Semana {selectedScheduleWeek} de {lapsoWeeks}</span>
                 </div>
 
                 <button
                   id="btn-next-week"
-                  onClick={() => setSelectedScheduleWeek(Math.min(15, selectedScheduleWeek + 1))}
-                  disabled={selectedScheduleWeek >= 15}
+                  onClick={() => setSelectedScheduleWeek(Math.min(lapsoWeeks, selectedScheduleWeek + 1))}
+                  disabled={selectedScheduleWeek >= lapsoWeeks}
                   className="px-2.5 py-1.5 rounded-xl border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-30 disabled:hover:bg-white text-xs font-bold flex items-center space-x-1 transition-all shadow-2xs"
                   title="Ir a la semana siguiente"
                 >
@@ -663,31 +630,33 @@ export const ScheduleSection: React.FC = () => {
               </div>
             </div>
 
-            {/* Bottom Tier: Full 15-Week Timeline Matrix (Clean, responsive, NO HORIZONTAL SCROLLBAR!) */}
+            {/* Bottom Tier: full week matrix of the lapso, no horizontal scroll */}
             <div className="pt-2 border-t border-slate-100">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-2">
-                  <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
-                    Semanas del Lapso:
+                  <span className="text-xs font-extrabold text-slate-500">
+                    Semanas del lapso:
                   </span>
-                  <span className="text-[11px] text-slate-400 hidden md:inline">
+                  <span className="text-xs text-slate-500 hidden md:inline">
                     (Haz clic directo en cualquier semana para editar o consultar)
                   </span>
                 </div>
-                <div className="flex items-center space-x-3 text-[10px] font-semibold text-slate-500">
+                <div className="flex items-center space-x-3 text-xs font-semibold text-slate-500">
                   <span className="inline-flex items-center space-x-1">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                    <span className="w-2 h-2 rounded-full bg-success-500" />
                     <span>Guardada</span>
                   </span>
                   <span className="inline-flex items-center space-x-1">
-                    <span className="w-2 h-2 rounded-full bg-amber-500" />
+                    <span className="w-2 h-2 rounded-full bg-warning-500" />
                     <span>Variaciones</span>
                   </span>
                 </div>
               </div>
 
-              {/* 15 Week Adaptive Grid without any overflow-x scrollbar */}
-              <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-15 gap-1.5 sm:gap-2">
+              <div
+                className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-[repeat(var(--weeks),minmax(0,1fr))] gap-1.5 sm:gap-2"
+                style={{ '--weeks': lapsoWeeks } as React.CSSProperties}
+              >
                 {WEEKS.map((w) => {
                   const isSelected = selectedScheduleWeek === w;
                   const isSaved = weeksWithExplicitSave.has(w);
@@ -697,25 +666,22 @@ export const ScheduleSection: React.FC = () => {
                       key={w}
                       id={`btn-week-chip-${w}`}
                       onClick={() => setSelectedScheduleWeek(w)}
-                      className={`relative flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all border text-center ${
+                      aria-pressed={isSelected}
+                      aria-label={`Semana ${w}`}
+                      className={`relative flex flex-col items-center justify-center h-11 px-1 rounded-md transition-colors border text-center tabular-nums cursor-pointer ${
                         isSelected
-                          ? 'bg-slate-900 text-white border-slate-900 shadow-md ring-2 ring-emerald-500/60 scale-[1.04] z-10'
+                          ? 'bg-raiz text-white border-raiz'
                           : isSaved
-                          ? 'bg-emerald-50/70 hover:bg-emerald-100 text-emerald-900 border-emerald-200 shadow-2xs'
-                          : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200/80 hover:border-slate-300'
+                          ? 'bg-success-50 hover:bg-success-100 text-success-900 border-success-200'
+                          : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200 hover:border-slate-300'
                       }`}
                       title={`Semana ${w}: ${
                         isSaved
-                          ? 'Horario guardado oficialmente para esta semana'
-                          : 'Hereda horario de la semana anterior'
-                      }${hasVar ? ' (contiene variaciones)' : ''}`}
+                          ? 'horario guardado para esta semana'
+                          : 'usa el horario de la semana anterior'
+                      }${hasVar ? ' (con variaciones)' : ''}`}
                     >
-                      <span className={`text-[10px] font-semibold uppercase tracking-tight leading-none ${
-                        isSelected ? 'text-slate-300' : 'text-slate-400'
-                      }`}>
-                        SEM
-                      </span>
-                      <span className="text-sm font-black tracking-tight leading-none mt-1">
+                      <span className="text-sm font-bold leading-none">
                         {w}
                       </span>
 
@@ -724,14 +690,14 @@ export const ScheduleSection: React.FC = () => {
                         {isSaved && (
                           <span
                             className={`w-1.5 h-1.5 rounded-full ${
-                              isSelected ? 'bg-emerald-400' : 'bg-emerald-500'
+                              isSelected ? 'bg-success-400' : 'bg-success-500'
                             }`}
                             title="Horario guardado para esta semana"
                           />
                         )}
                         {hasVar && (
                           <span
-                            className="w-1.5 h-1.5 rounded-full bg-amber-500"
+                            className="w-1.5 h-1.5 rounded-full bg-warning-500"
                             title="Contiene variaciones semanales"
                           />
                         )}
@@ -753,8 +719,8 @@ export const ScheduleSection: React.FC = () => {
           >
             <div>
               <div className="flex items-center space-x-2 flex-wrap gap-y-1">
-                <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
-                  Horario Institucional
+                <span className="text-xs font-extrabold text-slate-500">
+                  Horario institucional
                 </span>
                 <span className="text-slate-300">·</span>
                 <span
@@ -768,36 +734,36 @@ export const ScheduleSection: React.FC = () => {
                   Año {selectedSchoolYear}
                 </span>
                 {isViewingHistoricalYear && (
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-warning-100 text-warning-800">
                     Histórico
                   </span>
                 )}
               </div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight uppercase mt-1">
-                HORARIO {selectedScheduleGrade} · SEMANA {selectedScheduleWeek} ({selectedScheduleLapso})
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight mt-1">
+                Horario de {selectedScheduleGrade}, semana {selectedScheduleWeek} del {selectedScheduleLapso.replace('Lapso', 'lapso')}
               </h2>
 
               {/* Weekly Inheritance & Save Status Badge */}
               <div className="mt-1.5 flex items-center space-x-2 flex-wrap gap-y-1">
                 {hasUnsavedChanges ? (
-                  <div className="flex items-center space-x-1.5 text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-300">
-                    <AlertCircle className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
+                  <div className="flex items-center space-x-1.5 text-xs font-bold text-warning-800 bg-warning-50 px-2.5 py-1 rounded-lg border border-warning-300">
+                    <AlertCircle className="w-3.5 h-3.5 text-warning-600" />
                     <span>Modificaciones pendientes por guardar para la Semana {selectedScheduleWeek}</span>
                   </div>
                 ) : !isExplicitlySaved ? (
-                  <div className="flex items-center space-x-1.5 text-xs font-bold text-sky-800 bg-sky-50 px-2.5 py-1 rounded-lg border border-sky-300">
-                    <CalendarCheck className="w-3.5 h-3.5 text-sky-600" />
+                  <div className="flex items-center space-x-1.5 text-xs font-bold text-info-800 bg-info-50 px-2.5 py-1 rounded-lg border border-info-300">
+                    <CalendarCheck className="w-3.5 h-3.5 text-info-600" />
                     <span>Tomando de base la Semana {inheritedFromWeek || 1} · Aún no guardado independientemente</span>
                   </div>
                 ) : (
-                  <div className="flex items-center space-x-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-300">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  <div className="flex items-center space-x-1.5 text-xs font-bold text-success-800 bg-success-50 px-2.5 py-1 rounded-lg border border-success-300">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-success-600" />
                     <span>Horario oficial guardado para la Semana {selectedScheduleWeek}</span>
                   </div>
                 )}
 
                 {currentWeekVariations.length > 0 && (
-                  <span className="text-xs font-bold text-amber-700 bg-amber-100/60 px-2 py-0.5 rounded-md">
+                  <span className="text-xs font-bold text-warning-700 bg-warning-100/60 px-2 py-0.5 rounded-md">
                     {currentWeekVariations.length} variaciones registradas
                   </span>
                 )}
@@ -812,14 +778,14 @@ export const ScheduleSection: React.FC = () => {
                 className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center space-x-2 transition-all border ${
                   isDrawerOpen
                     ? 'bg-slate-100 text-slate-800 border-slate-300'
-                    : 'bg-white text-emerald-800 border-emerald-300 hover:bg-emerald-50 shadow-2xs'
+                    : 'bg-white text-success-800 border-success-300 hover:bg-success-50 shadow-2xs'
                 }`}
                 title="Mostrar u ocultar la barra lateral de asignaturas"
               >
-                <Layers className="w-4 h-4 text-[#3A6B1F]" />
+                <Layers className="w-4 h-4 text-primary-700" />
                 <span>{isDrawerOpen ? 'Contraer Panel' : 'Panel de Asignaturas'}</span>
                 {unassignedTray.length > 0 && (
-                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white text-[10px] font-black flex items-center justify-center">
+                  <span className="w-5 h-5 rounded-full bg-warning-700 text-white text-xs font-black flex items-center justify-center">
                     {unassignedTray.length}
                   </span>
                 )}
@@ -830,8 +796,8 @@ export const ScheduleSection: React.FC = () => {
                 onClick={handleSaveCurrentWeekSchedule}
                 className={`px-4 py-2 rounded-xl text-xs font-black flex items-center space-x-2 transition-all shadow-xs ${
                   hasUnsavedChanges || !isExplicitlySaved
-                    ? 'bg-[#5EA832] text-white hover:bg-[#3A6B1F] ring-2 ring-emerald-400/40 shadow-md transform hover:-translate-y-0.5'
-                    : 'bg-emerald-50 text-[#3A6B1F] border border-emerald-300 hover:bg-emerald-100'
+                    ? 'bg-primary-600 text-white hover:bg-primary-700 ring-2 ring-success-400/40 shadow-md'
+                    : 'bg-success-50 text-primary-700 border border-success-300 hover:bg-success-100'
                 }`}
                 title="Guarda este horario exclusivamente para esta semana del año escolar seleccionado"
               >
@@ -853,31 +819,31 @@ export const ScheduleSection: React.FC = () => {
             <div className="flex-1 w-full min-w-0 space-y-4">
               {/* Color Legend based directly on Excel */}
               <div className="bg-slate-50 rounded-xl p-3 border border-slate-200/80">
-                <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center space-x-1.5">
+                <div className="text-xs font-bold text-slate-500 mb-2 flex items-center space-x-1.5">
                   <Layers className="w-3.5 h-3.5 text-slate-600" />
-                  <span>Convención de Colores Institucional (según Excel):</span>
+                  <span>Convención de colores institucional (según Excel):</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <span className="text-xs px-2.5 py-1 rounded-lg border font-semibold bg-[#FFF9C4] border-[#FBC02D] text-[#614A00]">
                     Matemática
                   </span>
                   <span className="text-xs px-2.5 py-1 rounded-lg border font-semibold bg-[#E8F5E9] border-[#81C784] text-[#1B5E20]">
-                    Lenguaje / Castellano
+                    Lenguaje / castellano
                   </span>
                   <span className="text-xs px-2.5 py-1 rounded-lg border font-semibold bg-[#E3F2FD] border-[#90CAF9] text-[#0D47A1]">
                     Inglés
                   </span>
                   <span className="text-xs px-2.5 py-1 rounded-lg border font-semibold bg-[#E0F7FA] border-[#80DEEA] text-[#006064]">
-                    Proyecto de Aula / Ciencias
+                    Proyecto de aula / ciencias
                   </span>
                   <span className="text-xs px-2.5 py-1 rounded-lg border font-semibold bg-[#FFF3E0] border-[#FFB74D] text-[#E65100]">
-                    Ed. Física / Deporte
+                    Ed. Física / deporte
                   </span>
                   <span className="text-xs px-2.5 py-1 rounded-lg border font-semibold bg-[#FCE4EC] border-[#F48FB1] text-[#880E4F]">
-                    Arte / Música / Robótica
+                    Arte / música / robótica
                   </span>
                   <span className="text-xs px-2.5 py-1 rounded-lg border font-semibold bg-[#F5F5F5] border-[#E0E0E0] text-[#424242]">
-                    Recesos / Desayuno / Almuerzo
+                    Recesos / desayuno / almuerzo
                   </span>
                 </div>
               </div>
@@ -888,7 +854,7 @@ export const ScheduleSection: React.FC = () => {
                   <table className="w-full text-left border-collapse min-w-[800px]">
                     {/* Header Row: Days */}
                     <thead>
-                      <tr className="bg-slate-900 text-white text-xs font-extrabold uppercase tracking-wider">
+                      <tr className="bg-slate-900 text-white text-xs font-extrabold">
                         <th className="p-3.5 w-36 text-center border-r border-slate-800 bg-slate-950">
                           Horario
                         </th>
@@ -912,12 +878,12 @@ export const ScheduleSection: React.FC = () => {
                         if (isBreak) {
                           return (
                             <tr key={slot} className="bg-slate-100/90 text-center font-bold text-xs text-slate-700">
-                              <td className="p-2.5 text-center bg-slate-200/80 border-r border-slate-300 font-mono text-[11px] text-slate-600">
+                              <td className="p-2.5 text-center bg-slate-200/80 border-r border-slate-300 tabular-nums text-xs text-slate-600">
                                 {slot}
                               </td>
                               <td
                                 colSpan={5}
-                                className="p-2.5 bg-slate-100 text-slate-600 font-extrabold uppercase tracking-widest text-[11px] border-r border-slate-200"
+                                className="p-2.5 bg-slate-100 text-slate-600 font-extrabold text-xs border-r border-slate-200"
                               >
                                 <span className="inline-flex items-center space-x-1.5 text-slate-700 bg-white/70 px-3 py-1 rounded-full border border-slate-300/60 shadow-2xs">
                                   <span>🍴 {isBreak.label}</span>
@@ -931,7 +897,7 @@ export const ScheduleSection: React.FC = () => {
                         return (
                           <tr key={slot} className="hover:bg-slate-50/60 transition-colors">
                             {/* Time Slot Column */}
-                            <td className="p-3 text-center bg-slate-50/80 border-r border-slate-200 font-mono text-xs font-semibold text-slate-700 whitespace-nowrap">
+                            <td className="p-3 text-center bg-slate-50/80 border-r border-slate-200 tabular-nums text-xs font-semibold text-slate-700 whitespace-nowrap">
                               {slot}
                             </td>
 
@@ -951,7 +917,7 @@ export const ScheduleSection: React.FC = () => {
                                   onDrop={(e) => handleCellDrop(e, day, slot)}
                                   onClick={() => handleCellClick(day, slot)}
                                   className={`p-2 border-r border-slate-200 last:border-r-0 align-top cursor-pointer group transition-all relative ${
-                                    isDragOver ? 'bg-emerald-50 ring-2 ring-emerald-500 ring-inset' : ''
+                                    isDragOver ? 'bg-success-50 ring-2 ring-success-500 ring-inset' : ''
                                   }`}
                                 >
                                   {hasData ? (
@@ -965,10 +931,10 @@ export const ScheduleSection: React.FC = () => {
                                         setActiveDragItem(null);
                                         setDragOverKey(null);
                                       }}
-                                      className={`p-2.5 rounded-xl border text-center transition-all relative cursor-grab active:cursor-grabbing select-none ${catStyle.bg} ${catStyle.border} ${catStyle.text} group-hover:shadow-md group-hover:ring-2 group-hover:ring-indigo-400/50`}
+                                      className={`p-2.5 rounded-xl border text-center transition-all relative cursor-grab active:cursor-grabbing select-none ${catStyle.bg} ${catStyle.border} ${catStyle.text} group-hover:shadow-md group-hover:ring-2 group-hover:ring-primary-400/50`}
                                     >
                                       {/* Drag Grip Indicator */}
-                                      <div className="absolute top-1 left-1 opacity-0 group-hover:opacity-100 transition-opacity text-slate-400">
+                                      <div className="absolute top-1 left-1 opacity-0 group-hover:opacity-100 transition-opacity text-slate-500">
                                         <GripVertical className="w-3 h-3" />
                                       </div>
 
@@ -982,7 +948,7 @@ export const ScheduleSection: React.FC = () => {
 
                                       {/* Classroom / Teacher Subtitle */}
                                       {(cell.classroom || cell.teacherName) && (
-                                        <div className="text-[10px] opacity-85 mt-1 truncate">
+                                        <div className="text-xs opacity-85 mt-1 truncate">
                                           {cell.classroom && <span>{cell.classroom}</span>}
                                           {cell.classroom && cell.teacherName && <span> · </span>}
                                           {cell.teacherName && <span>{cell.teacherName}</span>}
@@ -991,8 +957,8 @@ export const ScheduleSection: React.FC = () => {
 
                                       {/* Variation Note Banner */}
                                       {(cell.hasVariation || cell.variationNote) && (
-                                        <div className="mt-1.5 bg-amber-500/15 border border-amber-500/40 text-amber-900 rounded-md p-1 text-[10px] font-bold text-left flex items-start space-x-1 shadow-2xs">
-                                          <span className="text-amber-600">⚠️</span>
+                                        <div className="mt-1.5 bg-warning-500/15 border border-warning-500/40 text-warning-900 rounded-md p-1 text-xs font-bold text-left flex items-start space-x-1 shadow-2xs">
+                                          <span className="text-warning-600">⚠️</span>
                                           <span className="truncate">{cell.variationNote || 'Variación'}</span>
                                         </div>
                                       )}
@@ -1003,7 +969,7 @@ export const ScheduleSection: React.FC = () => {
                                           type="button"
                                           onClick={(e) => handleMoveCellToTray(day, slot, e)}
                                           title="Mover a la bandeja lateral (desasignar)"
-                                          className="p-1 bg-white/90 hover:bg-amber-100 text-amber-700 rounded-md shadow-2xs transition-colors"
+                                          className="p-1 bg-white/90 hover:bg-warning-100 text-warning-700 rounded-md shadow-2xs transition-colors"
                                         >
                                           <Inbox className="w-3 h-3" />
                                         </button>
@@ -1014,14 +980,14 @@ export const ScheduleSection: React.FC = () => {
                                     </div>
                                   ) : (
                                     <div
-                                      className={`h-14 rounded-xl border border-dashed transition-all flex flex-col items-center justify-center text-[10px] font-semibold ${
+                                      className={`h-14 rounded-xl border border-dashed transition-all flex flex-col items-center justify-center text-xs font-semibold ${
                                         isDragOver
-                                          ? 'border-emerald-500 bg-emerald-100/70 text-emerald-800 scale-95 shadow-inner'
-                                          : 'border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/30 text-slate-300 hover:text-indigo-600'
+                                          ? 'border-success-500 bg-success-100/70 text-success-800 scale-95 shadow-inner'
+                                          : 'border-slate-200 hover:border-primary-400 hover:bg-primary-50/30 text-slate-300 hover:text-primary-600'
                                       }`}
                                     >
                                       <Plus className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100 mb-0.5" />
-                                      <span className="opacity-0 group-hover:opacity-100 transition-opacity text-[9px]">
+                                      <span className="opacity-0 group-hover:opacity-100 transition-opacity text-xs">
                                         {isDragOver ? 'Soltar aquí' : 'Asignar'}
                                       </span>
                                     </div>
@@ -1039,13 +1005,13 @@ export const ScheduleSection: React.FC = () => {
 
               {/* Weekly Variations Tracking Summary Panel */}
               {currentWeekVariations.length > 0 && (
-                <div className="bg-amber-50/70 rounded-2xl p-5 border border-amber-200">
+                <div className="bg-warning-50/70 rounded-2xl p-5 border border-warning-200">
                   <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center space-x-2 text-amber-900 font-extrabold text-sm uppercase tracking-wide">
-                      <AlertCircle className="w-4 h-4 text-amber-600" />
+                    <div className="flex items-center space-x-2 text-warning-900 font-extrabold text-sm">
+                      <AlertCircle className="w-4 h-4 text-warning-600" />
                       <span>Seguimiento de Variaciones · Semana {selectedScheduleWeek} ({selectedScheduleLapso})</span>
                     </div>
-                    <span className="text-xs bg-amber-200 text-amber-900 font-bold px-2.5 py-0.5 rounded-full">
+                    <span className="text-xs bg-warning-200 text-warning-900 font-bold px-2.5 py-0.5 rounded-full">
                       {currentWeekVariations.length} ajustes
                     </span>
                   </div>
@@ -1055,17 +1021,17 @@ export const ScheduleSection: React.FC = () => {
                       <div
                         key={idx}
                         onClick={() => handleCellClick(day, timeSlot)}
-                        className="p-3 bg-white rounded-xl border border-amber-200 text-slate-800 shadow-2xs cursor-pointer hover:border-amber-400 transition-all"
+                        className="p-3 bg-white rounded-xl border border-warning-200 text-slate-800 shadow-2xs cursor-pointer hover:border-warning-400 transition-all"
                       >
-                        <div className="flex items-center justify-between text-xs font-bold text-amber-900">
+                        <div className="flex items-center justify-between text-xs font-bold text-warning-900">
                           <span>{day}</span>
-                          <span className="font-mono text-[11px] text-slate-500">{timeSlot}</span>
+                          <span className="tabular-nums text-xs text-slate-500">{timeSlot}</span>
                         </div>
                         <div className="text-xs font-extrabold text-slate-900 mt-0.5">
                           {cell.subject}
                         </div>
                         {cell.variationNote && (
-                          <p className="text-[11px] text-amber-800 bg-amber-50 p-1.5 rounded-lg border border-amber-200/60 mt-1.5 font-medium">
+                          <p className="text-xs text-warning-800 bg-warning-50 p-1.5 rounded-lg border border-warning-200/60 mt-1.5 font-medium">
                             {cell.variationNote}
                           </p>
                         )}
@@ -1116,13 +1082,13 @@ export const ScheduleSection: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 flex-1">
               {/* Search */}
               <div className="relative flex-1 max-w-sm">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
                   type="text"
                   value={eventSearch}
                   onChange={(e) => setEventSearch(e.target.value)}
                   placeholder="Buscar eventos o palabras clave..."
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-300 text-xs text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-300 text-xs text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-primary-500"
                 />
               </div>
 
@@ -1130,9 +1096,9 @@ export const ScheduleSection: React.FC = () => {
               <select
                 value={eventTypeFilter}
                 onChange={(e) => setEventTypeFilter(e.target.value)}
-                className="px-3 py-2 rounded-xl border border-slate-300 text-xs font-medium text-slate-700 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+                className="px-3 py-2 rounded-xl border border-slate-300 text-xs font-medium text-slate-700 focus:outline-hidden focus:ring-2 focus:ring-primary-500"
               >
-                <option value="all">Todos los Tipos</option>
+                <option value="all">Todos los tipos</option>
                 <option value="academic">Académico</option>
                 <option value="sports">Deportivo</option>
                 <option value="cultural">Cultural</option>
@@ -1144,9 +1110,9 @@ export const ScheduleSection: React.FC = () => {
               <select
                 value={eventGradeFilter}
                 onChange={(e) => setEventGradeFilter(e.target.value)}
-                className="px-3 py-2 rounded-xl border border-slate-300 text-xs font-medium text-slate-700 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+                className="px-3 py-2 rounded-xl border border-slate-300 text-xs font-medium text-slate-700 focus:outline-hidden focus:ring-2 focus:ring-primary-500"
               >
-                <option value="all">Todos los Grados</option>
+                <option value="all">Todos los grados</option>
                 {GRADE_LIST.map((g) => (
                   <option key={g} value={g}>
                     {g}
@@ -1163,10 +1129,10 @@ export const ScheduleSection: React.FC = () => {
                   setEventToEdit(null);
                   setIsEventModalOpen(true);
                 }}
-                className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-xs transition-colors self-start md:self-auto"
+                className="px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-xs transition-colors self-start md:self-auto"
               >
                 <Plus className="w-4 h-4" />
-                <span>Crear Horario de Evento</span>
+                <span>Crear horario de evento</span>
               </button>
             ) : (
               <div className="text-xs text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
@@ -1180,8 +1146,8 @@ export const ScheduleSection: React.FC = () => {
             <div className="grid grid-cols-1 gap-5">
               {filteredEventSchedules.map((evt) => {
                 const typeLabels: Record<EventScheduleType, { label: string; color: string }> = {
-                  academic: { label: 'Académico', color: 'bg-emerald-100 text-emerald-800 border-emerald-300' },
-                  sports: { label: 'Deportivo', color: 'bg-amber-100 text-amber-800 border-amber-300' },
+                  academic: { label: 'Académico', color: 'bg-success-100 text-success-800 border-success-300' },
+                  sports: { label: 'Deportivo', color: 'bg-warning-100 text-warning-800 border-warning-300' },
                   cultural: { label: 'Cultural', color: 'bg-purple-100 text-purple-800 border-purple-300' },
                   institutional: { label: 'Institucional', color: 'bg-blue-100 text-blue-800 border-blue-300' },
                   other: { label: 'Especial', color: 'bg-slate-100 text-slate-800 border-slate-300' },
@@ -1196,22 +1162,22 @@ export const ScheduleSection: React.FC = () => {
                     className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden hover:shadow-md transition-shadow"
                   >
                     {/* Event Header Banner */}
-                    <div className="p-5 bg-gradient-to-r from-slate-900 to-slate-800 text-white flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                    <div className="p-5 bg-raiz text-white flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className={`text-[10px] uppercase tracking-wider font-extrabold px-2.5 py-0.5 rounded-md border ${tInfo.color}`}>
+                          <span className={`text-xs font-extrabold px-2.5 py-0.5 rounded-md border ${tInfo.color}`}>
                             {tInfo.label}
                           </span>
-                          <span className="text-slate-400">·</span>
+                          <span className="text-slate-500">·</span>
                           <span className="text-xs text-slate-300 flex items-center space-x-1">
-                            <CalendarIcon className="w-3.5 h-3.5 text-amber-400" />
+                            <CalendarIcon className="w-3.5 h-3.5 text-warning-400" />
                             <span className="font-semibold">{displayDate}</span>
                           </span>
                           {hasTime && (
                             <>
-                              <span className="text-slate-400">·</span>
+                              <span className="text-slate-500">·</span>
                               <span className="text-xs text-slate-300 flex items-center space-x-1">
-                                <Clock className="w-3.5 h-3.5 text-amber-400" />
+                                <Clock className="w-3.5 h-3.5 text-warning-400" />
                                 <span>{evt.startTime} - {evt.endTime}</span>
                               </span>
                             </>
@@ -1223,7 +1189,7 @@ export const ScheduleSection: React.FC = () => {
                         <div className="flex items-center space-x-1 text-xs text-slate-300 mt-0.5">
                           {evt.location && (
                             <>
-                              <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                              <MapPin className="w-3.5 h-3.5 text-slate-500" />
                               <span>{evt.location}</span>
                               <span className="mx-1">·</span>
                             </>
@@ -1248,7 +1214,7 @@ export const ScheduleSection: React.FC = () => {
                           </button>
                           <button
                             onClick={() => deleteEventSchedule(evt.id)}
-                            className="p-2 bg-rose-500/20 hover:bg-rose-500/40 text-rose-300 hover:text-white rounded-xl text-xs font-semibold transition-colors"
+                            className="p-2 bg-danger-500/20 hover:bg-danger-500/40 text-danger-300 hover:text-white rounded-xl text-xs font-semibold transition-colors"
                             title="Eliminar evento"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -1265,13 +1231,13 @@ export const ScheduleSection: React.FC = () => {
                           {evt.description}
                         </p>
                         <div className="flex flex-wrap items-center gap-1.5 shrink-0">
-                          <span className="text-slate-400 font-bold uppercase text-[10px]">
+                          <span className="text-slate-500 font-bold text-xs">
                             Grados:
                           </span>
                           {evt.targetGrades.map((tg) => (
                             <span
                               key={tg}
-                              className="px-2 py-0.5 rounded-md bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold text-[11px]"
+                              className="px-2 py-0.5 rounded-md bg-primary-50 border border-primary-200 text-primary-700 font-bold text-xs"
                             >
                               {tg}
                             </span>
@@ -1282,16 +1248,16 @@ export const ScheduleSection: React.FC = () => {
                       {/* Detailed Agenda / Slots Table */}
                       {((evt.agenda && evt.agenda.length > 0) || (evt.slots && evt.slots.length > 0)) && (
                         <div className="border border-slate-200 rounded-xl overflow-hidden">
-                          <div className="bg-slate-50 px-4 py-2 text-xs font-bold text-slate-700 uppercase tracking-wider border-b border-slate-200 flex items-center space-x-1.5">
-                            <Clock className="w-3.5 h-3.5 text-indigo-600" />
-                            <span>Cronograma Detallado de Actividades</span>
+                          <div className="bg-slate-50 px-4 py-2 text-xs font-bold text-slate-700 border-b border-slate-200 flex items-center space-x-1.5">
+                            <Clock className="w-3.5 h-3.5 text-primary-600" />
+                            <span>Cronograma detallado de actividades</span>
                           </div>
                           <div className="overflow-x-auto">
                             <table className="w-full text-xs text-left border-collapse">
                               <thead>
                                 <tr className="bg-slate-100/70 text-slate-600 font-semibold border-b border-slate-200">
-                                  <th className="p-2.5 w-36">Día / Horario</th>
-                                  <th className="p-2.5">Actividad / Fase</th>
+                                  <th className="p-2.5 w-36">Día / horario</th>
+                                  <th className="p-2.5">Actividad / fase</th>
                                   <th className="p-2.5 w-48">Responsable</th>
                                   <th className="p-2.5 w-40">Lugar</th>
                                 </tr>
@@ -1299,7 +1265,7 @@ export const ScheduleSection: React.FC = () => {
                               <tbody className="divide-y divide-slate-100">
                                 {evt.agenda && evt.agenda.map((item, idx) => (
                                   <tr key={item.id || idx} className="hover:bg-slate-50/80">
-                                    <td className="p-2.5 font-mono font-bold text-slate-800">
+                                    <td className="p-2.5 tabular-nums font-bold text-slate-800">
                                       {item.time}
                                     </td>
                                     <td className="p-2.5 font-medium text-slate-900">
@@ -1316,14 +1282,14 @@ export const ScheduleSection: React.FC = () => {
 
                                 {evt.slots && evt.slots.map((slot, idx) => (
                                   <tr key={slot.id || idx} className="hover:bg-slate-50/80">
-                                    <td className="p-2.5 font-mono font-bold text-slate-800">
-                                      <span className="text-[11px] block text-slate-500 font-sans">{slot.day}</span>
+                                    <td className="p-2.5 tabular-nums font-bold text-slate-800">
+                                      <span className="text-xs block text-slate-500 font-sans">{slot.day}</span>
                                       {slot.time}
                                     </td>
                                     <td className="p-2.5 font-medium text-slate-900">
                                       <div>{slot.activity}</div>
                                       {slot.notes && (
-                                        <div className="text-[11px] text-slate-500 mt-0.5">{slot.notes}</div>
+                                        <div className="text-xs text-slate-500 mt-0.5">{slot.notes}</div>
                                       )}
                                     </td>
                                     <td className="p-2.5 text-slate-700">
@@ -1342,8 +1308,8 @@ export const ScheduleSection: React.FC = () => {
 
                       {/* Notes / Instructions */}
                       {(evt.notes || evt.coordinatorNotes) && (
-                        <div className="p-3 bg-amber-50/60 rounded-xl border border-amber-200/60 text-xs text-amber-900 flex items-start space-x-2">
-                          <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                        <div className="p-3 bg-warning-50/60 rounded-xl border border-warning-200/60 text-xs text-warning-900 flex items-start space-x-2">
+                          <Info className="w-4 h-4 text-warning-600 shrink-0 mt-0.5" />
                           <div>
                             <span className="font-bold">Indicaciones de Coordinación: </span>
                             <span>{evt.notes || evt.coordinatorNotes}</span>
@@ -1372,10 +1338,10 @@ export const ScheduleSection: React.FC = () => {
                     setEventToEdit(null);
                     setIsEventModalOpen(true);
                   }}
-                  className="mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold inline-flex items-center space-x-1.5"
+                  className="mt-4 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-bold inline-flex items-center space-x-1.5"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>Crear Primer Horario de Evento</span>
+                  <span>Crear primer horario de evento</span>
                 </button>
               )}
             </div>
@@ -1422,18 +1388,18 @@ export const ScheduleSection: React.FC = () => {
 
       {/* Modal: Copy Schedule from Another Week */}
       {isCopyModalOpen && (
-        <div className="fixed inset-0 z-50 bg-transparent flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full border border-slate-300 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 bg-raiz/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full border border-slate-300 overflow-hidden">
             <div className="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <Copy className="w-5 h-5 text-indigo-400" />
+                <Copy className="w-5 h-5 text-primary-400" />
                 <h3 className="font-bold text-sm text-white">
-                  Copiar Horario entre Semanas
+                  Copiar horario entre semanas
                 </h3>
               </div>
               <button
                 onClick={() => setIsCopyModalOpen(false)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg"
+                className="text-slate-500 hover:text-white p-1 rounded-lg"
               >
                 ✕
               </button>
@@ -1446,7 +1412,7 @@ export const ScheduleSection: React.FC = () => {
 
               <div>
                 <label className="block font-bold text-slate-700 mb-1">
-                  Lapso de Origen:
+                  Lapso de origen:
                 </label>
                 <select
                   value={copySourceLapso}
@@ -1463,7 +1429,7 @@ export const ScheduleSection: React.FC = () => {
 
               <div>
                 <label className="block font-bold text-slate-700 mb-1">
-                  Semana de Origen:
+                  Semana de origen:
                 </label>
                 <select
                   value={copySourceWeek}
@@ -1478,8 +1444,8 @@ export const ScheduleSection: React.FC = () => {
                 </select>
               </div>
 
-              <div className="p-3 bg-indigo-50 rounded-xl border border-indigo-200 text-indigo-900 text-[11px] flex items-center space-x-2">
-                <ArrowRight className="w-4 h-4 shrink-0 text-indigo-600" />
+              <div className="p-3 bg-primary-50 rounded-xl border border-primary-200 text-primary-900 text-xs flex items-center space-x-2">
+                <ArrowRight className="w-4 h-4 shrink-0 text-primary-600" />
                 <span>
                   Se copiarán todas las asignaturas de <strong>Semana {copySourceWeek}</strong> ({copySourceLapso}) a <strong>Semana {selectedScheduleWeek}</strong> ({selectedScheduleLapso}).
                 </span>
@@ -1496,9 +1462,9 @@ export const ScheduleSection: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleExecuteCopy}
-                  className="px-5 py-2 font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs"
+                  className="px-5 py-2 font-bold text-white bg-primary-600 hover:bg-primary-700 rounded-xl shadow-xs"
                 >
-                  Copiar Ahora
+                  Copiar ahora
                 </button>
               </div>
             </div>

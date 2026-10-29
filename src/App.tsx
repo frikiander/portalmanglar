@@ -19,7 +19,6 @@ import { ManglarEmblem } from './components/ManglarLogo';
 import { LoginPage } from './components/LoginPage';
 import { getSession, onAuthStateChange } from './lib/supabase';
 import type { User } from './types';
-import { BookOpen, UserCheck } from 'lucide-react';
 
 const AppContent: React.FC = () => {
   const { viewMode, setViewMode, activeModule, currentUser, setCurrentUser, authError } = useEduPlan();
@@ -53,8 +52,7 @@ const AppContent: React.FC = () => {
 
   /** Called when the user picks a demo account on the LoginPage. */
   const handleDemoLogin = (user: User) => {
-    setCurrentUser(user);
-    setViewMode(user.role);
+    setCurrentUser(user); // the context switches the view to the user's role
     localStorage.setItem('eduplan_user', JSON.stringify(user));
     localStorage.setItem('eduplan_view_mode', user.role);
     localStorage.setItem('eduplan_demo_mode', 'true');
@@ -72,12 +70,10 @@ const AppContent: React.FC = () => {
   // ─── Loading splash ─────────────────────────────────────────────────────────
   if (authChecking) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-14 h-14 bg-white rounded-2xl shadow-md border border-slate-100 flex items-center justify-center">
-            <ManglarEmblem className="w-9 h-9" withShadow={false} />
-          </div>
-          <div className="flex items-center gap-2 text-slate-500 text-sm">
+      <div className="min-h-screen bg-raiz flex items-center justify-center" role="status">
+        <div className="flex flex-col items-center gap-5">
+          <ManglarEmblem className="w-14 h-14" withShadow={false} />
+          <div className="flex items-center gap-2 text-white/60 text-sm">
             <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
@@ -101,7 +97,9 @@ const AppContent: React.FC = () => {
 
   // ─── Main App ────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-slate-50/70 text-slate-800 flex font-sans selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-fango text-raiz flex font-sans">
+      <a href="#contenido" className="skip-link">Saltar al contenido</a>
+
       {/* Lateral Navigation Sidebar */}
       <Sidebar
         isMobileOpen={isMobileMenuOpen}
@@ -122,7 +120,7 @@ const AppContent: React.FC = () => {
         />
 
         {/* Dynamic Main Workspace: Renders ONLY the active module */}
-        <main key={activeModule} className="module-enter flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <main id="contenido" tabIndex={-1} key={activeModule} className="module-enter focus:outline-none flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           {activeModule === 'calendar' ? (
             <SchoolCalendar />
           ) : activeModule === 'schedules' ? (
@@ -149,38 +147,6 @@ const AppContent: React.FC = () => {
             <CoordinatorDashboard />
           )}
         </main>
-
-        {/* Unified Application Footer */}
-        <footer className="mt-auto border-t border-slate-200/80 bg-white py-5">
-          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <div className="flex items-center space-x-2">
-              <ManglarEmblem className="w-5 h-5" withShadow={false} />
-              <span className="font-extrabold text-slate-800">Portal Manglar</span>
-              <span>·</span>
-              <span className="text-slate-600 font-medium">Colegio Integral El Manglar</span>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <button
-                id="footer-switch-mode-btn"
-                onClick={() => setViewMode(viewMode === 'teacher' ? 'coordinator' : 'teacher')}
-                className="hover:text-indigo-600 transition-colors font-medium flex items-center space-x-1"
-              >
-                {viewMode === 'teacher' ? (
-                  <>
-                    <UserCheck className="w-3.5 h-3.5" />
-                    <span>Cambiar a Vista Coordinador</span>
-                  </>
-                ) : (
-                  <>
-                    <BookOpen className="w-3.5 h-3.5" />
-                    <span>Cambiar a Vista Docente</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </footer>
       </div>
 
       {/* Toast Notifications */}

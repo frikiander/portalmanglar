@@ -75,7 +75,7 @@ export const ManglarBrand: React.FC<ManglarBrandProps> = ({
   return (
     <div className={`flex items-center space-x-3 overflow-hidden ${className}`}>
       {/* Emblem container with clean white background and subtle institutional border */}
-      <div className="w-10 h-10 rounded-xl bg-white p-1 border border-emerald-100/80 shadow-xs flex items-center justify-center shrink-0">
+      <div className="w-10 h-10 rounded-xl bg-white p-1 border border-success-100/80 shadow-xs flex items-center justify-center shrink-0">
         <ManglarEmblem className="w-full h-full" />
       </div>
 
@@ -83,14 +83,14 @@ export const ManglarBrand: React.FC<ManglarBrandProps> = ({
         <div className="min-w-0 transition-opacity duration-200">
           <div className="flex items-center space-x-1.5">
             <span className="font-extrabold text-slate-900 tracking-tight text-base leading-none">
-              Portal <span className="text-[#5EA832]">Manglar</span>
+              Portal <span className="text-primary-600">Manglar</span>
             </span>
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#F8CB0A]/20 text-[#A67C00] border border-[#F8CB0A]/40">
+            <span className="px-1.5 py-0.5 rounded text-xs font-bold bg-attention-400/20 text-[#A67C00] border border-attention-400/40">
               Oficial
             </span>
           </div>
           {showSubtitle && (
-            <p className="text-[11px] font-medium text-slate-500 truncate mt-0.5 tracking-tight">
+            <p className="text-xs font-medium text-slate-500 truncate mt-0.5 tracking-tight">
               Colegio Integral El Manglar
             </p>
           )}

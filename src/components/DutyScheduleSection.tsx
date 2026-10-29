@@ -27,7 +27,14 @@ import {
 import { CompoundGradeBadges, GradeBadge } from '../utils/gradeColors';
 
 export const DutyScheduleSection: React.FC = () => {
-  const { currentUser, dutySlots, updateDutySlot, selectedDutyTeacher, setSelectedDutyTeacher, addToast } = useEduPlan();
+  const { currentUser, dutySlots, updateDutySlot, selectedDutyTeacher, setSelectedDutyTeacher, addToast, viewMode } = useEduPlan();
+  // Coordinación assigns duty turns; teachers see theirs highlighted
+  const canEditDuties = viewMode === 'coordinator';
+  const openSlotEditor = (slot: DutySlot) => {
+    if (!canEditDuties) return;
+    setEditingSlot(slot);
+    setEditPersonName(slot.assignedPerson);
+  };
 
   // Active view tab
   const [activeTab, setActiveTab] = useState<'sabana' | 'grados_canchas' | 'mis_guardias'>('sabana');
@@ -120,11 +127,11 @@ export const DutyScheduleSection: React.FC = () => {
       {/* SIMPLE HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-            Guardias Escolares
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-raiz">
+            Guardias escolares
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Colegio Integral El Manglar · Distribución de turnos, entradas, salidas y recesos
+          <p className="text-sm text-slate-600 mt-1">
+            Turnos de entrada, salida y recesos.
           </p>
         </div>
 
@@ -135,7 +142,7 @@ export const DutyScheduleSection: React.FC = () => {
             onClick={() => setShowProtocolModal(true)}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 rounded-xl transition-colors border border-slate-200 shadow-2xs cursor-pointer"
           >
-            <BookOpen className="w-4 h-4 text-emerald-700" />
+            <BookOpen className="w-4 h-4 text-success-700" />
             <span>Protocolo</span>
           </button>
 
@@ -144,8 +151,8 @@ export const DutyScheduleSection: React.FC = () => {
             onClick={handlePrint}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 rounded-xl transition-colors border border-slate-200 shadow-2xs cursor-pointer"
           >
-            <Printer className="w-4 h-4 text-emerald-700" />
-            <span>Imprimir Guardia General</span>
+            <Printer className="w-4 h-4 text-success-700" />
+            <span>Imprimir guardia general</span>
           </button>
         </div>
       </div>
@@ -154,13 +161,13 @@ export const DutyScheduleSection: React.FC = () => {
         {/* HIGHLIGHT CONTROL BAR */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2 bg-amber-50/90 border border-amber-200 px-3.5 py-2 rounded-xl text-amber-900">
-              <Sparkles className="w-4 h-4 text-amber-600 shrink-0 animate-pulse" />
+            <div className="flex items-center gap-2 bg-warning-50/90 border border-warning-200 px-3.5 py-2 rounded-xl text-warning-900">
+              <Sparkles className="w-4 h-4 text-warning-600 shrink-0" />
               <div className="text-xs">
-                <span className="font-semibold text-amber-950">Destacando guardias de: </span>
-                <span className="font-bold underline ml-1 text-amber-900">{currentHighlightName}</span>
+                <span className="font-semibold text-warning-950">Destacando guardias de: </span>
+                <span className="font-bold underline ml-1 text-warning-900">{currentHighlightName}</span>
               </div>
-              <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-bold bg-amber-200/80 text-amber-950">
+              <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-bold bg-warning-200/80 text-warning-950">
                 {myAssignedDuties.length} {myAssignedDuties.length === 1 ? 'turno' : 'turnos'}
               </span>
             </div>
@@ -174,9 +181,9 @@ export const DutyScheduleSection: React.FC = () => {
                 id="teacher-duty-selector"
                 value={selectedDutyTeacher}
                 onChange={(e) => setSelectedDutyTeacher(e.target.value)}
-                className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-800 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-800 font-medium focus:ring-2 focus:ring-success-500 focus:outline-none"
               >
-                <option value="Carlos">Prof. Carlos Mendoza (Tú)</option>
+                <option value="Carlos">Prof. Carlos mendoza (tú)</option>
                 {allTeachersList.map((name) => (
                   <option key={name} value={name}>
                     {name}
@@ -193,7 +200,7 @@ export const DutyScheduleSection: React.FC = () => {
               onClick={() => setOnlyMyDuties(!onlyMyDuties)}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 onlyMyDuties
-                  ? 'bg-amber-600 text-white shadow-xs'
+                  ? 'bg-warning-600 text-white shadow-xs'
                   : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
               }`}
             >
@@ -203,19 +210,19 @@ export const DutyScheduleSection: React.FC = () => {
 
             {/* Quick search input */}
             <div className="relative">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 id="duty-search-input"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar espacio o docente..."
-                className="pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-emerald-500 focus:outline-none w-44 md:w-56"
+                className="pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-500 focus:ring-2 focus:ring-success-500 focus:outline-none w-44 md:w-56"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -233,12 +240,12 @@ export const DutyScheduleSection: React.FC = () => {
             onClick={() => setActiveTab('sabana')}
             className={`px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 inline-flex items-center gap-2 cursor-pointer ${
               activeTab === 'sabana'
-                ? 'bg-[#5EA832] text-white shadow-md shadow-[#5EA832]/25 font-bold ring-2 ring-[#5EA832]/20'
+                ? 'bg-primary-600 text-white shadow-md shadow-primary-500/25 font-bold ring-2 ring-primary-500/20'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
             }`}
           >
             <School className={`w-4 h-4 shrink-0 ${activeTab === 'sabana' ? 'text-white' : 'text-slate-500'}`} />
-            <span>Guardia General</span>
+            <span>Guardia general</span>
           </button>
 
           <button
@@ -246,12 +253,12 @@ export const DutyScheduleSection: React.FC = () => {
             onClick={() => setActiveTab('grados_canchas')}
             className={`px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 inline-flex items-center gap-2 cursor-pointer ${
               activeTab === 'grados_canchas'
-                ? 'bg-[#5EA832] text-white shadow-md shadow-[#5EA832]/25 font-bold ring-2 ring-[#5EA832]/20'
+                ? 'bg-primary-600 text-white shadow-md shadow-primary-500/25 font-bold ring-2 ring-primary-500/20'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
             }`}
           >
             <Users className={`w-4 h-4 shrink-0 ${activeTab === 'grados_canchas' ? 'text-white' : 'text-slate-500'}`} />
-            <span>Turnos de Grados y Canchas</span>
+            <span>Turnos de grados y canchas</span>
           </button>
 
           <button
@@ -259,16 +266,16 @@ export const DutyScheduleSection: React.FC = () => {
             onClick={() => setActiveTab('mis_guardias')}
             className={`px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 inline-flex items-center gap-2 cursor-pointer ${
               activeTab === 'mis_guardias'
-                ? 'bg-[#5EA832] text-white shadow-md shadow-[#5EA832]/25 font-bold ring-2 ring-[#5EA832]/20'
+                ? 'bg-primary-600 text-white shadow-md shadow-primary-500/25 font-bold ring-2 ring-primary-500/20'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
             }`}
           >
             <UserCheck className={`w-4 h-4 shrink-0 ${activeTab === 'mis_guardias' ? 'text-white' : 'text-slate-500'}`} />
-            <span>Mi Agenda Semanal de Guardias</span>
+            <span>Mi agenda semanal de guardias</span>
             <span className={`px-2 py-0.5 rounded-full text-xs transition-colors ${
               activeTab === 'mis_guardias'
-                ? 'bg-[#F8CB0A] text-slate-950 font-black shadow-xs'
-                : 'bg-amber-100 text-amber-900 font-bold border border-amber-200'
+                ? 'bg-attention-400 text-slate-950 font-black shadow-xs'
+                : 'bg-warning-100 text-warning-900 font-bold border border-warning-200'
             }`}>
               {myAssignedDuties.length}
             </span>
@@ -293,28 +300,28 @@ export const DutyScheduleSection: React.FC = () => {
               onClick={() => setCategoryFilter('entrada_salida')}
               className={`px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
                 categoryFilter === 'entrada_salida' 
-                  ? 'bg-amber-600 text-white shadow-2xs' 
-                  : 'bg-white text-amber-800 hover:bg-amber-50 border border-amber-200/60'
+                  ? 'bg-warning-600 text-white shadow-2xs' 
+                  : 'bg-white text-warning-800 hover:bg-warning-50 border border-warning-200/60'
               }`}
             >
-              Entrada y Salida
+              Entrada y salida
             </button>
             <button
               onClick={() => setCategoryFilter('recesos_primaria')}
               className={`px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
                 categoryFilter === 'recesos_primaria' 
-                  ? 'bg-[#5EA832] text-white shadow-2xs' 
-                  : 'bg-white text-[#3A6B1F] hover:bg-emerald-50 border border-emerald-200/60'
+                  ? 'bg-primary-600 text-white shadow-2xs' 
+                  : 'bg-white text-primary-700 hover:bg-success-50 border border-success-200/60'
               }`}
             >
-              Recesos Primaria
+              Recesos primaria
             </button>
             <button
               onClick={() => setCategoryFilter('bachillerato')}
               className={`px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
                 categoryFilter === 'bachillerato' 
-                  ? 'bg-teal-700 text-white shadow-2xs' 
-                  : 'bg-white text-teal-800 hover:bg-teal-50 border border-teal-200/60'
+                  ? 'bg-info-700 text-white shadow-2xs' 
+                  : 'bg-white text-info-800 hover:bg-info-50 border border-info-200/60'
               }`}
             >
               Bachillerato
@@ -331,7 +338,7 @@ export const DutyScheduleSection: React.FC = () => {
           {/* Quick Legend */}
           <div className="flex flex-wrap items-center gap-4 text-xs text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-200">
             <div className="flex items-center gap-1.5 font-medium">
-              <span className="w-3.5 h-3.5 rounded-sm bg-amber-200 border-2 border-amber-500 inline-block" />
+              <span className="w-3.5 h-3.5 rounded-sm bg-warning-200 border-2 border-warning-500 inline-block" />
               <span>Tu guardia asignada ({currentHighlightName})</span>
             </div>
             <div className="flex items-center gap-1.5 font-medium">
@@ -339,7 +346,7 @@ export const DutyScheduleSection: React.FC = () => {
               <span>Guardia de otro compañero</span>
             </div>
             <div className="flex items-center gap-1.5 font-medium text-slate-500">
-              <Edit3 className="w-3 h-3 text-slate-400" />
+              <Edit3 className="w-3 h-3 text-slate-500" />
               <span>Haz clic sobre cualquier celda para reasignar el docente</span>
             </div>
           </div>
@@ -354,10 +361,7 @@ export const DutyScheduleSection: React.FC = () => {
               currentHighlightName={currentHighlightName}
               onlyMyDuties={onlyMyDuties}
               searchQuery={searchQuery}
-              onEditSlot={(slot) => {
-                setEditingSlot(slot);
-                setEditPersonName(slot.assignedPerson);
-              }}
+              onEditSlot={canEditDuties ? openSlotEditor : undefined}
               isTeacherAssigned={isTeacherAssigned}
             />
           )}
@@ -372,10 +376,7 @@ export const DutyScheduleSection: React.FC = () => {
               currentHighlightName={currentHighlightName}
               onlyMyDuties={onlyMyDuties}
               searchQuery={searchQuery}
-              onEditSlot={(slot) => {
-                setEditingSlot(slot);
-                setEditPersonName(slot.assignedPerson);
-              }}
+              onEditSlot={canEditDuties ? openSlotEditor : undefined}
               isTeacherAssigned={isTeacherAssigned}
             />
           )}
@@ -390,10 +391,7 @@ export const DutyScheduleSection: React.FC = () => {
               currentHighlightName={currentHighlightName}
               onlyMyDuties={onlyMyDuties}
               searchQuery={searchQuery}
-              onEditSlot={(slot) => {
-                setEditingSlot(slot);
-                setEditPersonName(slot.assignedPerson);
-              }}
+              onEditSlot={canEditDuties ? openSlotEditor : undefined}
               isTeacherAssigned={isTeacherAssigned}
             />
           )}
@@ -407,27 +405,27 @@ export const DutyScheduleSection: React.FC = () => {
         <div className="space-y-8">
           {/* TURNOS DE GRADOS EN RECESOS */}
           <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
-            <div className="bg-indigo-700 text-white px-6 py-4 flex items-center justify-between">
+            <div className="bg-primary-700 text-white px-6 py-4 flex items-center justify-between">
               <div>
                 <h3 className="font-bold text-base tracking-wide flex items-center gap-2">
-                  <Users className="w-5 h-5 text-indigo-200" />
+                  <Users className="w-5 h-5 text-primary-200" />
                   TURNOS RECESOS DE PRIMARIA (DISTRIBUCIÓN POR GRADOS)
                 </h3>
-                <p className="text-xs text-indigo-100 mt-0.5">
-                  Organización rotativa de los grados en Integralidad, Pasillos y Patio Techado
+                <p className="text-xs text-primary-100 mt-0.5">
+                  Organización rotativa de los grados en integralidad, pasillos y patio techado
                 </p>
               </div>
-              <span className="text-xs bg-indigo-800/80 px-3 py-1 rounded-full text-indigo-100 font-medium">
-                Primaria Rotativa
+              <span className="text-xs bg-primary-800/80 px-3 py-1 rounded-full text-primary-100 font-medium">
+                Primaria rotativa
               </span>
             </div>
 
             <div className="p-4 overflow-x-auto">
               {/* Receso 9:30 am a 10:00 am */}
               <div className="mb-6">
-                <div className="bg-indigo-50 text-indigo-900 font-bold text-xs uppercase px-3 py-2 rounded-lg mb-2 flex items-center gap-2 border border-indigo-100">
-                  <Clock className="w-3.5 h-3.5 text-indigo-600" />
-                  Receso 9:30 am a 10:00 am (Distribución de Grados)
+                <div className="bg-primary-50 text-primary-900 font-bold text-xs px-3 py-2 rounded-lg mb-2 flex items-center gap-2 border border-primary-100">
+                  <Clock className="w-3.5 h-3.5 text-primary-600" />
+                  Receso 9:30 am a 10:00 am (distribución de grados)
                 </div>
                 <GradeTurnsTable
                   slots={INITIAL_GRADE_TURNS.filter((t) => t.timeSlot.includes('9:30'))}
@@ -437,9 +435,9 @@ export const DutyScheduleSection: React.FC = () => {
 
               {/* Almuerzo 12:15 pm a 12:45 pm */}
               <div>
-                <div className="bg-indigo-50 text-indigo-900 font-bold text-xs uppercase px-3 py-2 rounded-lg mb-2 flex items-center gap-2 border border-indigo-100">
-                  <Clock className="w-3.5 h-3.5 text-indigo-600" />
-                  Almuerzo 12:15 pm a 12:45 pm (Distribución de Grados)
+                <div className="bg-primary-50 text-primary-900 font-bold text-xs px-3 py-2 rounded-lg mb-2 flex items-center gap-2 border border-primary-100">
+                  <Clock className="w-3.5 h-3.5 text-primary-600" />
+                  Almuerzo 12:15 pm a 12:45 pm (distribución de grados)
                 </div>
                 <GradeTurnsTable
                   slots={INITIAL_GRADE_TURNS.filter((t) => t.timeSlot.includes('12:15'))}
@@ -451,18 +449,18 @@ export const DutyScheduleSection: React.FC = () => {
 
           {/* DISTRIBUCIÓN DE USO DE CANCHAS (12:45 PM A 1:15 PM) */}
           <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
-            <div className="bg-emerald-800 text-white px-6 py-4 flex items-center justify-between">
+            <div className="bg-success-800 text-white px-6 py-4 flex items-center justify-between">
               <div>
                 <h3 className="font-bold text-base tracking-wide flex items-center gap-2">
-                  <School className="w-5 h-5 text-emerald-200" />
+                  <School className="w-5 h-5 text-success-200" />
                   DISTRIBUCIÓN DE USO DE CANCHAS (12:45 PM A 1:15 PM)
                 </h3>
-                <p className="text-xs text-emerald-100 mt-0.5">
-                  Asignación equitativa de Fútbol y Básquetbol para los grados de primaria
+                <p className="text-xs text-success-100 mt-0.5">
+                  Asignación equitativa de fútbol y básquetbol para los grados de primaria
                 </p>
               </div>
-              <span className="text-xs bg-emerald-900/80 px-3 py-1 rounded-full text-emerald-100 font-medium">
-                Deportes & Recreación
+              <span className="text-xs bg-success-900/80 px-3 py-1 rounded-full text-success-100 font-medium">
+                Deportes & recreación
               </span>
             </div>
 
@@ -470,9 +468,9 @@ export const DutyScheduleSection: React.FC = () => {
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="bg-slate-100 text-slate-700 border-b border-slate-200">
-                    <th className="py-2.5 px-3 font-bold uppercase text-[11px] w-36">Cancha</th>
+                    <th className="py-2.5 px-3 font-bold text-xs w-36">Cancha</th>
                     {DUTY_DAYS.map((day) => (
-                      <th key={day} className="py-2.5 px-3 font-bold uppercase text-[11px]">
+                      <th key={day} className="py-2.5 px-3 font-bold text-xs">
                         {day}
                       </th>
                     ))}
@@ -482,22 +480,22 @@ export const DutyScheduleSection: React.FC = () => {
                   {INITIAL_COURT_DISTRIBUTION.map((row, idx) => (
                     <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}>
                       <td className="py-3 px-3 font-bold text-slate-900 bg-slate-50 border-r border-slate-200 flex items-center gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 text-emerald-600" />
+                        <MapPin className="w-3.5 h-3.5 text-success-600" />
                         {row.court}
                       </td>
-                      <td className="py-3 px-3 font-semibold text-emerald-900 bg-emerald-50/30">
+                      <td className="py-3 px-3 font-semibold text-success-900 bg-success-50/30">
                         <CompoundGradeBadges text={row.Lunes} size="xs" />
                       </td>
-                      <td className="py-3 px-3 font-semibold text-emerald-900 bg-emerald-50/30">
+                      <td className="py-3 px-3 font-semibold text-success-900 bg-success-50/30">
                         <CompoundGradeBadges text={row.Martes} size="xs" />
                       </td>
-                      <td className="py-3 px-3 font-semibold text-emerald-900 bg-emerald-50/30">
+                      <td className="py-3 px-3 font-semibold text-success-900 bg-success-50/30">
                         <CompoundGradeBadges text={row.Miércoles} size="xs" />
                       </td>
-                      <td className="py-3 px-3 font-semibold text-emerald-900 bg-emerald-50/30">
+                      <td className="py-3 px-3 font-semibold text-success-900 bg-success-50/30">
                         <CompoundGradeBadges text={row.Jueves} size="xs" />
                       </td>
-                      <td className="py-3 px-3 font-semibold text-emerald-900 bg-emerald-50/30">
+                      <td className="py-3 px-3 font-semibold text-success-900 bg-success-50/30">
                         <CompoundGradeBadges text={row.Viernes} size="xs" />
                       </td>
                     </tr>
@@ -514,24 +512,24 @@ export const DutyScheduleSection: React.FC = () => {
           ========================================================================= */}
       {activeTab === 'mis_guardias' && (
         <div className="space-y-6">
-          <div className="bg-gradient-to-r from-amber-500 to-amber-600 rounded-2xl p-6 text-white shadow-xs">
+          <div className="bg-raiz rounded-2xl p-6 text-white">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-400/40 text-amber-50 mb-2">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-warning-400/40 text-warning-50 mb-2">
                   <Sparkles className="w-3.5 h-3.5" />
-                  Agenda Personal del Docente
+                  Agenda personal del docente
                 </span>
                 <h3 className="text-2xl font-bold text-white tracking-tight">
                   Guardias de {currentHighlightName}
                 </h3>
-                <p className="text-amber-100 text-sm mt-1 max-w-xl">
+                <p className="text-warning-100 text-sm mt-1 max-w-xl">
                   Tienes un total de <span className="font-bold underline">{myAssignedDuties.length} turnos</span> asignados a lo largo de la semana escolar.
                 </p>
               </div>
 
               <div className="text-right bg-white/10 p-4 rounded-xl border border-white/20">
                 <div className="text-3xl font-extrabold">{myAssignedDuties.length}</div>
-                <div className="text-xs text-amber-100 font-medium">Turnos Semanales</div>
+                <div className="text-xs text-warning-100 font-medium">Turnos semanales</div>
               </div>
             </div>
           </div>
@@ -552,11 +550,11 @@ export const DutyScheduleSection: React.FC = () => {
                 const getCategoryBadge = (cat: DutyCategory) => {
                   switch (cat) {
                     case 'entrada_salida':
-                      return { label: 'Entrada y Salida', color: 'bg-amber-100 text-amber-800 border-amber-200' };
+                      return { label: 'Entrada y Salida', color: 'bg-warning-100 text-warning-800 border-warning-200' };
                     case 'recesos_primaria':
-                      return { label: 'Recesos Primaria', color: 'bg-emerald-100 text-emerald-800 border-emerald-200' };
+                      return { label: 'Recesos Primaria', color: 'bg-success-100 text-success-800 border-success-200' };
                     case 'bachillerato':
-                      return { label: 'Bachillerato', color: 'bg-teal-100 text-teal-800 border-teal-200' };
+                      return { label: 'Bachillerato', color: 'bg-info-100 text-info-800 border-info-200' };
                   }
                 };
                 const catBadge = getCategoryBadge(slot.category);
@@ -564,9 +562,8 @@ export const DutyScheduleSection: React.FC = () => {
                 return (
                   <div
                     key={slot.id}
-                    className="bg-white rounded-2xl p-5 border-2 border-amber-400/80 shadow-xs hover:shadow-md transition-all relative overflow-hidden flex flex-col justify-between group"
+                    className="bg-white rounded-2xl p-5 border-2 border-warning-400/80 shadow-xs hover:shadow-md transition-all relative overflow-hidden flex flex-col justify-between group"
                   >
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-amber-50 rounded-full blur-2xl pointer-events-none" />
 
                     <div>
                       <div className="flex items-center justify-between gap-2 mb-3">
@@ -574,33 +571,33 @@ export const DutyScheduleSection: React.FC = () => {
                           <Calendar className="w-3.5 h-3.5" />
                           {slot.day}
                         </span>
-                        <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${catBadge.color}`}>
+                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${catBadge.color}`}>
                           {catBadge.label}
                         </span>
                       </div>
 
                       <div className="space-y-2 mt-2">
                         <div className="flex items-start gap-2 text-slate-700">
-                          <Clock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                          <Clock className="w-4 h-4 text-warning-600 shrink-0 mt-0.5" />
                           <div>
-                            <div className="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Horario</div>
+                            <div className="text-xs text-slate-500 font-bold">Horario</div>
                             <div className="text-sm font-bold text-slate-900">{slot.timeSlot}</div>
                           </div>
                         </div>
 
                         <div className="flex items-start gap-2 text-slate-700">
-                          <MapPin className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                          <MapPin className="w-4 h-4 text-success-600 shrink-0 mt-0.5" />
                           <div>
-                            <div className="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Ubicación / Puesto</div>
+                            <div className="text-xs text-slate-500 font-bold">Ubicación / puesto</div>
                             <div className="text-sm font-semibold text-slate-800">{slot.location}</div>
                           </div>
                         </div>
 
                         <div className="flex items-start gap-2 text-slate-700">
-                          <UserCheck className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
+                          <UserCheck className="w-4 h-4 text-primary-600 shrink-0 mt-0.5" />
                           <div>
-                            <div className="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Asignación en Guardia General</div>
-                            <div className="text-xs font-semibold text-indigo-900 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
+                            <div className="text-xs text-slate-500 font-bold">Asignación en guardia general</div>
+                            <div className="text-xs font-semibold text-primary-900 bg-primary-50 px-2 py-0.5 rounded border border-primary-100">
                               {slot.assignedPerson}
                             </div>
                           </div>
@@ -609,20 +606,17 @@ export const DutyScheduleSection: React.FC = () => {
                     </div>
 
                     <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                      <span className="inline-flex items-center gap-1 text-emerald-700 font-medium">
+                      <span className="inline-flex items-center gap-1 text-success-700 font-medium">
                         <CheckCircle2 className="w-3.5 h-3.5" />
-                        Turno Vigente
+                        Turno vigente
                       </span>
-                      <button
-                        onClick={() => {
-                          setEditingSlot(slot);
-                          setEditPersonName(slot.assignedPerson);
-                        }}
+                      {canEditDuties && <button
+                        onClick={() => openSlotEditor(slot)}
                         className="text-slate-500 hover:text-slate-800 font-medium inline-flex items-center gap-1"
                       >
                         <Edit3 className="w-3 h-3" />
                         Editar
-                      </button>
+                      </button>}
                     </div>
                   </div>
                 );
@@ -636,16 +630,16 @@ export const DutyScheduleSection: React.FC = () => {
           MODAL: EDITAR ASIGNACIÓN DE GUARDIA
           ========================================================================= */}
       {editingSlot && (
-        <div className="fixed inset-0 bg-transparent flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-raiz/40 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-300">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                <Edit3 className="w-5 h-5 text-amber-600" />
-                Reasignar Docente de Guardia
+                <Edit3 className="w-5 h-5 text-warning-600" />
+                Reasignar docente de guardia
               </h3>
               <button
                 onClick={() => setEditingSlot(null)}
-                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                className="text-slate-500 hover:text-slate-600 p-1 rounded-lg"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -661,14 +655,14 @@ export const DutyScheduleSection: React.FC = () => {
                 <span className="font-bold text-slate-900">{editingSlot.timeSlot}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500 font-medium">Ubicación / Puesto:</span>
+                <span className="text-slate-500 font-medium">Ubicación / puesto:</span>
                 <span className="font-bold text-slate-900">{editingSlot.location}</span>
               </div>
             </div>
 
             <div className="mb-6">
               <label htmlFor="assigned-person-input" className="block text-xs font-semibold text-slate-700 mb-1.5">
-                Nombre del Docente Responsable
+                Nombre del docente responsable
               </label>
               <input
                 id="assigned-person-input"
@@ -676,16 +670,16 @@ export const DutyScheduleSection: React.FC = () => {
                 value={editPersonName}
                 onChange={(e) => setEditPersonName(e.target.value)}
                 placeholder="Ej: Prof. Carlos Mendoza / Irene"
-                className="w-full text-sm bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                className="w-full text-sm bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:ring-2 focus:ring-warning-500 focus:outline-none"
               />
               <div className="mt-2 flex flex-wrap gap-1.5">
-                <span className="text-[11px] text-slate-400 w-full mb-0.5">Sugerencias rápidas:</span>
+                <span className="text-xs text-slate-500 w-full mb-0.5">Sugerencias rápidas:</span>
                 {allTeachersList.slice(0, 8).map((t) => (
                   <button
                     key={t}
                     type="button"
                     onClick={() => setEditPersonName(t)}
-                    className="text-[11px] px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md transition-colors"
+                    className="text-xs px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md transition-colors"
                   >
                     {t}
                   </button>
@@ -704,9 +698,9 @@ export const DutyScheduleSection: React.FC = () => {
               <button
                 type="button"
                 onClick={handleSaveSlotEdit}
-                className="px-5 py-2 text-xs font-semibold text-white bg-amber-600 hover:bg-amber-700 rounded-xl transition-colors shadow-xs"
+                className="px-5 py-2 text-xs font-semibold text-white bg-warning-600 hover:bg-warning-700 rounded-xl transition-colors shadow-xs"
               >
-                Guardar Cambios
+                Guardar cambios
               </button>
             </div>
           </div>
@@ -717,12 +711,12 @@ export const DutyScheduleSection: React.FC = () => {
           MODAL: PROTOCOLO INSTITUCIONAL DE GUARDIAS ESCOLARES
           ========================================================================= */}
       {showProtocolModal && (
-        <div className="fixed inset-0 bg-transparent flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-raiz/40 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 shadow-2xl border border-slate-300">
             <div className="flex items-center justify-between pb-4 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
-                  <ShieldAlert className="w-5 h-5 text-emerald-700" />
+                <div className="w-10 h-10 rounded-xl bg-success-100 text-success-800 flex items-center justify-center font-bold">
+                  <ShieldAlert className="w-5 h-5 text-success-700" />
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-slate-900">
@@ -735,26 +729,26 @@ export const DutyScheduleSection: React.FC = () => {
               </div>
               <button
                 onClick={() => setShowProtocolModal(false)}
-                className="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg"
+                className="text-slate-500 hover:text-slate-600 p-1.5 rounded-lg"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="mt-5 space-y-4">
-              <div className="bg-emerald-50/80 border border-emerald-200 rounded-xl p-4 text-xs text-emerald-950">
-                <span className="font-bold block mb-1">Propósito Institucional:</span>
+              <div className="bg-success-50/80 border border-success-200 rounded-xl p-4 text-xs text-success-950">
+                <span className="font-bold block mb-1">Propósito institucional:</span>
                 {DUTY_PROTOCOL_CONTENT.objective}
               </div>
 
               <div>
-                <h4 className="text-xs font-bold uppercase text-slate-600 mb-3 tracking-wider">
-                  Obligaciones y Puntos Clave del Docente en Guardia:
+                <h4 className="text-xs font-bold text-slate-600 mb-3">
+                  Obligaciones y puntos clave del docente en guardia:
                 </h4>
                 <div className="space-y-2.5">
                   {DUTY_PROTOCOL_CONTENT.rules.map((rule, idx) => (
                     <div key={idx} className="flex items-start gap-3 text-xs text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-100">
-                      <span className="w-5 h-5 rounded-full bg-slate-800 text-white font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                      <span className="w-5 h-5 rounded-full bg-slate-800 text-white font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                         {idx + 1}
                       </span>
                       <p className="leading-relaxed">{rule}</p>
@@ -769,7 +763,7 @@ export const DutyScheduleSection: React.FC = () => {
                 onClick={() => setShowProtocolModal(false)}
                 className="px-5 py-2 text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 rounded-xl transition-colors"
               >
-                Entendido y Cerrar
+                Entendido y cerrar
               </button>
             </div>
           </div>
@@ -790,7 +784,8 @@ interface DutyTableSectionProps {
   currentHighlightName: string;
   onlyMyDuties: boolean;
   searchQuery: string;
-  onEditSlot: (slot: DutySlot) => void;
+  /** Absent for teachers: cells are read-only. */
+  onEditSlot?: (slot: DutySlot) => void;
   isTeacherAssigned: (assignedText: string, teacherToMatch: string) => boolean;
 }
 
@@ -808,22 +803,22 @@ const DutyTableSection: React.FC<DutyTableSectionProps> = ({
   // Theme color styles
   const themeStyles = {
     amber: {
-      headerBg: 'bg-amber-500 text-amber-950',
-      headerSub: 'text-amber-900',
-      tag: 'bg-amber-600 text-white',
-      border: 'border-amber-300'
+      headerBg: 'bg-warning-500 text-warning-950',
+      headerSub: 'text-warning-900',
+      tag: 'bg-warning-600 text-white',
+      border: 'border-warning-300'
     },
     emerald: {
-      headerBg: 'bg-emerald-700 text-white',
-      headerSub: 'text-emerald-100',
-      tag: 'bg-emerald-800 text-emerald-100',
-      border: 'border-emerald-300'
+      headerBg: 'bg-success-700 text-white',
+      headerSub: 'text-success-100',
+      tag: 'bg-success-800 text-success-100',
+      border: 'border-success-300'
     },
     teal: {
-      headerBg: 'bg-teal-800 text-white',
-      headerSub: 'text-teal-100',
-      tag: 'bg-teal-900 text-teal-100',
-      border: 'border-teal-300'
+      headerBg: 'bg-info-800 text-white',
+      headerSub: 'text-info-100',
+      tag: 'bg-info-900 text-info-100',
+      border: 'border-info-300'
     }
   }[headerTheme];
 
@@ -885,12 +880,12 @@ const DutyTableSection: React.FC<DutyTableSectionProps> = ({
           return (
             <div key={timeSlot} className="border border-slate-200 rounded-xl overflow-hidden">
               {/* Subheader for time block */}
-              <div className="bg-slate-100 text-slate-800 px-4 py-2 text-xs font-bold uppercase tracking-wider flex items-center justify-between border-b border-slate-200">
+              <div className="bg-slate-100 text-slate-800 px-4 py-2 text-xs font-bold flex items-center justify-between border-b border-slate-200">
                 <span className="flex items-center gap-1.5">
                   <Clock className="w-3.5 h-3.5 text-slate-500" />
                   {timeSlot}
                 </span>
-                <span className="text-[11px] text-slate-500 font-medium lowercase">
+                <span className="text-xs text-slate-500 font-medium lowercase">
                   supervisión de pasillos y espacios comunes
                 </span>
               </div>
@@ -899,13 +894,13 @@ const DutyTableSection: React.FC<DutyTableSectionProps> = ({
               <table className="w-full text-left text-xs border-collapse min-w-[650px]">
                 <thead>
                   <tr className="bg-slate-50 text-slate-600 border-b border-slate-200">
-                    <th className="py-2.5 px-3 font-bold uppercase text-[11px] w-48 border-r border-slate-200">
-                      Ubicación / Puesto
+                    <th className="py-2.5 px-3 font-bold text-xs w-48 border-r border-slate-200">
+                      Ubicación / puesto
                     </th>
                     {DUTY_DAYS.map((day) => (
                       <th
                         key={day}
-                        className="py-2.5 px-3 font-bold uppercase text-[11px] border-r border-slate-200 last:border-r-0"
+                        className="py-2.5 px-3 font-bold text-xs border-r border-slate-200 last:border-r-0"
                       >
                         {day}
                       </th>
@@ -949,7 +944,7 @@ const DutyTableSection: React.FC<DutyTableSectionProps> = ({
                             className="py-2.5 px-3 font-bold text-slate-900 bg-slate-50/60 border-r border-slate-200 align-top"
                           >
                             <div className="flex items-center gap-1.5">
-                              <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                              <MapPin className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                               <span>{location}</span>
                             </div>
                           </td>
@@ -976,12 +971,12 @@ const DutyTableSection: React.FC<DutyTableSectionProps> = ({
                           return (
                             <td
                               key={day}
-                              onClick={() => onEditSlot(slot)}
-                              className={`py-2 px-2.5 border-r border-slate-200 last:border-r-0 cursor-pointer transition-all group/cell relative ${
+                              onClick={onEditSlot ? () => onEditSlot(slot) : undefined}
+                              className={`py-2 px-2.5 border-r border-slate-200 last:border-r-0 ${onEditSlot ? 'cursor-pointer' : ''} transition-all group/cell relative ${
                                 isMine
-                                  ? 'bg-amber-100/90 text-amber-950 font-bold border-amber-300'
+                                  ? 'bg-warning-100/90 text-warning-950 font-bold border-warning-300'
                                   : isVacante
-                                  ? 'bg-rose-50/60 text-rose-700 italic'
+                                  ? 'bg-danger-50/60 text-danger-700 italic'
                                   : 'text-slate-800 hover:bg-slate-100'
                               }`}
                             >
@@ -991,12 +986,12 @@ const DutyTableSection: React.FC<DutyTableSectionProps> = ({
                                 </span>
 
                                 {isMine && (
-                                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-amber-300/90 text-amber-950 shrink-0 border border-amber-400">
+                                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-extrabold bg-warning-300/90 text-warning-950 shrink-0 border border-warning-400">
                                     ¡Tuya!
                                   </span>
                                 )}
 
-                                <Edit3 className="w-3 h-3 text-slate-400 opacity-0 group-hover/cell:opacity-100 transition-opacity shrink-0 ml-1" />
+                                {onEditSlot && <Edit3 className="w-3 h-3 text-slate-500 opacity-0 group-hover/cell:opacity-100 transition-opacity shrink-0 ml-1" />}
                               </div>
                             </td>
                           );
@@ -1034,13 +1029,13 @@ const GradeTurnsTable: React.FC<GradeTurnsTableProps> = ({ slots, searchQuery })
       <table className="w-full text-left text-xs border-collapse min-w-[650px]">
         <thead>
           <tr className="bg-slate-100 text-slate-700 border-b border-slate-200">
-            <th className="py-2.5 px-3 font-bold uppercase text-[11px] w-48 border-r border-slate-200">
-              Espacio / Zona
+            <th className="py-2.5 px-3 font-bold text-xs w-48 border-r border-slate-200">
+              Espacio / zona
             </th>
             {DUTY_DAYS.map((day) => (
               <th
                 key={day}
-                className="py-2.5 px-3 font-bold uppercase text-[11px] border-r border-slate-200 last:border-r-0"
+                className="py-2.5 px-3 font-bold text-xs border-r border-slate-200 last:border-r-0"
               >
                 {day}
               </th>
@@ -1060,7 +1055,7 @@ const GradeTurnsTable: React.FC<GradeTurnsTableProps> = ({ slots, searchQuery })
             return (
               <tr key={loc} className="hover:bg-slate-50 transition-colors">
                 <td className="py-2.5 px-3 font-bold text-slate-900 bg-slate-50 border-r border-slate-200 flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-indigo-600" />
+                  <MapPin className="w-3.5 h-3.5 text-primary-600" />
                   {loc}
                 </td>
                 {DUTY_DAYS.map((day) => {

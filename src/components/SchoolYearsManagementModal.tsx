@@ -1,257 +1,232 @@
-import React, { useState } from 'react';
-import {
-  X,
-  Calendar,
-  Plus,
-  Star,
-  Trash2,
-  CheckCircle2,
-  Info,
-  Sparkles,
-  AlertCircle,
-} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Plus, Star, Trash2 } from 'lucide-react';
 import { useEduPlan } from '../context/EduPlanContext';
+import type { LapsoConfig } from '../types';
+import { Badge, Button, Field, Input, Modal, Select, Tabs } from './ui';
+import {
+  MAX_LAPSO_WEEKS,
+  MIN_LAPSO_WEEKS,
+  defaultLapsoConfigs,
+  formatLongDate,
+  lapsoEndDate,
+  validateLapsoConfigs,
+} from '../utils/lapsoCalendar';
 
 interface SchoolYearsManagementModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const SchoolYearsManagementModal: React.FC<SchoolYearsManagementModalProps> = ({
-  isOpen,
-  onClose,
-}) => {
-  const {
-    availableSchoolYears,
-    defaultSchoolYear,
-    setDefaultSchoolYear,
-    addSchoolYear,
-    deleteSchoolYear,
-    addToast,
-  } = useEduPlan();
+type Section = 'years' | 'lapsos';
 
+const SECTIONS = [
+  { value: 'years' as const,  label: 'Años escolares' },
+  { value: 'lapsos' as const, label: 'Lapsos' },
+];
+
+export const SchoolYearsManagementModal: React.FC<SchoolYearsManagementModalProps> = ({ isOpen, onClose }) => {
+  const [section, setSection] = useState<Section>('years');
+  if (!isOpen) return null;
+
+  return (
+    <Modal
+      onClose={onClose}
+      title="Años escolares y lapsos"
+      subtitle="Configuración que usa todo el portal"
+      size="md"
+    >
+      <Tabs label="Sección" value={section} onChange={setSection} options={SECTIONS} className="mb-5" />
+      {section === 'years' ? <YearsSection /> : <LapsosSection />}
+    </Modal>
+  );
+};
+
+// ─── Años escolares ───────────────────────────────────────────────────────────
+const YearsSection: React.FC = () => {
+  const { availableSchoolYears, defaultSchoolYear, setDefaultSchoolYear, addSchoolYear, deleteSchoolYear, addToast } = useEduPlan();
   const [newYearInput, setNewYearInput] = useState('');
   const [deleteConfirmYear, setDeleteConfirmYear] = useState<string | null>(null);
 
-  if (!isOpen) return null;
+  const suggestedYear = (() => {
+    const [start, end] = (availableSchoolYears[0] ?? '').split(/[-–]/).map((n) => parseInt(n, 10));
+    return !isNaN(start) && !isNaN(end) ? `${start + 1}-${end + 1}` : '2027-2028';
+  })();
 
   const handleAddYear = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = newYearInput.trim();
     if (!trimmed) {
-      addToast('Por favor ingrese un nombre de año escolar (ej: 2027-2028).', 'warning');
+      addToast('Escribe el año escolar, por ejemplo 2027-2028.', 'warning');
       return;
     }
-    // Simple format check (e.g. 2027-2028)
-    const formatRegex = /^\d{4}[-–]\d{4}$/;
-    if (!formatRegex.test(trimmed)) {
-      addToast('El formato recomendado es YYYY-YYYY (ejemplo: 2027-2028).', 'info');
+    if (!/^\d{4}[-–]\d{4}$/.test(trimmed)) {
+      addToast('Usa el formato AAAA-AAAA, por ejemplo 2027-2028.', 'info');
     }
-
     addSchoolYear(trimmed);
     setNewYearInput('');
   };
 
-  const handleSetDefault = (year: string) => {
-    setDefaultSchoolYear(year);
-  };
+  return (
+    <div className="space-y-6">
+      <form onSubmit={handleAddYear}>
+        <Field label="Nuevo año escolar" hint="El año predeterminado es el que ven todos al entrar al portal.">
+          {(id, describedBy) => (
+            <div className="flex gap-2">
+              <Input
+                id={id}
+                aria-describedby={describedBy}
+                value={newYearInput}
+                onChange={(e) => setNewYearInput(e.target.value)}
+                placeholder={suggestedYear}
+              />
+              <Button type="submit" icon={Plus}>Añadir</Button>
+            </div>
+          )}
+        </Field>
+      </form>
 
-  const handleDelete = (year: string) => {
-    deleteSchoolYear(year);
-    setDeleteConfirmYear(null);
-  };
+      <div>
+        <h3 className="text-sm font-bold text-slate-700 mb-2">Años registrados ({availableSchoolYears.length})</h3>
+        <ul className="divide-y divide-slate-100 border border-slate-200 rounded-xl max-h-64 overflow-y-auto">
+          {availableSchoolYears.map((year) => {
+            const isDefault = year === defaultSchoolYear;
+            return (
+              <li key={year} className="flex items-center justify-between gap-3 px-4 py-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-bold text-raiz tabular-nums">{year}</span>
+                  {isDefault && <Badge tone="attention"><Star className="w-3 h-3" aria-hidden /> Predeterminado</Badge>}
+                </div>
 
-  // Helper to suggest next school year
-  const getSuggestedYear = () => {
-    if (availableSchoolYears.length === 0) return '2027-2028';
-    const latest = availableSchoolYears[0];
-    const parts = latest.split(/[-–]/);
-    if (parts.length === 2) {
-      const start = parseInt(parts[0], 10);
-      const end = parseInt(parts[1], 10);
-      if (!isNaN(start) && !isNaN(end)) {
-        return `${start + 1}-${end + 1}`;
-      }
-    }
-    return '2027-2028';
+                {!isDefault && (
+                  <div className="flex items-center gap-1">
+                    {deleteConfirmYear === year ? (
+                      <>
+                        <span className="text-xs font-bold text-danger-700 mr-1">¿Eliminar {year}?</span>
+                        <Button size="sm" variant="danger" onClick={() => { deleteSchoolYear(year); setDeleteConfirmYear(null); }}>
+                          Eliminar
+                        </Button>
+                        <Button size="sm" variant="ghost" onClick={() => setDeleteConfirmYear(null)}>Cancelar</Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button size="sm" variant="ghost" icon={Star} onClick={() => setDefaultSchoolYear(year)}>
+                          Hacer predeterminado
+                        </Button>
+                        <button
+                          type="button"
+                          onClick={() => setDeleteConfirmYear(year)}
+                          className="p-1.5 text-slate-500 hover:text-danger-600 hover:bg-danger-50 rounded-md transition-colors cursor-pointer"
+                          aria-label={`Eliminar ${year}`}
+                          title={`Eliminar ${year}`}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+// ─── Lapsos ───────────────────────────────────────────────────────────────────
+const LapsosSection: React.FC = () => {
+  const { availableSchoolYears, selectedSchoolYear, getLapsosForYear, updateLapsosForYear } = useEduPlan();
+  const [year, setYear] = useState(selectedSchoolYear);
+  const [draft, setDraft] = useState<LapsoConfig[]>(() => getLapsosForYear(selectedSchoolYear));
+  const [tried, setTried] = useState(false);
+
+  useEffect(() => {
+    setDraft(getLapsosForYear(year));
+    setTried(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [year]);
+
+  const saved = getLapsosForYear(year);
+  const isDirty = JSON.stringify(saved) !== JSON.stringify(draft);
+  const usesSuggested = JSON.stringify(saved) === JSON.stringify(defaultLapsoConfigs(year));
+  const problems = validateLapsoConfigs(draft);
+
+  const update = (i: number, patch: Partial<LapsoConfig>) =>
+    setDraft((prev) => prev.map((c, idx) => (idx === i ? { ...c, ...patch } : c)));
+
+  const handleSave = () => {
+    setTried(true);
+    if (problems.length > 0) return;
+    updateLapsosForYear(year, draft);
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-transparent flex items-center justify-center p-4">
-      <div
-        className="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-300 overflow-hidden animate-in fade-in zoom-in-95 duration-150"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-indigo-50/30">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-200">
-              <Calendar className="w-5 h-5" />
-            </div>
-            <div>
-              <h2 className="text-base font-bold text-slate-800">Gestión de Años Escolares</h2>
-              <p className="text-xs text-slate-500">Configuración global y año escolar predeterminado</p>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+    <div className="space-y-5">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <Field label="Año escolar" className="w-40">
+          {(id) => (
+            <Select id={id} value={year} onChange={(e) => setYear(e.target.value)}>
+              {availableSchoolYears.map((y) => <option key={y} value={y}>{y}</option>)}
+            </Select>
+          )}
+        </Field>
+        {usesSuggested && !isDirty && (
+          <p className="text-xs text-slate-500 max-w-[34ch] pb-2">
+            Este año aún usa fechas sugeridas. Ajústalas al calendario oficial.
+          </p>
+        )}
+      </div>
 
-        {/* Body */}
-        <div className="p-6 space-y-6">
-          {/* Information Notice */}
-          <div className="flex items-start gap-3 p-3.5 bg-amber-50/80 border border-amber-200/70 rounded-xl text-xs text-amber-900">
-            <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-            <div>
-              <span className="font-semibold">Año Predeterminado:</span> El año marcado con la estrella{' '}
-              <Star className="w-3.5 h-3.5 text-amber-500 inline fill-amber-400" /> se cargará automáticamente
-              para todos los usuarios al ingresar a la plataforma.
-            </div>
-          </div>
+      <p className="text-sm text-slate-600">
+        Horarios, planificación, proyectos de aula y la marea del lapso usan estas semanas.
+      </p>
 
-          {/* Form to Add New Year */}
-          <form onSubmit={handleAddYear} className="space-y-2">
-            <label className="block text-xs font-semibold text-slate-700">
-              Crear Nuevo Año Escolar
-            </label>
-            <div className="flex items-center gap-2">
-              <div className="relative flex-1">
-                <input
-                  type="text"
-                  value={newYearInput}
-                  onChange={(e) => setNewYearInput(e.target.value)}
-                  placeholder={`Ej: ${getSuggestedYear()}`}
-                  className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-800 font-medium placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                />
-                {newYearInput === '' && (
-                  <button
-                    type="button"
-                    onClick={() => setNewYearInput(getSuggestedYear())}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold px-2 py-1 rounded-lg transition-colors"
-                  >
-                    + {getSuggestedYear()}
-                  </button>
-                )}
+      <ol className="space-y-3">
+        {draft.map((lapso, i) => {
+          const valid = /^\d{4}-\d{2}-\d{2}$/.test(lapso.start) && lapso.weeks >= MIN_LAPSO_WEEKS && lapso.weeks <= MAX_LAPSO_WEEKS;
+          return (
+            <li key={lapso.name} className="border border-slate-200 rounded-xl p-4">
+              <h3 className="text-sm font-bold text-raiz">{lapso.name.replace('Lapso', 'lapso')}</h3>
+              <div className="mt-3 grid grid-cols-[minmax(0,1fr)_7rem] gap-3">
+                <Field label="Empieza la semana del">
+                  {(id) => (
+                    <Input id={id} type="date" value={lapso.start} onChange={(e) => update(i, { start: e.target.value })} />
+                  )}
+                </Field>
+                <Field label="Semanas">
+                  {(id) => (
+                    <Input
+                      id={id}
+                      type="number"
+                      min={MIN_LAPSO_WEEKS}
+                      max={MAX_LAPSO_WEEKS}
+                      value={Number.isFinite(lapso.weeks) ? lapso.weeks : ''}
+                      onChange={(e) => update(i, { weeks: parseInt(e.target.value, 10) })}
+                    />
+                  )}
+                </Field>
               </div>
-              <button
-                type="submit"
-                className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-sm transition-all shrink-0"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Añadir</span>
-              </button>
-            </div>
-          </form>
+              <p className="mt-2 text-xs text-slate-500">
+                {valid ? <>Termina el {formatLongDate(lapsoEndDate(lapso.start, lapso.weeks))}.</> : 'Completa la fecha y las semanas.'}
+              </p>
+            </li>
+          );
+        })}
+      </ol>
 
-          {/* List of School Years */}
-          <div className="space-y-2">
-            <label className="block text-xs font-semibold text-slate-700">
-              Años Escolares Registrados ({availableSchoolYears.length})
-            </label>
+      {tried && problems.length > 0 && (
+        <ul role="alert" className="p-3 rounded-md bg-danger-50 border border-danger-200 text-sm text-danger-800 space-y-1">
+          {problems.map((p) => <li key={p}>{p}</li>)}
+        </ul>
+      )}
 
-            <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
-              {availableSchoolYears.map((year) => {
-                const isDefault = year === defaultSchoolYear;
-                return (
-                  <div
-                    key={year}
-                    className={`flex items-center justify-between p-3 rounded-xl border transition-all ${
-                      isDefault
-                        ? 'bg-amber-50/60 border-amber-200 shadow-2xs'
-                        : 'bg-white border-slate-200 hover:border-slate-300'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                          isDefault ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-500'
-                        }`}
-                      >
-                        {isDefault ? (
-                          <Star className="w-4 h-4 text-amber-600 fill-amber-500" />
-                        ) : (
-                          <Calendar className="w-4 h-4" />
-                        )}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-slate-800">{year}</span>
-                          {isDefault && (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-                              <CheckCircle2 className="w-3 h-3 text-amber-600" />
-                              Predeterminado
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-1.5">
-                      {!isDefault ? (
-                        <button
-                          type="button"
-                          onClick={() => handleSetDefault(year)}
-                          className="flex items-center gap-1 text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2.5 py-1.5 rounded-lg transition-colors"
-                          title="Establecer como año escolar que cargará por defecto al ingresar"
-                        >
-                          <Star className="w-3.5 h-3.5" />
-                          <span>Hacer Predeterminado</span>
-                        </button>
-                      ) : null}
-
-                      {!isDefault && (
-                        <>
-                          {deleteConfirmYear === year ? (
-                            <div className="flex items-center gap-1 bg-red-50 p-1 rounded-lg border border-red-200">
-                              <span className="text-[10px] font-bold text-red-700 px-1">¿Eliminar?</span>
-                              <button
-                                type="button"
-                                onClick={() => handleDelete(year)}
-                                className="text-[10px] bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-1 rounded transition-colors"
-                              >
-                                Sí
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setDeleteConfirmYear(null)}
-                                className="text-[10px] bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-2 py-1 rounded transition-colors"
-                              >
-                                No
-                              </button>
-                            </div>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={() => setDeleteConfirmYear(year)}
-                              className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                              title="Eliminar año escolar"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="flex items-center justify-end px-6 py-4 border-t border-slate-100 bg-slate-50">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-xs rounded-xl transition-colors"
-          >
-            Cerrar
-          </button>
-        </div>
+      <div className="flex flex-wrap items-center justify-end gap-2 pt-1">
+        <Button variant="ghost" size="sm" className="mr-auto" onClick={() => setDraft(defaultLapsoConfigs(year))}>
+          Usar fechas sugeridas
+        </Button>
+        {isDirty && <Button variant="secondary" size="sm" onClick={() => setDraft(saved)}>Descartar cambios</Button>}
+        <Button size="sm" onClick={handleSave} disabled={!isDirty}>Guardar lapsos</Button>
       </div>
     </div>
   );

@@ -206,12 +206,7 @@ export const UsersManagementSection: React.FC = () => {
   };
 
   const handleSimulateLogin = (user: User) => {
-    setCurrentUser(user);
-    if (user.role === 'coordinator') {
-      setViewMode('coordinator');
-    } else {
-      setViewMode('teacher');
-    }
+    setCurrentUser(user); // the context switches the view to the user's role
   };
 
   const handleOpenSupervisorModal = (teacher: User) => {
@@ -246,18 +241,17 @@ export const UsersManagementSection: React.FC = () => {
   });
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <div className="space-y-6">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
-        <div className="absolute right-0 top-0 translate-x-10 -translate-y-10 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="bg-raiz rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-semibold border border-indigo-400/30">
-              <ShieldCheck className="w-3.5 h-3.5 text-indigo-300" />
-              <span>Autenticación de Google & Control de Acceso</span>
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-primary-500/20 text-primary-700 text-xs font-semibold border border-primary-400/30">
+              <ShieldCheck className="w-3.5 h-3.5 text-primary-300" />
+              <span>Autenticación de Google & control de acceso</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-              Gestión de Usuarios y Personal Docente
+              Gestión de usuarios y personal docente
             </h2>
             <p className="text-sm text-slate-300 leading-relaxed">
               Registra a los docentes y autoriza sus correos de Google. Solo las cuentas previamente creadas
@@ -272,7 +266,7 @@ export const UsersManagementSection: React.FC = () => {
               disabled={isAuthLoading}
               className={`inline-flex items-center space-x-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all shadow-md ${
                 isLoggedInWithGoogle
-                  ? 'bg-red-500/20 hover:bg-red-500/30 text-red-200 border border-red-400/30'
+                  ? 'bg-danger-500/20 hover:bg-danger-500/30 text-danger-200 border border-danger-400/30'
                   : 'bg-white hover:bg-slate-100 text-slate-800 shadow-white/10'
               }`}
             >
@@ -300,24 +294,24 @@ export const UsersManagementSection: React.FC = () => {
             <button
               id="add-new-user-btn"
               onClick={handleOpenAdd}
-              className="inline-flex items-center justify-center space-x-2 px-5 py-2.5 rounded-2xl bg-[#5EA832] hover:bg-[#4d8c28] text-white font-bold text-xs shadow-md transition-all shrink-0 cursor-pointer"
+              className="inline-flex items-center justify-center space-x-2 px-5 py-2.5 rounded-2xl bg-primary-600 hover:bg-primary-600 text-white font-bold text-xs shadow-md transition-all shrink-0 cursor-pointer"
             >
               <UserPlus className="w-4 h-4" />
-              <span>Registrar Docente / Usuario</span>
+              <span>Registrar docente / usuario</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* Security Rule Card */}
-      <div className="bg-indigo-50/80 border border-indigo-200/80 rounded-2xl p-4 flex items-start space-x-3 text-indigo-950">
-        <KeyRound className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+      <div className="bg-primary-50/80 border border-primary-200/80 rounded-2xl p-4 flex items-start space-x-3 text-primary-950">
+        <KeyRound className="w-5 h-5 text-primary-600 shrink-0 mt-0.5" />
         <div className="text-xs space-y-1">
-          <p className="font-extrabold text-indigo-900">
-            Gestión del Usuario Maestro & Autenticación de Google:
+          <p className="font-extrabold text-primary-900">
+            Gestión del usuario maestro & autenticación de Google:
           </p>
-          <p className="text-indigo-800 leading-relaxed">
-            El <strong>Usuario Maestro (Coordinación)</strong> tiene control total de los accesos. Desde este módulo registra los correos de Google del equipo docente y coordinadores. Al iniciar sesión fuera de la demo, Supabase consulta en tiempo real esta lista. Los docentes autorizados verán <strong>toda la data en tiempo real sincronizada</strong>, mientras que los correos no autorizados serán bloqueados de forma inmediata por seguridad.
+          <p className="text-primary-800 leading-relaxed">
+            El <strong>Usuario maestro (Coordinación)</strong> tiene control total de los accesos. Desde este módulo registra los correos de Google del equipo docente y coordinadores. Al iniciar sesión fuera de la demo, Supabase consulta en tiempo real esta lista. Los docentes autorizados verán <strong>toda la data en tiempo real sincronizada</strong>, mientras que los correos no autorizados serán bloqueados de forma inmediata por seguridad.
           </p>
         </div>
       </div>
@@ -326,19 +320,19 @@ export const UsersManagementSection: React.FC = () => {
       <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-4">
         {/* Search */}
         <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             id="user-search-input"
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Buscar por nombre, correo o materia..."
-            className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           />
           {searchTerm && (
             <button
               onClick={() => setSearchTerm('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -348,26 +342,26 @@ export const UsersManagementSection: React.FC = () => {
         {/* Filters */}
         <div className="flex items-center space-x-3 w-full sm:w-auto">
           <div className="flex items-center space-x-1 text-xs">
-            <span className="text-slate-400 font-bold hidden sm:inline">Rol:</span>
+            <span className="text-slate-500 font-bold hidden sm:inline">Rol:</span>
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value as any)}
-              className="text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+              className="text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-primary-500"
             >
-              <option value="all">Todos los Roles</option>
-              <option value="teacher">Solo Docentes</option>
-              <option value="coordinator">Solo Coordinadores</option>
+              <option value="all">Todos los roles</option>
+              <option value="teacher">Solo docentes</option>
+              <option value="coordinator">Solo coordinadores</option>
             </select>
           </div>
 
           <div className="flex items-center space-x-1 text-xs">
-            <span className="text-slate-400 font-bold hidden sm:inline">Estado:</span>
+            <span className="text-slate-500 font-bold hidden sm:inline">Estado:</span>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as any)}
-              className="text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+              className="text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-primary-500"
             >
-              <option value="all">Todos los Estados</option>
+              <option value="all">Todos los estados</option>
               <option value="active">Activos</option>
               <option value="inactive">Inactivos</option>
             </select>
@@ -386,7 +380,7 @@ export const UsersManagementSection: React.FC = () => {
               key={user.id}
               className={`bg-white rounded-2xl border p-5 shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group ${
                 isCurrent
-                  ? 'border-indigo-400 ring-2 ring-indigo-500/20'
+                  ? 'border-primary-400 ring-2 ring-primary-500/20'
                   : isActive
                   ? 'border-slate-200'
                   : 'border-slate-200 bg-slate-50/70 opacity-75'
@@ -407,26 +401,26 @@ export const UsersManagementSection: React.FC = () => {
                           {user.fullName}
                         </h3>
                         {isCurrent && (
-                          <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-700">
+                          <span className="text-xs font-bold px-1.5 py-0.2 rounded bg-primary-100 text-primary-700">
                             Tú
                           </span>
                         )}
                       </div>
                       <div className="flex items-center space-x-1.5 mt-0.5">
                         <span
-                          className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md ${
+                          className={`text-xs font-extrabold px-2 py-0.5 rounded-md ${
                             user.role === 'coordinator'
                               ? 'bg-purple-100 text-purple-800'
-                              : 'bg-emerald-100 text-[#3A6B1F]'
+                              : 'bg-success-100 text-primary-700'
                           }`}
                         >
                           {user.role === 'coordinator' ? 'Coordinación / Maestro' : 'Docente'}
                         </span>
                         <span
-                          className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                          className={`text-xs font-bold px-1.5 py-0.5 rounded-md ${
                             isActive
-                              ? 'bg-emerald-50 text-emerald-700'
-                              : 'bg-red-50 text-red-700'
+                              ? 'bg-success-50 text-success-700'
+                              : 'bg-danger-50 text-danger-700'
                           }`}
                         >
                           {isActive ? 'Activo' : 'Inactivo'}
@@ -440,7 +434,7 @@ export const UsersManagementSection: React.FC = () => {
                     <button
                       onClick={() => handleOpenEdit(user)}
                       title="Editar Perfil"
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
+                      className="p-1.5 rounded-lg text-slate-500 hover:text-primary-600 hover:bg-primary-50 transition-colors"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
@@ -449,8 +443,8 @@ export const UsersManagementSection: React.FC = () => {
                       title={isActive ? 'Desactivar acceso' : 'Activar acceso'}
                       className={`p-1.5 rounded-lg transition-colors ${
                         isActive
-                          ? 'text-slate-400 hover:text-amber-600 hover:bg-amber-50'
-                          : 'text-emerald-600 hover:bg-emerald-50'
+                          ? 'text-slate-500 hover:text-warning-600 hover:bg-warning-50'
+                          : 'text-success-600 hover:bg-success-50'
                       }`}
                     >
                       <Power className="w-3.5 h-3.5" />
@@ -459,7 +453,7 @@ export const UsersManagementSection: React.FC = () => {
                       <button
                         onClick={() => setDeleteConfirmUser(user)}
                         title="Eliminar usuario"
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                        className="p-1.5 rounded-lg text-slate-500 hover:text-danger-600 hover:bg-danger-50 transition-colors"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -469,27 +463,27 @@ export const UsersManagementSection: React.FC = () => {
 
                 {/* Email Google Authorized */}
                 <div className="flex items-center space-x-2 text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                  <Mail className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
-                  <span className="truncate font-mono font-medium">{user.email}</span>
+                  <Mail className="w-3.5 h-3.5 text-primary-500 shrink-0" />
+                  <span className="truncate tabular-nums font-medium">{user.email}</span>
                 </div>
 
                 {/* Specialty & Assigned Subjects */}
                 <div className="space-y-1.5 text-xs">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    Especialidad / Asignaturas:
+                  <div className="text-xs font-bold text-slate-500">
+                    Especialidad / asignaturas:
                   </div>
                   <div className="flex flex-wrap gap-1">
                     {user.assignedSubjects && user.assignedSubjects.length > 0 ? (
                       user.assignedSubjects.map((s) => (
                         <span
                           key={s}
-                          className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-emerald-50 text-[#3A6B1F] border border-emerald-200/60"
+                          className="text-xs font-semibold px-2 py-0.5 rounded-md bg-success-50 text-primary-700 border border-success-200/60"
                         >
                           {s}
                         </span>
                       ))
                     ) : (
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">
+                      <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">
                         {user.specialty || 'Docente de Grado'}
                       </span>
                     )}
@@ -499,15 +493,15 @@ export const UsersManagementSection: React.FC = () => {
                 {/* Assigned Grades & Sections */}
                 {user.role === 'teacher' && (
                   <div className="space-y-1 text-xs">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      Grados & Secciones:
+                    <div className="text-xs font-bold text-slate-500">
+                      Grados & secciones:
                     </div>
                     <div className="flex flex-wrap gap-1">
                       {(user.assignedGrades || (user.schoolGrade ? [user.schoolGrade] : ['1er Grado'])).map(
                         (g) => (
                           <span
                             key={g}
-                            className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100 text-slate-700"
+                            className="text-xs font-medium px-2 py-0.5 rounded-md bg-slate-100 text-slate-700"
                           >
                             {g}
                           </span>
@@ -516,7 +510,7 @@ export const UsersManagementSection: React.FC = () => {
                       {user.assignedSections?.map((sec) => (
                         <span
                           key={sec}
-                          className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700"
+                          className="text-xs font-bold px-1.5 py-0.5 rounded-md bg-primary-50 text-primary-700"
                         >
                           Sec. {sec}
                         </span>
@@ -528,8 +522,8 @@ export const UsersManagementSection: React.FC = () => {
                 {/* Supervisores asignados (solo para docentes) */}
                 {user.role === 'teacher' && (
                   <div className="space-y-1 text-xs">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      Supervisores Asignados:
+                    <div className="text-xs font-bold text-slate-500">
+                      Supervisores asignados:
                     </div>
                     <div className="flex flex-wrap gap-1">
                       {(user.supervisorIds && user.supervisorIds.length > 0) ? (
@@ -538,7 +532,7 @@ export const UsersManagementSection: React.FC = () => {
                           return coord ? (
                             <span
                               key={sid}
-                              className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-purple-50 text-purple-800 border border-purple-200/60 flex items-center gap-1"
+                              className="text-xs font-semibold px-2 py-0.5 rounded-md bg-purple-50 text-purple-800 border border-purple-200/60 flex items-center gap-1"
                             >
                               <UserCog className="w-2.5 h-2.5" />
                               {coord.fullName.split(' ')[0]}
@@ -546,7 +540,7 @@ export const UsersManagementSection: React.FC = () => {
                           ) : null;
                         })
                       ) : (
-                        <span className="text-[10px] italic text-slate-400">Sin supervisor asignado</span>
+                        <span className="text-xs italic text-slate-500">Sin supervisor asignado</span>
                       )}
                     </div>
                   </div>
@@ -555,9 +549,9 @@ export const UsersManagementSection: React.FC = () => {
 
               {/* Card Footer: Quick simulate / test button */}
               <div className="pt-4 mt-3 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-[11px] text-slate-400 flex items-center space-x-1">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-                  <span>Google Habilitado</span>
+                <span className="text-xs text-slate-500 flex items-center space-x-1">
+                  <CheckCircle2 className="w-3 h-3 text-success-500" />
+                  <span>Google habilitado</span>
                 </span>
 
                 <div className="flex items-center gap-1.5">
@@ -577,8 +571,8 @@ export const UsersManagementSection: React.FC = () => {
                     disabled={isCurrent}
                     className={`text-xs font-bold px-3 py-1.5 rounded-xl transition-all flex items-center space-x-1.5 ${
                       isCurrent
-                        ? 'bg-slate-100 text-slate-400 cursor-default'
-                        : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'
+                        ? 'bg-slate-100 text-slate-500 cursor-default'
+                        : 'bg-primary-50 text-primary-700 hover:bg-primary-100'
                     }`}
                   >
                     <LogIn className="w-3 h-3" />
@@ -603,11 +597,11 @@ export const UsersManagementSection: React.FC = () => {
 
       {/* Add / Edit User Modal */}
       {isFormModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent animate-in fade-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-raiz/40">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-300 max-h-[90vh] overflow-y-auto space-y-5">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div className="flex items-center space-x-2.5">
-                <div className="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-xl bg-primary-50 border border-primary-200 text-primary-600 flex items-center justify-center">
                   <UserPlus className="w-5 h-5" />
                 </div>
                 <div>
@@ -621,7 +615,7 @@ export const UsersManagementSection: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsFormModalOpen(false)}
-                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
+                className="p-1.5 text-slate-500 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -632,20 +626,20 @@ export const UsersManagementSection: React.FC = () => {
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-3">
                 <div className="flex items-center justify-between">
                   <label className="block text-xs font-bold text-slate-800">
-                    Avatar Institucional (Iconos Flat)
+                    Avatar institucional (iconos flat)
                   </label>
-                  <span className="text-[10px] text-slate-400 font-semibold">Vectorial SVG</span>
+                  <span className="text-xs text-slate-500 font-semibold">Vectorial SVG</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="relative group shrink-0">
                     <img
                       src={formAvatar || DEFAULT_TEACHER_AVATAR}
                       alt="Vista previa avatar"
-                      className="w-14 h-14 rounded-2xl object-cover ring-2 ring-indigo-500/30 shadow-xs bg-white p-0.5"
+                      className="w-14 h-14 rounded-2xl object-cover ring-2 ring-primary-500/30 shadow-xs bg-white p-0.5"
                     />
                     <label
                       htmlFor="avatar-file-input"
-                      className="absolute -bottom-1 -right-1 p-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md cursor-pointer transition-transform hover:scale-105"
+                      className="absolute -bottom-1 -right-1 p-1 bg-primary-600 hover:bg-primary-700 text-white rounded-lg shadow-md cursor-pointer transition-transform hover:scale-105"
                       title="Subir imagen personalizada desde tu equipo"
                     >
                       <Camera className="w-3.5 h-3.5" />
@@ -660,7 +654,7 @@ export const UsersManagementSection: React.FC = () => {
                   </div>
 
                   <div className="flex-1 space-y-1.5 min-w-0">
-                    <p className="text-[10px] font-extrabold uppercase text-slate-500 tracking-wider">
+                    <p className="text-xs font-extrabold text-slate-500">
                       Elige un avatar flat o sube tu imagen:
                     </p>
                     <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
@@ -672,7 +666,7 @@ export const UsersManagementSection: React.FC = () => {
                           title={item.name}
                           className={`w-9 h-9 rounded-xl shrink-0 overflow-hidden border-2 transition-all p-0.5 bg-white ${
                             formAvatar === item.url
-                              ? 'border-indigo-600 scale-110 ring-2 ring-indigo-500/30 shadow-xs'
+                              ? 'border-primary-600 scale-110 ring-2 ring-primary-500/30 shadow-xs'
                               : 'border-slate-200 hover:border-slate-400 opacity-80 hover:opacity-100'
                           }`}
                         >
@@ -684,14 +678,14 @@ export const UsersManagementSection: React.FC = () => {
                 </div>
 
                 <div className="relative">
-                  <LinkIcon className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <LinkIcon className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     id="user-form-avatar"
                     type="url"
                     value={formAvatar.startsWith('data:') ? '' : formAvatar}
                     onChange={(e) => setFormAvatar(e.target.value)}
                     placeholder={formAvatar.startsWith('data:') ? 'Avatar flat seleccionado (o pega URL personalizada aquí)' : 'Pega enlace de foto personalizada (https://...)'}
-                    className="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-white focus:outline-hidden focus:ring-2 focus:ring-indigo-500 font-mono"
+                    className="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-white focus:outline-hidden focus:ring-2 focus:ring-primary-500 tabular-nums"
                   />
                 </div>
               </div>
@@ -699,10 +693,10 @@ export const UsersManagementSection: React.FC = () => {
               {/* Google Email */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Correo Electrónico de Google *
+                  Correo electrónico de Google *
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     id="user-form-email"
                     type="email"
@@ -710,10 +704,10 @@ export const UsersManagementSection: React.FC = () => {
                     value={formEmail}
                     onChange={(e) => setFormEmail(e.target.value)}
                     placeholder="docente@gmail.com o usuario@colegiomanglar.edu.ve"
-                    className="w-full pl-9 pr-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 font-mono font-medium"
+                    className="w-full pl-9 pr-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-primary-500 tabular-nums font-medium"
                   />
                 </div>
-                <p className="text-[11px] text-slate-500 mt-1">
+                <p className="text-xs text-slate-500 mt-1">
                   Este es el correo exacto con el que el docente iniciará sesión vía Google.
                 </p>
               </div>
@@ -721,7 +715,7 @@ export const UsersManagementSection: React.FC = () => {
               {/* Full Name */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Nombre Completo *
+                  Nombre completo *
                 </label>
                 <input
                   id="user-form-fullname"
@@ -730,14 +724,14 @@ export const UsersManagementSection: React.FC = () => {
                   value={formFullName}
                   onChange={(e) => setFormFullName(e.target.value)}
                   placeholder="Ej: Prof. Carmen Elena Silva"
-                  className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 font-medium"
+                  className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-primary-500 font-medium"
                 />
               </div>
 
               {/* Role Selection */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Rol Institucional *
+                  Rol institucional *
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
@@ -745,12 +739,12 @@ export const UsersManagementSection: React.FC = () => {
                     onClick={() => setFormRole('teacher')}
                     className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center space-x-2 ${
                       formRole === 'teacher'
-                        ? 'bg-emerald-50 border-emerald-300 text-[#3A6B1F] shadow-2xs'
+                        ? 'bg-success-50 border-success-300 text-primary-700 shadow-2xs'
                         : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
                     }`}
                   >
                     <BookOpen className="w-4 h-4" />
-                    <span>Docente de Asignatura</span>
+                    <span>Docente de asignatura</span>
                   </button>
 
                   <button
@@ -763,7 +757,7 @@ export const UsersManagementSection: React.FC = () => {
                     }`}
                   >
                     <ShieldCheck className="w-4 h-4" />
-                    <span>Coordinación Académica</span>
+                    <span>Coordinación académica</span>
                   </button>
                 </div>
               </div>
@@ -783,12 +777,12 @@ export const UsersManagementSection: React.FC = () => {
                         onClick={() => handleToggleSubject(sub.name)}
                         className={`text-left px-2.5 py-1.5 rounded-lg text-xs font-medium border transition-colors flex items-center justify-between ${
                           isSelected
-                            ? 'bg-emerald-100 border-emerald-300 text-[#3A6B1F] font-bold'
+                            ? 'bg-success-100 border-success-300 text-primary-700 font-bold'
                             : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-100'
                         }`}
                       >
                         <span className="truncate">{sub.name}</span>
-                        {isSelected && <CheckCircle2 className="w-3.5 h-3.5 shrink-0 text-[#5EA832]" />}
+                        {isSelected && <CheckCircle2 className="w-3.5 h-3.5 shrink-0 text-primary-600" />}
                       </button>
                     );
                   })}
@@ -799,7 +793,7 @@ export const UsersManagementSection: React.FC = () => {
               {formRole === 'teacher' && (
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                    Grados Asignados
+                    Grados asignados
                   </label>
                   <div className="grid grid-cols-3 gap-2">
                     {displayGrades.map((grade) => {
@@ -811,7 +805,7 @@ export const UsersManagementSection: React.FC = () => {
                           onClick={() => handleToggleGrade(grade)}
                           className={`text-center py-2 rounded-xl text-xs font-semibold border transition-all ${
                             isChecked
-                              ? 'bg-indigo-50 border-indigo-300 text-indigo-700'
+                              ? 'bg-primary-50 border-primary-300 text-primary-700'
                               : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
                           }`}
                         >
@@ -827,7 +821,7 @@ export const UsersManagementSection: React.FC = () => {
               {formRole === 'teacher' && (
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                    Secciones Asignadas
+                    Secciones asignadas
                   </label>
                   <div className="flex space-x-3">
                     {['A', 'B'].map((sec) => {
@@ -839,7 +833,7 @@ export const UsersManagementSection: React.FC = () => {
                           onClick={() => handleToggleSection(sec)}
                           className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-all ${
                             isChecked
-                              ? 'bg-indigo-600 text-white border-indigo-600'
+                              ? 'bg-primary-600 text-white border-primary-600'
                               : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
                           }`}
                         >
@@ -854,17 +848,17 @@ export const UsersManagementSection: React.FC = () => {
               {/* Phone */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Teléfono / WhatsApp de Contacto
+                  Teléfono / WhatsApp de contacto
                 </label>
                 <div className="relative">
-                  <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Phone className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     id="user-form-phone"
                     type="tel"
                     value={formPhone}
                     onChange={(e) => setFormPhone(e.target.value)}
                     placeholder="+58 414-1234567"
-                    className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-primary-500"
                   />
                 </div>
               </div>
@@ -880,7 +874,7 @@ export const UsersManagementSection: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm hover:shadow transition-all"
+                  className="px-5 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-xs font-bold shadow-sm hover:shadow transition-all"
                 >
                   {editingUser ? 'Guardar Cambios' : 'Registrar y Autorizar'}
                 </button>
@@ -892,14 +886,14 @@ export const UsersManagementSection: React.FC = () => {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirmUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent animate-in fade-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-raiz/40">
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-300 space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-red-50 border border-red-200 text-red-600 flex items-center justify-center mx-auto">
+            <div className="w-12 h-12 rounded-2xl bg-danger-50 border border-danger-200 text-danger-600 flex items-center justify-center mx-auto">
               <AlertCircle className="w-6 h-6" />
             </div>
             <div className="text-center space-y-1">
               <h3 className="text-base font-extrabold text-slate-900">
-                ¿Revocar Acceso al Usuario?
+                ¿Revocar acceso al usuario?
               </h3>
               <p className="text-xs text-slate-500">
                 ¿Estás seguro de que deseas revocar el acceso a <strong>{deleteConfirmUser.fullName}</strong> ({deleteConfirmUser.email})? Ya no podrá ingresar con su cuenta de Google.
@@ -914,7 +908,7 @@ export const UsersManagementSection: React.FC = () => {
               </button>
               <button
                 onClick={() => handleDelete(deleteConfirmUser)}
-                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-sm transition-colors"
+                className="flex-1 py-2.5 rounded-xl bg-danger-600 hover:bg-danger-700 text-white text-xs font-bold shadow-sm transition-colors"
               >
                 Revocar
               </button>
@@ -925,7 +919,7 @@ export const UsersManagementSection: React.FC = () => {
 
       {/* Supervisor Assignment Modal */}
       {supervisorModalTeacher && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent animate-in fade-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-raiz/40">
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-300 space-y-5">
             {/* Header */}
             <div className="flex items-center justify-between">
@@ -934,27 +928,27 @@ export const UsersManagementSection: React.FC = () => {
                   <Link2 className="w-5 h-5 text-purple-600" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-extrabold text-slate-900">Asignar Supervisores</h3>
-                  <p className="text-[11px] text-slate-500">Docente: <strong>{supervisorModalTeacher.fullName}</strong></p>
+                  <h3 className="text-sm font-extrabold text-slate-900">Asignar supervisores</h3>
+                  <p className="text-xs text-slate-500">Docente: <strong>{supervisorModalTeacher.fullName}</strong></p>
                 </div>
               </div>
               <button
                 onClick={() => setSupervisorModalTeacher(null)}
-                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
+                className="p-1.5 text-slate-500 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Explanation */}
-            <p className="text-[11px] text-slate-500 bg-purple-50 rounded-xl p-3 border border-purple-100">
+            <p className="text-xs text-slate-500 bg-purple-50 rounded-xl p-3 border border-purple-100">
               Los coordinadores seleccionados podrán ver y supervisar las planificaciones de este docente en su panel.
             </p>
 
             {/* Coordinator List */}
             <div className="space-y-2 max-h-60 overflow-y-auto">
               {coordinators.length === 0 ? (
-                <p className="text-xs text-center text-slate-400 py-4">No hay coordinadores registrados aún.</p>
+                <p className="text-xs text-center text-slate-500 py-4">No hay coordinadores registrados aún.</p>
               ) : (
                 coordinators.map((coord) => {
                   const isSelected = pendingSupervisorIds.includes(coord.id);
@@ -976,7 +970,7 @@ export const UsersManagementSection: React.FC = () => {
                       />
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-bold text-slate-900 truncate">{coord.fullName}</p>
-                        <p className="text-[10px] text-slate-500 truncate">{coord.specialty || 'Coordinación'}</p>
+                        <p className="text-xs text-slate-500 truncate">{coord.specialty || 'Coordinación'}</p>
                       </div>
                       <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
                         isSelected ? 'border-purple-600 bg-purple-600' : 'border-slate-300'
@@ -1001,7 +995,7 @@ export const UsersManagementSection: React.FC = () => {
                 onClick={handleSaveSupervisors}
                 className="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-sm transition-colors"
               >
-                Guardar Asignación
+                Guardar asignación
               </button>
             </div>
           </div>

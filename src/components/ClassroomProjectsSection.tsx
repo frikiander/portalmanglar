@@ -29,6 +29,7 @@ import {
 import { useEduPlan } from '../context/EduPlanContext';
 import { ClassroomProject, ClassroomProjectType, ClassroomProjectWeek, ProjectResourceLink } from '../types';
 import { AVAILABLE_GRADES } from '../data/mockData';
+import { Button } from './ui';
 import { 
   GradeBadge, 
   GRADE_COLOR_MAP, 
@@ -107,10 +108,10 @@ export const ClassroomProjectsSection: React.FC = () => {
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-              Proyectos de Aula
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-raiz">
+              Proyectos de aula
             </h1>
-            <span className="px-2.5 py-0.5 text-[11px] font-extrabold rounded-full bg-slate-100 text-slate-700 border border-slate-200">
+            <span className="px-2.5 py-0.5 text-xs font-extrabold rounded-full bg-slate-100 text-slate-700 border border-slate-200">
               {classroomProjects.length} {classroomProjects.length === 1 ? 'proyecto' : 'proyectos'}
             </span>
           </div>
@@ -123,37 +124,37 @@ export const ClassroomProjectsSection: React.FC = () => {
         <div className="flex flex-wrap items-center gap-2">
           
           {/* Quick Add Project Button (Available for Coordinator AND Teacher) */}
-          <button
+          <Button
             id="btn-agregar-proyecto-aula"
             onClick={() => {
               setCreateInitialType(activeProjectType === 'DIEV' ? 'DIEV' : 'IPC');
               setIsCreatingProject(true);
             }}
-            className="inline-flex items-center space-x-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs transition-colors cursor-pointer"
+            size="sm"
+            icon={Plus}
             title="Agregar un nuevo proyecto de aula (IPC o DIEV)"
           >
-            <Plus className="w-4 h-4" />
-            <span>+ Nuevo Proyecto de Aula</span>
-          </button>
+            Nuevo proyecto de aula
+          </Button>
 
           {/* Reset / Clear Data Controls (Only visible to coordinators / admins) */}
           {isCoordinator && (
             <div className="flex items-center bg-white border border-slate-200 rounded-xl p-0.5 shadow-2xs">
               <button
                 onClick={() => setShowResetConfirm(true)}
-                className="inline-flex items-center space-x-1 px-2.5 py-1.5 text-slate-700 hover:text-indigo-700 hover:bg-slate-100 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
+                className="inline-flex items-center space-x-1 px-2.5 py-1.5 text-slate-700 hover:text-primary-700 hover:bg-slate-100 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
                 title="Restablecer a los 12 proyectos base con colores oficiales"
               >
-                <RotateCcw className="w-3.5 h-3.5 text-indigo-600" />
-                <span className="hidden sm:inline">Restablecer Base</span>
+                <RotateCcw className="w-3.5 h-3.5 text-primary-600" />
+                <span className="hidden sm:inline">Restablecer base</span>
               </button>
               <button
                 onClick={() => setShowClearConfirm(true)}
-                className="inline-flex items-center space-x-1 px-2.5 py-1.5 text-slate-600 hover:text-red-700 hover:bg-red-50 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
+                className="inline-flex items-center space-x-1 px-2.5 py-1.5 text-slate-600 hover:text-danger-700 hover:bg-danger-50 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
                 title="Eliminar todos los proyectos para dejar la sección sin datos"
               >
-                <Trash2 className="w-3.5 h-3.5 text-red-500" />
-                <span className="hidden sm:inline">Vaciar Datos</span>
+                <Trash2 className="w-3.5 h-3.5 text-danger-500" />
+                <span className="hidden sm:inline">Vaciar datos</span>
               </button>
             </div>
           )}
@@ -174,7 +175,7 @@ export const ClassroomProjectsSection: React.FC = () => {
         
         {/* Quick Grade Buttons (Primaria 1° a 6°) with exact official colors */}
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1">
+          <span className="text-xs font-bold text-slate-500 mr-1">
             Grados:
           </span>
           {[
@@ -218,7 +219,7 @@ export const ClassroomProjectsSection: React.FC = () => {
         <div className="flex items-center gap-2 self-start md:self-auto">
           <div className="flex items-center space-x-1.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 shadow-2xs">
             <Calendar className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-            <span className="text-[11px] font-bold text-slate-500">Lapso:</span>
+            <span className="text-xs font-bold text-slate-500">Lapso:</span>
             <select
               id="select-proyecto-lapso"
               value={selectedLapso}
@@ -310,13 +311,13 @@ export const ClassroomProjectsSection: React.FC = () => {
 
           {/* Search or keyword filter */}
           <div className="relative w-full sm:w-72">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-3" />
+            <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-3" />
             <input
               type="text"
               placeholder="Buscar actividad, hito, semana..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 text-xs rounded-xl focus:outline-hidden focus:ring-2 focus:ring-indigo-500 font-medium"
+              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 text-xs rounded-xl focus:outline-hidden focus:ring-2 focus:ring-primary-500 font-medium"
             />
           </div>
         </div>
@@ -338,7 +339,7 @@ export const ClassroomProjectsSection: React.FC = () => {
         ) : (
           /* EMPTY STATE WITH QUICK ACTIONS FOR BOTH COORDINATOR & TEACHER */
           <div className="p-10 text-center bg-white rounded-3xl border-2 border-dashed border-slate-300 shadow-2xs space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mx-auto text-amber-600">
+            <div className="w-12 h-12 rounded-2xl bg-warning-50 border border-warning-200 flex items-center justify-center mx-auto text-warning-600">
               <Compass className="w-6 h-6" />
             </div>
             <div className="max-w-md mx-auto">
@@ -383,7 +384,7 @@ export const ClassroomProjectsSection: React.FC = () => {
                 className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl text-xs font-black shadow-xs transition-transform hover:scale-105 cursor-pointer"
               >
                 <HeartHandshake className="w-4 h-4" />
-                <span>Crear Proyecto DIEV</span>
+                <span>Crear proyecto DIEV</span>
               </button>
             </div>
           </div>
@@ -434,13 +435,13 @@ export const ClassroomProjectsSection: React.FC = () => {
 
       {/* CONFIRM DELETE PROJECT MODAL */}
       {projectToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-raiz/40">
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-300 text-center space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center mx-auto text-red-600">
+            <div className="w-12 h-12 rounded-2xl bg-danger-50 border border-danger-200 flex items-center justify-center mx-auto text-danger-600">
               <AlertTriangle className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-base font-black text-slate-900">¿Eliminar Proyecto de Aula?</h3>
+              <h3 className="text-base font-black text-slate-900">¿Eliminar proyecto de aula?</h3>
               <p className="text-xs text-slate-500 mt-1">
                 Se eliminará el proyecto <strong>"{projectToDelete.title}"</strong> ({projectToDelete.type} - {projectToDelete.grade}). Esta acción no se puede deshacer.
               </p>
@@ -457,9 +458,9 @@ export const ClassroomProjectsSection: React.FC = () => {
                   deleteClassroomProject(projectToDelete.id);
                   setProjectToDelete(null);
                 }}
-                className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold shadow-xs cursor-pointer"
+                className="px-5 py-2.5 bg-danger-600 hover:bg-danger-700 text-white rounded-xl text-xs font-bold shadow-xs cursor-pointer"
               >
-                Sí, Eliminar
+                Sí, eliminar
               </button>
             </div>
           </div>
@@ -468,13 +469,13 @@ export const ClassroomProjectsSection: React.FC = () => {
 
       {/* CONFIRM CLEAR ALL PROJECTS MODAL */}
       {showClearConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-raiz/40">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-300 text-center space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center mx-auto text-red-600">
+            <div className="w-12 h-12 rounded-2xl bg-danger-50 border border-danger-200 flex items-center justify-center mx-auto text-danger-600">
               <Trash2 className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-base font-black text-slate-900">Vaciar Todos los Proyectos</h3>
+              <h3 className="text-base font-black text-slate-900">Vaciar todos los proyectos</h3>
               <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                 ¿Deseas eliminar todos los proyectos de aula actuales para dejar esta parte sin datos? Podrás volver a agregar proyectos manualmente o restablecer la base en cualquier momento.
               </p>
@@ -491,9 +492,9 @@ export const ClassroomProjectsSection: React.FC = () => {
                   clearAllClassroomProjects();
                   setShowClearConfirm(false);
                 }}
-                className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold shadow-xs cursor-pointer"
+                className="px-5 py-2.5 bg-danger-600 hover:bg-danger-700 text-white rounded-xl text-xs font-bold shadow-xs cursor-pointer"
               >
-                Sí, Vaciar Todo
+                Sí, vaciar todo
               </button>
             </div>
           </div>
@@ -502,15 +503,15 @@ export const ClassroomProjectsSection: React.FC = () => {
 
       {/* CONFIRM RESET BASE PROJECTS MODAL */}
       {showResetConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-raiz/40">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-300 text-center space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center mx-auto text-indigo-600">
+            <div className="w-12 h-12 rounded-2xl bg-primary-50 border border-primary-200 flex items-center justify-center mx-auto text-primary-600">
               <RotateCcw className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-base font-black text-slate-900">Restablecer Proyectos Base</h3>
+              <h3 className="text-base font-black text-slate-900">Restablecer proyectos base</h3>
               <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                Se cargarán los 12 proyectos institucionales oficiales (1 IPC y 1 DIEV para cada grado de 1° a 6°) correspondientes a los ejes formativos IPC (Interés por el Conocimiento) y DIEV (Desarrollo Integral, Ética y Valores).
+                Se cargarán los 12 proyectos institucionales oficiales (1 IPC y 1 DIEV para cada grado de 1° a 6°) correspondientes a los ejes formativos IPC (interés por el Conocimiento) y DIEV (desarrollo Integral, Ética y Valores).
               </p>
             </div>
             <div className="flex items-center justify-center gap-2 pt-2">
@@ -525,9 +526,9 @@ export const ClassroomProjectsSection: React.FC = () => {
                   resetClassroomProjects();
                   setShowResetConfirm(false);
                 }}
-                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-xs cursor-pointer"
+                className="px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-bold shadow-xs cursor-pointer"
               >
-                Restablecer Ahora
+                Restablecer ahora
               </button>
             </div>
           </div>
@@ -557,12 +558,13 @@ const ProjectSheetCard: React.FC<ProjectSheetCardProps> = ({
   onEditWeek,
   onDeleteProject
 }) => {
+  const { getLapsoWeeks } = useEduPlan();
   const isDIEV = project.type === 'DIEV';
   const theme = getProjectTheme(project.type, project.grade);
 
-  // Generate continuous single sequence from week 1 to 15 (or max week in project)
+  // Continuous sequence over the lapso's weeks (or up to the last week the project uses)
   const maxWeekInProject = project.weeks.reduce((max, w) => Math.max(max, w.weekNumber), 0);
-  const totalWeeksCount = Math.max(15, maxWeekInProject);
+  const totalWeeksCount = Math.max(getLapsoWeeks(project.lapso), maxWeekInProject);
 
   const allWeeks: ClassroomProjectWeek[] = Array.from({ length: totalWeeksCount }, (_, idx) => {
     const weekNum = idx + 1;
@@ -611,7 +613,7 @@ const ProjectSheetCard: React.FC<ProjectSheetCardProps> = ({
           <div className="flex items-center space-x-3.5">
             <div className="bg-white rounded-2xl px-4 py-2.5 text-center shadow-xs border border-white/60">
               {project.promoCohort && (
-                <span className="block text-[11px] font-black uppercase text-slate-600 tracking-wider">
+                <span className="block text-xs font-black text-slate-600">
                   {project.promoCohort}
                 </span>
               )}
@@ -644,7 +646,7 @@ const ProjectSheetCard: React.FC<ProjectSheetCardProps> = ({
               <div className="flex items-center space-x-2">
                 <span 
                   style={{ color: isDIEV ? '#0f172a' : theme.textColor }}
-                  className="text-xs font-black uppercase tracking-wider opacity-90"
+                  className="text-xs font-black opacity-90"
                 >
                   {project.lapso} · {theme.fullName}
                 </span>
@@ -666,11 +668,11 @@ const ProjectSheetCard: React.FC<ProjectSheetCardProps> = ({
               title="Editar título y propósito del proyecto"
             >
               <Edit3 className="w-3.5 h-3.5 text-slate-700" />
-              <span>Editar Propósito</span>
+              <span>Editar propósito</span>
             </button>
             <button
               onClick={onDeleteProject}
-              className="p-1.5 rounded-xl bg-white/80 hover:bg-red-50 text-slate-600 hover:text-red-600 shadow-2xs transition-colors cursor-pointer"
+              className="p-1.5 rounded-xl bg-white/80 hover:bg-danger-50 text-slate-600 hover:text-danger-600 shadow-2xs transition-colors cursor-pointer"
               title="Eliminar este proyecto"
             >
               <Trash2 className="w-4 h-4" />
@@ -687,19 +689,19 @@ const ProjectSheetCard: React.FC<ProjectSheetCardProps> = ({
         </div>
       </div>
 
-      {/* WEEKS GRID CONTAINER: UNA SOLA ETAPA CONTINUA (SEMANAS 1 A 15) */}
+      {/* WEEKS GRID CONTAINER: una sola etapa continua con las semanas del lapso */}
       <div className="p-4 sm:p-6 space-y-4">
         
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1 pb-1">
           <div className="flex items-center space-x-2.5">
-            <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider">
+            <h4 className="text-xs font-black text-slate-800">
               Cronograma del Proyecto: Semanas 1 a {totalWeeksCount}
             </h4>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
               {loadedWeeksCount} de {totalWeeksCount} semanas con contenido
             </span>
           </div>
-          <span className="text-[11px] font-medium text-slate-500">
+          <span className="text-xs font-medium text-slate-500">
             Haz clic en cualquier semana para cargarla o editarla individualmente
           </span>
         </div>
@@ -758,7 +760,7 @@ const WeekCardCell: React.FC<WeekCardCellProps> = ({ week, theme, onEdit }) => {
           >
             Semana {week.weekNumber}
           </span>
-          <span className="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
+          <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
             Vacía
           </span>
         </div>
@@ -777,7 +779,7 @@ const WeekCardCell: React.FC<WeekCardCellProps> = ({ week, theme, onEdit }) => {
           <p className="text-xs font-black text-slate-700 group-hover:text-slate-900">
             + Cargar Semana {week.weekNumber}
           </p>
-          <p className="text-[10.5px] text-slate-400">
+          <p className="text-[10.5px] text-slate-500">
             Clic para redactar actividades
           </p>
         </div>
@@ -806,7 +808,7 @@ const WeekCardCell: React.FC<WeekCardCellProps> = ({ week, theme, onEdit }) => {
 
           <button
             onClick={onEdit}
-            className="p-1 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors cursor-pointer"
+            className="p-1 rounded-lg text-slate-500 hover:text-primary-600 hover:bg-primary-50 transition-colors cursor-pointer"
             title="Editar semana"
           >
             <Edit3 className="w-3.5 h-3.5" />
@@ -815,8 +817,8 @@ const WeekCardCell: React.FC<WeekCardCellProps> = ({ week, theme, onEdit }) => {
 
         {/* Milestone Alert Badge (e.g. Evaluaciones Mensuales, Salida de campo, Cierre) */}
         {week.milestone && (
-          <div className="mb-2.5 px-2.5 py-1 rounded-xl bg-amber-100/90 border border-amber-300/80 text-[11px] font-extrabold text-amber-900 flex items-center space-x-1.5 shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+          <div className="mb-2.5 px-2.5 py-1 rounded-xl bg-warning-100/90 border border-warning-300/80 text-xs font-extrabold text-warning-900 flex items-center space-x-1.5 shadow-2xs">
+            <Sparkles className="w-3.5 h-3.5 text-warning-700 shrink-0" />
             <span className="truncate">{week.milestone}</span>
           </div>
         )}
@@ -829,14 +831,14 @@ const WeekCardCell: React.FC<WeekCardCellProps> = ({ week, theme, onEdit }) => {
         )}
 
         {/* Content / Activities */}
-        <p className="text-[11px] text-slate-600 leading-relaxed line-clamp-5 whitespace-pre-line font-normal">
+        <p className="text-xs text-slate-600 leading-relaxed line-clamp-5 whitespace-pre-line font-normal">
           {week.content}
         </p>
 
         {/* Bilingual / English Section if present */}
         {week.englishContent && (
-          <div className="mt-2.5 pt-2 border-t border-dashed border-slate-200 text-[10px] text-indigo-950 bg-indigo-50/60 p-2 rounded-xl">
-            <span className="font-bold text-indigo-700 block mb-0.5">🇬🇧 Enfoque en Inglés:</span>
+          <div className="mt-2.5 pt-2 border-t border-dashed border-slate-200 text-xs text-primary-950 bg-primary-50/60 p-2 rounded-xl">
+            <span className="font-bold text-primary-700 block mb-0.5">🇬🇧 enfoque en inglés:</span>
             <p className="line-clamp-3 italic">{week.englishContent}</p>
           </div>
         )}
@@ -845,8 +847,8 @@ const WeekCardCell: React.FC<WeekCardCellProps> = ({ week, theme, onEdit }) => {
       {/* Footer: Interactive Links and Resources */}
       {week.links && week.links.length > 0 && (
         <div className="mt-3 pt-2.5 border-t border-slate-200/80 space-y-1.5">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-            Recursos y Enlaces:
+          <span className="text-xs font-bold text-slate-500 block">
+            Recursos y enlaces:
           </span>
           <div className="flex flex-col gap-1">
             {week.links.map((link, idx) => {
@@ -860,15 +862,15 @@ const WeekCardCell: React.FC<WeekCardCellProps> = ({ week, theme, onEdit }) => {
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center space-x-1.5 text-[10.5px] font-medium text-indigo-600 hover:text-indigo-800 hover:underline truncate"
+                  className="inline-flex items-center space-x-1.5 text-[10.5px] font-medium text-primary-600 hover:text-primary-800 hover:underline truncate"
                   title={link.url}
                 >
                   {isYoutube ? (
-                    <Youtube className="w-3 h-3 text-red-500 shrink-0" />
+                    <Youtube className="w-3 h-3 text-danger-500 shrink-0" />
                   ) : isDrive ? (
-                    <FileText className="w-3 h-3 text-emerald-600 shrink-0" />
+                    <FileText className="w-3 h-3 text-success-600 shrink-0" />
                   ) : (
-                    <Link2 className="w-3 h-3 text-indigo-500 shrink-0" />
+                    <Link2 className="w-3 h-3 text-primary-500 shrink-0" />
                   )}
                   <span className="truncate">{link.label || 'Ver recurso didáctico'}</span>
                   <ExternalLink className="w-2.5 h-2.5 opacity-60 shrink-0" />
@@ -949,14 +951,14 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-raiz/40">
       <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-300 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div>
-            <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">Nuevo Proyecto de Aula</span>
-            <h3 className="text-base font-black text-slate-900">Configuración del Proyecto</h3>
+            <span className="text-xs font-bold text-success-600">Nuevo proyecto de aula</span>
+            <h3 className="text-base font-black text-slate-900">Configuración del proyecto</h3>
           </div>
-          <button onClick={onClose} className="p-1.5 text-slate-400 hover:text-slate-600 rounded-xl cursor-pointer">
+          <button onClick={onClose} className="p-1.5 text-slate-500 hover:text-slate-600 rounded-xl cursor-pointer">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -966,7 +968,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           {/* EJE FORMATIVO: IPC vs DIEV (Color preview) */}
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1.5">
-              Eje del Proyecto *
+              Eje del proyecto *
             </label>
             <div className="grid grid-cols-2 gap-2.5">
               
@@ -993,7 +995,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                   <Compass className="w-4 h-4" />
                   <span className="text-xs font-extrabold">IPC</span>
                 </div>
-                <p className="text-[11px] opacity-90 leading-tight">
+                <p className="text-xs opacity-90 leading-tight">
                   Interés por el Conocimiento
                 </p>
               </button>
@@ -1021,7 +1023,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                   <HeartHandshake className="w-4 h-4" />
                   <span className="text-xs font-extrabold">DIEV</span>
                 </div>
-                <p className="text-[11px] opacity-90 leading-tight">
+                <p className="text-xs opacity-90 leading-tight">
                   Desarrollo Integral, Ética y Valores
                 </p>
               </button>
@@ -1032,12 +1034,12 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
-                Grado Escolar *
+                Grado escolar *
               </label>
               <select
                 value={grade}
                 onChange={(e) => setGrade(e.target.value)}
-                className="w-full px-3 py-2 text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-3 py-2 text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-success-500"
               >
                 {displayGrades.map((g) => (
                   <option key={g} value={g}>{g}</option>
@@ -1047,12 +1049,12 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
 
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
-                Lapso Académico *
+                Lapso académico *
               </label>
               <select
                 value={lapso}
                 onChange={(e) => setLapso(e.target.value)}
-                className="w-full px-3 py-2 text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-3 py-2 text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-success-500"
               >
                 <option value="1er Lapso">1er Lapso</option>
                 <option value="2do Lapso">2do Lapso</option>
@@ -1064,7 +1066,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           {/* Promoción / Cohorte */}
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">
-              Promoción o Cohorte (Opcional)
+              Promoción o cohorte (opcional)
             </label>
             <input
               type="text"
@@ -1078,7 +1080,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           {/* Título del Proyecto */}
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">
-              Título del Proyecto de Aula *
+              Título del proyecto de aula *
             </label>
             <input
               type="text"
@@ -1086,14 +1088,14 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Ej: EXPLORADORES DEL ESPACIO O EL PODER DE LA EMPATÍA"
-              className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl font-bold uppercase"
+              className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl font-bold"
             />
           </div>
 
           {/* Propósito */}
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">
-              Propósito Pedagógico Institucional *
+              Propósito pedagógico institucional *
             </label>
             <textarea
               required
@@ -1105,10 +1107,10 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             />
           </div>
 
-          <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-[11px] text-slate-600 flex items-start gap-2">
-            <Info className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+          <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-xs text-slate-600 flex items-start gap-2">
+            <Info className="w-4 h-4 text-success-600 shrink-0 mt-0.5" />
             <span>
-              El proyecto se inicializará automáticamente con 15 semanas completas estructuradas e hitos didácticos (Semanas 8, 11, 12 y 15). Podrás editar cada semana luego.
+              El proyecto se inicializará automáticamente con 15 semanas completas estructuradas e hitos didácticos (semanas 8, 11, 12 y 15). Podrás editar cada semana luego.
             </span>
           </div>
 
@@ -1122,10 +1124,10 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             </button>
             <button
               type="submit"
-              className="inline-flex items-center space-x-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer"
+              className="inline-flex items-center space-x-2 px-5 py-2.5 bg-success-600 hover:bg-success-700 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer"
             >
               <Save className="w-3.5 h-3.5" />
-              <span>Crear Proyecto</span>
+              <span>Crear proyecto</span>
             </button>
           </div>
         </form>
@@ -1178,14 +1180,14 @@ const EditWeekModal: React.FC<EditWeekModalProps> = ({ week, onClose, onSave }) 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-raiz/40">
       <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-300 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div>
-            <span className="text-xs font-bold text-indigo-600">Semana {week.weekNumber}</span>
-            <h3 className="text-base font-bold text-slate-900">Editar Actividad del Proyecto</h3>
+            <span className="text-xs font-bold text-primary-600">Semana {week.weekNumber}</span>
+            <h3 className="text-base font-bold text-slate-900">Editar actividad del proyecto</h3>
           </div>
-          <button onClick={onClose} className="p-1.5 text-slate-400 hover:text-slate-600 rounded-xl cursor-pointer">
+          <button onClick={onClose} className="p-1.5 text-slate-500 hover:text-slate-600 rounded-xl cursor-pointer">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -1193,20 +1195,20 @@ const EditWeekModal: React.FC<EditWeekModalProps> = ({ week, onClose, onSave }) 
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">
-              Título o Pregunta Generadora
+              Título o pregunta generadora
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Ej: ¿Qué es la ciencia y la tecnología?"
-              className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 font-medium"
+              className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 font-medium"
             />
           </div>
 
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">
-              Contenido Pedagógico / Actividades de la Semana *
+              Contenido pedagógico / actividades de la semana *
             </label>
             <textarea
               required
@@ -1214,40 +1216,40 @@ const EditWeekModal: React.FC<EditWeekModalProps> = ({ week, onClose, onSave }) 
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Describe detalladamente las actividades, preguntas generadoras y dinámicas de clase..."
-              className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 font-normal leading-relaxed"
+              className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 font-normal leading-relaxed"
             />
           </div>
 
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">
-              Enfoque Bilingüe / Inglés (Opcional)
+              Enfoque bilingüe / inglés (opcional)
             </label>
             <textarea
               rows={2}
               value={englishContent}
               onChange={(e) => setEnglishContent(e.target.value)}
               placeholder="Actividades o debates en inglés complementarios..."
-              className="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500"
             />
           </div>
 
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">
-              Hito Especial o Evaluación (Opcional)
+              Hito especial o evaluación (opcional)
             </label>
             <input
               type="text"
               value={milestone}
               onChange={(e) => setMilestone(e.target.value)}
               placeholder="Ej: Evaluaciones mensuales, Salida a centro de salud, Cierre de Proyecto"
-              className="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500"
             />
           </div>
 
           {/* Links manager */}
           <div className="pt-2 border-t border-slate-100">
             <label className="block text-xs font-bold text-slate-700 mb-1.5">
-              Enlaces y Recursos Didácticos
+              Enlaces y recursos didácticos
             </label>
             
             {links.length > 0 && (
@@ -1258,7 +1260,7 @@ const EditWeekModal: React.FC<EditWeekModalProps> = ({ week, onClose, onSave }) 
                     <button
                       type="button"
                       onClick={() => handleRemoveLink(idx)}
-                      className="text-red-500 hover:text-red-700 text-xs font-bold px-1 cursor-pointer"
+                      className="text-danger-700 hover:text-danger-700 text-xs font-bold px-1 cursor-pointer"
                     >
                       Quitar
                     </button>
@@ -1304,10 +1306,10 @@ const EditWeekModal: React.FC<EditWeekModalProps> = ({ week, onClose, onSave }) 
             </button>
             <button
               type="submit"
-              className="inline-flex items-center space-x-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer"
+              className="inline-flex items-center space-x-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer"
             >
               <Save className="w-3.5 h-3.5" />
-              <span>Guardar Cambios</span>
+              <span>Guardar cambios</span>
             </button>
           </div>
         </form>
@@ -1341,13 +1343,13 @@ const EditProjectInfoModal: React.FC<EditProjectInfoModalProps> = ({ project, on
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-raiz/40">
       <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-300">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <h3 className="text-base font-bold text-slate-900">
             Editar Información del Proyecto ({project.type})
           </h3>
-          <button onClick={onClose} className="p-1.5 text-slate-400 hover:text-slate-600 rounded-xl cursor-pointer">
+          <button onClick={onClose} className="p-1.5 text-slate-500 hover:text-slate-600 rounded-xl cursor-pointer">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -1355,7 +1357,7 @@ const EditProjectInfoModal: React.FC<EditProjectInfoModalProps> = ({ project, on
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">
-              Promoción o Cohorte (Opcional)
+              Promoción o cohorte (opcional)
             </label>
             <input
               type="text"
@@ -1368,7 +1370,7 @@ const EditProjectInfoModal: React.FC<EditProjectInfoModalProps> = ({ project, on
 
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">
-              Título del Proyecto *
+              Título del proyecto *
             </label>
             <input
               type="text"
@@ -1376,13 +1378,13 @@ const EditProjectInfoModal: React.FC<EditProjectInfoModalProps> = ({ project, on
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Ej: LA TECNOLOGÍA EN LA MEDICINA"
-              className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl font-bold uppercase"
+              className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl font-bold"
             />
           </div>
 
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">
-              Propósito Pedagógico Institucional *
+              Propósito pedagógico institucional *
             </label>
             <textarea
               required
@@ -1404,7 +1406,7 @@ const EditProjectInfoModal: React.FC<EditProjectInfoModalProps> = ({ project, on
             </button>
             <button
               type="submit"
-              className="inline-flex items-center space-x-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer"
+              className="inline-flex items-center space-x-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer"
             >
               <Save className="w-3.5 h-3.5" />
               <span>Guardar</span>

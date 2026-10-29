@@ -30,7 +30,7 @@ const GRADE_GROUPS = [
 ];
 
 export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSaved }) => {
-  const { currentUser, viewMode, addFieldTrip, updateFieldTrip, classroomProjects } = useEduPlan();
+  const { currentUser, viewMode, addFieldTrip, updateFieldTrip, classroomProjects, getLapsoWeeks } = useEduPlan();
   const isCoordinator = viewMode === 'coordinator';
 
   const [formData, setFormData] = useState<Omit<FieldTrip, 'id' | 'createdAt' | 'updatedAt'>>({
@@ -232,7 +232,7 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
       return;
     }
     if (!formData.grade.trim()) {
-      alert('Por favor selecciona o indica el Grado o Asignatura.');
+      alert('Selecciona o indica el Grado o Asignatura.');
       return;
     }
 
@@ -260,21 +260,21 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-transparent flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl sm:rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-300 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 bg-raiz/40 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+      <div className="bg-white rounded-2xl sm:rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-300 overflow-hidden">
         
         {/* MODAL HEADER */}
-        <div className="px-5 sm:px-7 py-4 bg-gradient-to-r from-[#285A14] to-[#3A6B1F] text-white flex items-center justify-between shrink-0">
+        <div className="px-5 sm:px-7 py-4 bg-raiz text-white flex items-center justify-between shrink-0">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center border border-white/20">
               {formData.type === 'salida_campo' ? (
                 <Bus className="w-5 h-5 text-white" />
               ) : (
-                <Sparkles className="w-5 h-5 text-[#F8CB0A]" />
+                <Sparkles className="w-5 h-5 text-attention-400" />
               )}
             </div>
             <div>
-              <span className="text-xs font-bold text-emerald-200 uppercase tracking-wider block">
+              <span className="text-xs font-bold text-success-200 block">
                 {initialData ? 'Actualizar Registro' : 'Nuevo Registro Institucional'}
               </span>
               <h2 className="text-lg sm:text-xl font-black text-white tracking-tight">
@@ -295,8 +295,8 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
           
           {/* 1. SELECCIÓN DE TIPO DE ACTIVIDAD */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-              Tipo de Experiencia Pedagógica
+            <label className="block text-xs font-bold text-slate-700 mb-2">
+              Tipo de experiencia pedagógica
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
@@ -304,17 +304,17 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
                 onClick={() => handleTypeChange('salida_campo')}
                 className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex items-center gap-3.5 ${
                   formData.type === 'salida_campo'
-                    ? 'border-[#5EA832] bg-emerald-50/80 ring-2 ring-[#5EA832]/30 shadow-xs'
+                    ? 'border-primary-500 bg-success-50/80 ring-2 ring-primary-500/30 shadow-xs'
                     : 'border-slate-200 hover:border-slate-300 bg-white'
                 }`}
               >
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                  formData.type === 'salida_campo' ? 'bg-[#5EA832] text-white' : 'bg-slate-100 text-slate-500'
+                  formData.type === 'salida_campo' ? 'bg-primary-600 text-white' : 'bg-slate-100 text-slate-500'
                 }`}>
                   <Bus className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-slate-900">Salida de Campo</h4>
+                  <h4 className="text-sm font-bold text-slate-900">Salida de campo</h4>
                   <p className="text-xs text-slate-500">Visita o paseo vivencial fuera de las instalaciones del plantel</p>
                 </div>
               </button>
@@ -324,17 +324,17 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
                 onClick={() => handleTypeChange('invitado_especial')}
                 className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex items-center gap-3.5 ${
                   formData.type === 'invitado_especial'
-                    ? 'border-amber-500 bg-amber-50/80 ring-2 ring-amber-500/30 shadow-xs'
+                    ? 'border-warning-500 bg-warning-50/80 ring-2 ring-warning-500/30 shadow-xs'
                     : 'border-slate-200 hover:border-slate-300 bg-white'
                 }`}
               >
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                  formData.type === 'invitado_especial' ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-500'
+                  formData.type === 'invitado_especial' ? 'bg-warning-700 text-white' : 'bg-slate-100 text-slate-500'
                 }`}>
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-slate-900">Invitado Especial</h4>
+                  <h4 className="text-sm font-bold text-slate-900">Invitado especial</h4>
                   <p className="text-xs text-slate-500">Especialista, ponente, tallerista o familia invitada al aula</p>
                 </div>
               </button>
@@ -343,23 +343,23 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
 
           {/* 2. TEMPORALIDAD Y GRADO DESPLEGABLE */}
           <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-3">
-            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-              <Calendar className="w-4 h-4 text-[#5EA832]" />
-              Temporalidad y Nivel Académico
+            <h3 className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+              <Calendar className="w-4 h-4 text-primary-600" />
+              Temporalidad y nivel académico
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
               <div className="sm:col-span-1">
                 <label className="block text-xs font-semibold text-slate-600 mb-1">
-                  Grado / Asignatura *
+                  Grado / asignatura *
                 </label>
                 {!isCustomGrade ? (
                   <select
                     required
                     value={formData.grade}
                     onChange={(e) => handleGradeSelect(e.target.value)}
-                    className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                    className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                   >
-                    <option value="" disabled>Seleccione Grado o Asignatura</option>
+                    <option value="" disabled>Seleccione grado o asignatura</option>
                     {GRADE_GROUPS.map((grp) => (
                       <optgroup key={grp.label} label={grp.label}>
                         {grp.options.map((opt) => (
@@ -377,12 +377,12 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
                       placeholder="ej. 6to Grado, Francés"
                       value={formData.grade}
                       onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
-                      className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                      className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                     />
                     <button
                       type="button"
                       onClick={() => setIsCustomGrade(false)}
-                      className="px-2.5 py-1 text-[11px] font-bold text-slate-600 hover:bg-slate-200 rounded-lg shrink-0 cursor-pointer"
+                      className="px-2.5 py-1 text-xs font-bold text-slate-600 hover:bg-slate-200 rounded-lg shrink-0 cursor-pointer"
                       title="Volver a lista desplegable"
                     >
                       Lista
@@ -396,7 +396,7 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
                 <select
                   value={formData.lapso}
                   onChange={(e) => handleLapsoOrWeekChange(e.target.value, formData.weekNumber)}
-                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                 >
                   <option value="1er Lapso">1er Lapso</option>
                   <option value="2do Lapso">2do Lapso</option>
@@ -405,26 +405,26 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Semana (1 a 15)</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Semana (1 a {getLapsoWeeks(formData.lapso)})</label>
                 <input
                   type="number"
                   min="1"
-                  max="15"
+                  max={getLapsoWeeks(formData.lapso)}
                   required
                   value={formData.weekNumber}
                   onChange={(e) => handleLapsoOrWeekChange(formData.lapso, parseInt(e.target.value) || 1)}
-                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Fecha Programada</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Fecha programada</label>
                 <input
                   type="date"
                   required
                   value={formData.date}
                   onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                 />
               </div>
             </div>
@@ -432,9 +432,9 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
 
           {/* 3. ANTES DEL PASEO O INVITADO */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-              <MapPin className="w-4 h-4 text-[#5EA832]" />
-              Antes del Paseo o Invitado (Planificación Logística y Pedagógica)
+            <h3 className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+              <MapPin className="w-4 h-4 text-primary-600" />
+              Antes del paseo o invitado (planificación logística y pedagógica)
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -452,35 +452,35 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
                   }
                   value={formData.destinationOrGuest}
                   onChange={(e) => setFormData({ ...formData, destinationOrGuest: e.target.value })}
-                  className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl font-semibold text-slate-900 focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                  className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl font-semibold text-slate-900 focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1 flex items-center gap-1.5">
-                  <Building2 className="w-3.5 h-3.5 text-[#5EA832]" />
-                  <span>Nombre de la Alianza / Contacto</span>
+                  <Building2 className="w-3.5 h-3.5 text-primary-600" />
+                  <span>Nombre de la alianza / contacto</span>
                 </label>
                 <input
                   type="text"
                   placeholder="ej. Dra. Yndira Hernández, Alianza Francesa, INPARQUES"
                   value={formData.allianceName || ''}
                   onChange={(e) => handleAllianceNameChange(e.target.value)}
-                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1 flex items-center gap-1.5">
-                  <Phone className="w-3.5 h-3.5 text-[#5EA832]" />
-                  <span>Número de Contacto (Teléfono / Celular)</span>
+                  <Phone className="w-3.5 h-3.5 text-primary-600" />
+                  <span>Número de contacto (teléfono / celular)</span>
                 </label>
                 <input
                   type="tel"
                   placeholder="ej. 0426-2185633, +58 281-2814522"
                   value={formData.contactPhone || ''}
                   onChange={(e) => handleContactPhoneChange(e.target.value)}
-                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden font-mono"
+                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-hidden tabular-nums"
                 />
               </div>
 
@@ -491,7 +491,7 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
                     Contexto del proyecto
                   </label>
                   {gradeProjects.length > 0 && (
-                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                    <span className="text-xs font-bold text-success-700 bg-success-50 px-2 py-0.5 rounded-md border border-success-200">
                       {gradeProjects.length} proyecto(s) IPC/DIEV de {formData.grade}
                     </span>
                   )}
@@ -502,7 +502,7 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
                     <select
                       value={selectedProjectId}
                       onChange={(e) => handleProjectSelect(e.target.value)}
-                      className="w-full px-3 py-2.5 text-xs sm:text-sm bg-emerald-50/40 border border-emerald-300/80 rounded-xl font-medium text-slate-800 focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden cursor-pointer"
+                      className="w-full px-3 py-2.5 text-xs sm:text-sm bg-success-50/40 border border-success-300/80 rounded-xl font-medium text-slate-800 focus:ring-2 focus:ring-primary-500 focus:outline-hidden cursor-pointer"
                     >
                       <option value="">-- Seleccionar proyecto de aula ({formData.grade}) --</option>
                       
@@ -537,7 +537,7 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
                         setFormData({ ...formData, subjectOrContext: e.target.value });
                         if (selectedProjectId !== '__manual__') setSelectedProjectId('');
                       }}
-                      className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                      className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                     />
                   </div>
                 ) : (
@@ -546,56 +546,56 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
                     placeholder='ej. Proyecto "LA TECNOLOGÍA EN LA MEDICINA", Francés, o Plan Lector...'
                     value={formData.subjectOrContext}
                     onChange={(e) => setFormData({ ...formData, subjectOrContext: e.target.value })}
-                    className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                    className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                   />
                 )}
-                <p className="text-[11px] text-slate-500">
+                <p className="text-xs text-slate-500">
                   Asocia la salida o invitado al proyecto pedagógico de aula del grado o a la asignatura correspondiente.
                 </p>
               </div>
 
               <div className="sm:col-span-2">
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Tema / Propósito Pedagógico
+                  Tema / propósito pedagógico
                 </label>
                 <textarea
                   rows={2}
                   placeholder="ej. Que los alumnos a través de esta experiencia conozcan los beneficios que aporta la tecnología en el campo de la salud..."
                   value={formData.purpose}
                   onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
-                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Docente Responsable
+                  Docente responsable
                 </label>
                 <input
                   type="text"
                   required
                   value={formData.responsibleTeacher}
                   onChange={(e) => setFormData({ ...formData, responsibleTeacher: e.target.value })}
-                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Docentes Acompañantes
+                  Docentes acompañantes
                 </label>
                 <input
                   type="text"
                   placeholder="ej. Paola Cueche y Patricia Rodríguez"
                   value={formData.chaperoneTeachers}
                   onChange={(e) => setFormData({ ...formData, chaperoneTeachers: e.target.value })}
-                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                 />
               </div>
 
               <div className="sm:col-span-2">
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Recursos Requeridos
+                  Recursos requeridos
                 </label>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <input
@@ -603,16 +603,16 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
                     placeholder="ej. Unidad de transporte de la institución, Biblioteca de primaria"
                     value={formData.resources}
                     onChange={(e) => setFormData({ ...formData, resources: e.target.value })}
-                    className="flex-1 px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                    className="flex-1 px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                   />
                   <label className="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer text-xs font-semibold text-slate-700 shrink-0">
                     <input
                       type="checkbox"
                       checked={formData.transportRequired}
                       onChange={(e) => setFormData({ ...formData, transportRequired: e.target.checked })}
-                      className="rounded text-[#5EA832] focus:ring-[#5EA832]"
+                      className="rounded text-primary-600 focus:ring-primary-500"
                     />
-                    <span>Transporte Institucional</span>
+                    <span>Transporte institucional</span>
                   </label>
                 </div>
               </div>
@@ -620,13 +620,13 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
           </div>
 
           {/* 4. ENFOQUES RELACIONADOS (PILARES DEL MANGLAR) */}
-          <div className="bg-amber-50/60 p-4 rounded-2xl border border-amber-200/80 space-y-3">
+          <div className="bg-warning-50/60 p-4 rounded-2xl border border-warning-200/80 space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold text-amber-950 uppercase tracking-wider flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-amber-700" />
-                Enfoques Relacionados (Pilares Institucionales El Manglar)
+              <h3 className="text-xs font-bold text-warning-950 flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-warning-700" />
+                Enfoques relacionados (pilares institucionales El Manglar)
               </h3>
-              <span className="text-[10px] text-amber-800 font-semibold">Marca los ejes formativos</span>
+              <span className="text-xs text-warning-800 font-semibold">Marca los ejes formativos</span>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -644,16 +644,16 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
                     onClick={() => toggleFocus(key)}
                     className={`px-3 py-2.5 rounded-xl border text-center transition-all cursor-pointer flex items-center justify-center gap-2 ${
                       isChecked
-                        ? 'bg-amber-100 border-amber-400 text-amber-950 font-bold shadow-2xs ring-1 ring-amber-400'
-                        : 'bg-white border-slate-200 text-slate-600 hover:border-amber-300 font-medium'
+                        ? 'bg-warning-100 border-warning-400 text-warning-950 font-bold shadow-2xs ring-1 ring-warning-400'
+                        : 'bg-white border-slate-200 text-slate-600 hover:border-warning-300 font-medium'
                     }`}
                   >
                     {isChecked ? (
-                      <CheckSquare className="w-4 h-4 text-amber-700 shrink-0" />
+                      <CheckSquare className="w-4 h-4 text-warning-700 shrink-0" />
                     ) : (
                       <Square className="w-4 h-4 text-slate-300 shrink-0" />
                     )}
-                    <span className="text-[11px] leading-tight">{label}</span>
+                    <span className="text-xs leading-tight">{label}</span>
                   </button>
                 );
               })}
@@ -662,9 +662,9 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
 
           {/* 5. METODOLOGÍA Y APRENDIZAJES CLAVE (¿CÓMO?) */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-              <FileText className="w-4 h-4 text-[#5EA832]" />
-              Metodología Vivencial y Aprendizajes
+            <h3 className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+              <FileText className="w-4 h-4 text-primary-600" />
+              Metodología vivencial y aprendizajes
             </h3>
 
             <div className="space-y-3">
@@ -677,47 +677,47 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
                   placeholder="Describe cómo se desarrollará la actividad vivencial, actividades guiadas, preguntas orientadoras o recorrido..."
                   value={formData.methodology}
                   onChange={(e) => setFormData({ ...formData, methodology: e.target.value })}
-                  className="w-full px-3.5 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                  className="w-full px-3.5 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Aprendizajes Claves
+                  Aprendizajes claves
                 </label>
                 <textarea
                   rows={2}
                   placeholder="ej. Las emociones, diferencia entre emociones y sentimientos, gestión de emociones."
                   value={formData.keyLearnings}
                   onChange={(e) => setFormData({ ...formData, keyLearnings: e.target.value })}
-                  className="w-full px-3.5 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                  className="w-full px-3.5 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Representantes Acompañantes
+                    Representantes acompañantes
                   </label>
                   <input
                     type="text"
                     placeholder="ej. Sra. Valentina Méndez, Familia Dorash Nasser"
                     value={formData.chaperoneParents}
                     onChange={(e) => setFormData({ ...formData, chaperoneParents: e.target.value })}
-                    className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                    className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Observaciones Logísticas
+                    Observaciones logísticas
                   </label>
                   <input
                     type="text"
                     placeholder="ej. Salida autorizada por Dirección a las 8:30 am"
                     value={formData.observations}
                     onChange={(e) => setFormData({ ...formData, observations: e.target.value })}
-                    className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                    className="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
                   />
                 </div>
               </div>
@@ -727,7 +727,7 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
           {/* 6. ESTADO DE COORDINACIÓN */}
           <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <span className="text-xs font-bold text-slate-800 block">Estado del Registro</span>
+              <span className="text-xs font-bold text-slate-800 block">Estado del registro</span>
               <p className="text-xs text-slate-500">
                 {isCoordinator 
                   ? 'Como coordinación puedes aprobar o cambiar el estado directamente.'
@@ -738,11 +738,11 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
               <select
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value as FieldTripStatus })}
-                className="px-3 py-2 text-xs font-bold bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#5EA832] focus:outline-hidden"
+                className="px-3 py-2 text-xs font-bold bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-hidden"
               >
                 <option value="draft">Borrador</option>
                 <option value="submitted">Enviada a Coordinación</option>
-                <option value="approved">Aprobada (Visto Bueno)</option>
+                <option value="approved">Aprobada (visto bueno)</option>
                 <option value="completed">Realizada</option>
               </select>
             </div>
@@ -762,7 +762,7 @@ export const FieldTripFormModal: React.FC<Props> = ({ initialData, onClose, onSa
           <button
             type="button"
             onClick={handleSubmit}
-            className="px-5 py-2 text-xs font-bold text-white bg-[#5EA832] hover:bg-[#498925] rounded-xl shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+            className="px-5 py-2 text-xs font-bold text-white bg-primary-600 hover:bg-primary-600 rounded-xl shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
           >
             <Save className="w-4 h-4" />
             <span>{initialData ? 'Guardar Cambios' : 'Registrar Experiencia'}</span>

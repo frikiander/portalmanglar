@@ -86,16 +86,16 @@ const CATEGORY_DEFAULT_ICONS: Record<SubjectCategory, React.ElementType> = {
 };
 
 const CATEGORY_COLORS: Record<SubjectCategory, { bg: string; text: string; border: string }> = {
-  lengua: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200' },
+  lengua: { bg: 'bg-danger-50', text: 'text-danger-700', border: 'border-danger-200' },
   matematica: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
   ingles: { bg: 'bg-cyan-50', text: 'text-cyan-700', border: 'border-cyan-200' },
-  ciencia: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
-  sociales: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
+  ciencia: { bg: 'bg-success-50', text: 'text-success-700', border: 'border-success-200' },
+  sociales: { bg: 'bg-warning-50', text: 'text-warning-700', border: 'border-warning-200' },
   deporte: { bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200' },
   especiales: { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200' },
-  proyecto: { bg: 'bg-teal-50', text: 'text-teal-700', border: 'border-teal-200' },
+  proyecto: { bg: 'bg-info-50', text: 'text-info-700', border: 'border-info-200' },
   rutina: { bg: 'bg-slate-50', text: 'text-slate-700', border: 'border-slate-200' },
-  recreo: { bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-200' },
+  recreo: { bg: 'bg-attention-50', text: 'text-attention-700', border: 'border-attention-200' },
   otro: { bg: 'bg-slate-50', text: 'text-slate-700', border: 'border-slate-200' },
 };
 

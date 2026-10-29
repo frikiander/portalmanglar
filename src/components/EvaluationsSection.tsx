@@ -27,6 +27,7 @@ import {
   ShieldAlert,
 } from 'lucide-react';
 import { useEduPlan } from '../context/EduPlanContext';
+import { currentLapsoName } from '../utils/lapsoCalendar';
 import {
   EvaluationRecord,
   EvaluationMoment,
@@ -74,13 +75,16 @@ export const EvaluationsSection: React.FC = () => {
     addToast,
     availableSubjectNames,
     availableGradeNames,
+    selectedSchoolYear: portalSchoolYear,
+    availableSchoolYears,
+    lapsos,
   } = useEduPlan();
 
-  // Top Filter Selection State
-  const [selectedSchoolYear, setSelectedSchoolYear] = useState<string>('2025-2026');
+  // Top Filter Selection State — starts on the portal's year and the lapso in progress
+  const [selectedSchoolYear, setSelectedSchoolYear] = useState<string>(portalSchoolYear);
   const [selectedGrade, setSelectedGrade] = useState<string>('2do Grado');
   const [selectedSubject, setSelectedSubject] = useState<string>('Matemática');
-  const [selectedLapso, setSelectedLapso] = useState<EvaluationLapso>('1er Lapso');
+  const [selectedLapso, setSelectedLapso] = useState<EvaluationLapso>(() => currentLapsoName(lapsos) as EvaluationLapso);
   const [selectedMoment, setSelectedMoment] = useState<EvaluationMoment>('mensual_1');
 
   // View presentation state
@@ -283,11 +287,11 @@ export const EvaluationsSection: React.FC = () => {
       {/* SIMPLE HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-            Registro de Calificaciones y Adaptaciones
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-raiz">
+            Calificaciones y adaptaciones
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Colegio Integral El Manglar · Escala cualitativa (A–E, SE) y adaptaciones curriculares
+          <p className="text-sm text-slate-600 mt-1">
+            Escala cualitativa (A–E, SE) y adaptaciones curriculares por estudiante.
           </p>
         </div>
 
@@ -297,29 +301,29 @@ export const EvaluationsSection: React.FC = () => {
             onClick={() => setIsPrintModalOpen(true)}
             className="flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs rounded-xl border border-slate-200 shadow-2xs transition-all cursor-pointer"
           >
-            <Printer className="w-4 h-4 text-emerald-700" />
-            <span>Imprimir Acta Oficial</span>
+            <Printer className="w-4 h-4 text-success-700" />
+            <span>Imprimir acta oficial</span>
           </button>
 
           {viewMode === 'coordinator' ? (
             <button
               onClick={() => setIsAuditModalOpen(true)}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-[#285A14] hover:bg-[#1f4710] text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-primary-800 hover:bg-primary-900 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
             >
               <ShieldCheck className="w-4 h-4 text-white" />
-              <span>Auditar y Dar Visto Bueno</span>
+              <span>Auditar y dar visto bueno</span>
             </button>
           ) : currentEvaluation.status === 'draft' ? (
             <button
               onClick={handleSubmitEvaluation}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-[#285A14] hover:bg-[#1f4710] text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-primary-800 hover:bg-primary-900 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
             >
               <Send className="w-4 h-4 text-white" />
               <span>Consolidar a Coordinación</span>
             </button>
           ) : (
-            <div className="px-3 py-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-bold flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <div className="px-3 py-1.5 bg-success-50 text-success-800 border border-success-200 rounded-xl text-xs font-bold flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-success-600" />
               <span>{currentEvaluation.status === 'audited' ? 'Auditada' : 'Enviada'}</span>
             </div>
           )}
@@ -330,9 +334,9 @@ export const EvaluationsSection: React.FC = () => {
       <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs">
         <div className="flex items-center justify-between gap-2 pb-3 mb-4 border-b border-slate-100">
           <div className="flex items-center gap-2">
-            <SlidersHorizontal className="w-4 h-4 text-[#285A14]" />
-            <h2 className="text-xs font-black uppercase tracking-wider text-slate-800">
-              Filtros Académicos de Evaluación
+            <SlidersHorizontal className="w-4 h-4 text-primary-800" />
+            <h2 className="text-xs font-black text-slate-800">
+              Filtros académicos de evaluación
             </h2>
           </div>
 
@@ -341,39 +345,39 @@ export const EvaluationsSection: React.FC = () => {
               onClick={() => setActiveTab('sheet')}
               className={`px-3 py-1 rounded-lg font-bold transition-all ${
                 activeTab === 'sheet'
-                  ? 'bg-white text-[#285A14] shadow-xs'
+                  ? 'bg-white text-primary-800 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Carga de Notas
+              Carga de notas
             </button>
             <button
               onClick={() => setActiveTab('matrix')}
               className={`px-3 py-1 rounded-lg font-bold transition-all ${
                 activeTab === 'matrix'
-                  ? 'bg-white text-[#285A14] shadow-xs'
+                  ? 'bg-white text-primary-800 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Matriz de Lapso
+              Matriz de lapso
             </button>
             <button
               onClick={() => setActiveTab('audit_panel')}
               className={`px-3 py-1 rounded-lg font-bold transition-all ${
                 activeTab === 'audit_panel'
-                  ? 'bg-white text-[#285A14] shadow-xs'
+                  ? 'bg-white text-primary-800 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Panel Auditoría
+              Panel auditoría
             </button>
           </div>
         </div>
 
         {/* Quick Primary Grade Selection Pills with Official Identifiers */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-2.5 mb-3 border-b border-slate-100 scrollbar-thin">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-1">
-            Grados Primaria:
+          <span className="text-xs font-bold text-slate-500 shrink-0 mr-1">
+            Grados primaria:
           </span>
           {(availableGradeNames?.length > 0 ? availableGradeNames : SCHOOL_GRADES).map((gradeName, idx) => {
             const num = (idx % 6) + 1;
@@ -410,7 +414,7 @@ export const EvaluationsSection: React.FC = () => {
                 <span>{gradeName}</span>
                 {isSelected && cfg && (
                   <span
-                    className="text-[9px] px-1.5 py-0.2 rounded font-black uppercase"
+                    className="text-xs px-1.5 py-0.2 rounded font-black"
                     style={{ backgroundColor: cfg.hex, color: cfg.textColor }}
                   >
                     Activo
@@ -425,15 +429,15 @@ export const EvaluationsSection: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
           {/* 1. Año Escolar */}
           <div>
-            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-              Año Escolar
+            <label className="block text-xs font-bold text-slate-500 mb-1">
+              Año escolar
             </label>
             <select
               value={selectedSchoolYear}
               onChange={(e) => setSelectedSchoolYear(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-semibold text-slate-800 focus:ring-2 focus:ring-[#5EA832] focus:border-transparent transition-all"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-semibold text-slate-800 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
             >
-              {AVAILABLE_SCHOOL_YEARS.map((yr) => (
+              {availableSchoolYears.map((yr) => (
                 <option key={yr} value={yr}>
                   {yr}
                 </option>
@@ -443,13 +447,13 @@ export const EvaluationsSection: React.FC = () => {
 
           {/* 2. Grado */}
           <div>
-            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-              Grado / Sección
+            <label className="block text-xs font-bold text-slate-500 mb-1">
+              Grado / sección
             </label>
             <select
               value={selectedGrade}
               onChange={(e) => setSelectedGrade(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-bold text-slate-900 focus:ring-2 focus:ring-[#5EA832] focus:border-transparent transition-all"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-bold text-slate-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
             >
               {organizedGrades.map((group) => (
                 <optgroup key={group.category} label={group.category}>
@@ -465,13 +469,13 @@ export const EvaluationsSection: React.FC = () => {
 
           {/* 3. Asignatura */}
           <div>
-            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-bold text-slate-500 mb-1">
               Asignatura
             </label>
             <select
               value={selectedSubject}
               onChange={(e) => setSelectedSubject(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-bold text-[#285A14] focus:ring-2 focus:ring-[#5EA832] focus:border-transparent transition-all"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-bold text-primary-800 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
             >
               {(availableSubjectNames?.length > 0 ? availableSubjectNames : AVAILABLE_SUBJECTS).map((sub) => (
                 <option key={sub} value={sub}>
@@ -483,13 +487,13 @@ export const EvaluationsSection: React.FC = () => {
 
           {/* 4. Lapso */}
           <div>
-            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-              Lapso Académico
+            <label className="block text-xs font-bold text-slate-500 mb-1">
+              Lapso académico
             </label>
             <select
               value={selectedLapso}
               onChange={(e) => setSelectedLapso(e.target.value as EvaluationLapso)}
-              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-semibold text-slate-800 focus:ring-2 focus:ring-[#5EA832] focus:border-transparent transition-all"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-semibold text-slate-800 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
             >
               {AVAILABLE_LAPSOS.map((lp) => (
                 <option key={lp} value={lp}>
@@ -501,13 +505,13 @@ export const EvaluationsSection: React.FC = () => {
 
           {/* 5. Momento Evaluativo (Mensual I, II, III, Examen de Lapso) */}
           <div>
-            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-              Momento / Evaluación
+            <label className="block text-xs font-bold text-slate-500 mb-1">
+              Momento / evaluación
             </label>
             <select
               value={selectedMoment}
               onChange={(e) => setSelectedMoment(e.target.value as EvaluationMoment)}
-              className="w-full bg-emerald-50/80 border border-emerald-300 rounded-xl px-3 py-2 font-black text-[#285A14] focus:ring-2 focus:ring-[#5EA832] focus:border-transparent transition-all"
+              className="w-full bg-success-50/80 border border-success-300 rounded-xl px-3 py-2 font-black text-primary-800 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
             >
               {AVAILABLE_EVALUATION_MOMENTS.map((m) => (
                 <option key={m.id} value={m.id}>
@@ -520,7 +524,7 @@ export const EvaluationsSection: React.FC = () => {
 
         {/* Momento quick pill tabs */}
         <div className="flex items-center gap-2 mt-4 pt-3 border-t border-slate-100 flex-wrap">
-          <span className="text-[11px] font-bold text-slate-400 mr-1">Momento Rápido:</span>
+          <span className="text-xs font-bold text-slate-500 mr-1">Momento rápido:</span>
           {AVAILABLE_EVALUATION_MOMENTS.map((mom) => {
             const isSelected = selectedMoment === mom.id;
             return (
@@ -529,12 +533,12 @@ export const EvaluationsSection: React.FC = () => {
                 onClick={() => setSelectedMoment(mom.id)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
                   isSelected
-                    ? 'bg-[#285A14] text-white shadow-xs'
+                    ? 'bg-primary-800 text-white shadow-xs'
                     : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                 }`}
               >
                 <span>{mom.label}</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'}`}>
+                <span className={`text-xs px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'}`}>
                   {mom.weight}
                 </span>
               </button>
@@ -564,11 +568,11 @@ export const EvaluationsSection: React.FC = () => {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-emerald-600" />
-                  <span>Panel Centralizado de Auditoría de Calificaciones</span>
+                  <ShieldCheck className="w-5 h-5 text-success-600" />
+                  <span>Panel centralizado de auditoría de calificaciones</span>
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Monitoreo de estado de carga, verificación de adecuaciones curriculares y visto bueno de Coordinación Académica.
+                  Monitoreo de estado de carga, verificación de adecuaciones curriculares y visto bueno de Coordinación académica.
                 </p>
               </div>
             </div>
@@ -577,12 +581,12 @@ export const EvaluationsSection: React.FC = () => {
             <div className="border border-slate-200 rounded-xl overflow-hidden">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="bg-slate-100/80 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200">
-                    <th className="py-3 px-4 font-bold">Grado & Asignatura</th>
-                    <th className="py-3 px-3 font-semibold">Lapso / Momento</th>
-                    <th className="py-3 px-3 font-semibold">Docente Titular</th>
+                  <tr className="bg-slate-100/80 text-slate-600 text-xs border-b border-slate-200">
+                    <th className="py-3 px-4 font-bold">Grado & asignatura</th>
+                    <th className="py-3 px-3 font-semibold">Lapso / momento</th>
+                    <th className="py-3 px-3 font-semibold">Docente titular</th>
                     <th className="py-3 px-3 text-center font-semibold">Avance</th>
-                    <th className="py-3 px-3 font-semibold">Estado de Auditoría</th>
+                    <th className="py-3 px-3 font-semibold">Estado de auditoría</th>
                     <th className="py-3 px-4 text-right font-semibold">Acciones</th>
                   </tr>
                 </thead>
@@ -597,51 +601,51 @@ export const EvaluationsSection: React.FC = () => {
                       <tr
                         key={ev.id}
                         className={`hover:bg-slate-50/80 transition-colors ${
-                          isCurrent ? 'bg-emerald-50/30' : ''
+                          isCurrent ? 'bg-success-50/30' : ''
                         }`}
                       >
                         <td className="py-3 px-4">
                           <div className="flex items-center gap-1.5 mb-1">
                             <GradeBadge grade={ev.grade} size="xs" />
                           </div>
-                          <div className="text-[11px] text-[#285A14] font-medium">{ev.subject}</div>
+                          <div className="text-xs text-primary-800 font-medium">{ev.subject}</div>
                         </td>
                         <td className="py-3 px-3">
                           <div className="font-semibold text-slate-800">{ev.lapso}</div>
-                          <div className="text-[10px] text-slate-500 capitalize">
+                          <div className="text-xs text-slate-500 capitalize">
                             {ev.moment.replace('_', ' ')}
                           </div>
                         </td>
                         <td className="py-3 px-3 text-slate-700 font-medium">{ev.teacherName}</td>
                         <td className="py-3 px-3 text-center">
-                          <div className="font-mono text-xs font-bold text-slate-800">
+                          <div className="tabular-nums text-xs font-bold text-slate-800">
                             {graded}/{total} ({pct}%)
                           </div>
                           <div className="w-20 mx-auto bg-slate-200 rounded-full h-1.5 mt-1 overflow-hidden">
                             <div
-                              className="bg-emerald-500 h-1.5 rounded-full"
+                              className="bg-success-500 h-1.5 rounded-full"
                               style={{ width: `${pct}%` }}
                             />
                           </div>
                         </td>
                         <td className="py-3 px-3">
                           {ev.status === 'audited' ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-[#285A14] border border-emerald-300">
-                              <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-success-100 text-primary-800 border border-success-300">
+                              <ShieldCheck className="w-3 h-3 text-success-600" />
                               <span>Auditada</span>
                             </span>
                           ) : ev.status === 'submitted' ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
-                              <Clock className="w-3 h-3 text-amber-600" />
-                              <span>En Revisión</span>
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-warning-100 text-warning-800 border border-warning-300">
+                              <Clock className="w-3 h-3 text-warning-600" />
+                              <span>En revisión</span>
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-300">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-300">
                               <span>Borrador</span>
                             </span>
                           )}
                           {ev.auditedBy && (
-                            <div className="text-[9px] text-slate-500 truncate max-w-[140px] mt-0.5">
+                            <div className="text-xs text-slate-500 truncate max-w-[140px] mt-0.5">
                               {ev.auditedBy}
                             </div>
                           )}
@@ -658,7 +662,7 @@ export const EvaluationsSection: React.FC = () => {
                             }}
                             className="px-3 py-1 bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 font-semibold text-xs rounded-lg shadow-2xs transition-all"
                           >
-                            Abrir Planilla
+                            Abrir planilla
                           </button>
                         </td>
                       </tr>
@@ -686,16 +690,16 @@ export const EvaluationsSection: React.FC = () => {
                     {selectedSubject}
                   </span>
                   <span className="text-slate-300">|</span>
-                  <span className="text-xs font-bold text-[#285A14]">
+                  <span className="text-xs font-bold text-primary-800">
                     {selectedLapso} · {AVAILABLE_EVALUATION_MOMENTS.find((m) => m.id === selectedMoment)?.label}
                   </span>
                   <span className="text-slate-300">|</span>
                   <span
-                    className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
+                    className={`px-2 py-0.5 rounded-md text-xs font-bold border ${
                       currentEvaluation.status === 'audited'
-                        ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                        ? 'bg-success-50 text-success-800 border-success-300'
                         : currentEvaluation.status === 'submitted'
-                        ? 'bg-amber-50 text-amber-800 border-amber-300'
+                        ? 'bg-warning-50 text-warning-800 border-warning-300'
                         : 'bg-slate-100 text-slate-700 border-slate-200'
                     }`}
                   >
@@ -711,11 +715,11 @@ export const EvaluationsSection: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <div className="flex-1 bg-slate-100 rounded-full h-2.5 overflow-hidden border border-slate-200">
                     <div
-                      className="bg-gradient-to-r from-[#285A14] to-[#5EA832] h-2.5 rounded-full transition-all duration-300"
+                      className="bg-manglar h-2.5 rounded-full transition-all duration-300"
                       style={{ width: `${completionPercentage}%` }}
                     />
                   </div>
-                  <span className="text-xs font-bold text-slate-700 font-mono shrink-0">
+                  <span className="text-xs font-bold text-slate-700 tabular-nums shrink-0">
                     {gradedCount}/{totalStudents} Calificados ({completionPercentage}%)
                   </span>
                 </div>
@@ -723,7 +727,7 @@ export const EvaluationsSection: React.FC = () => {
 
               {/* Right: Quick Bulk Actions */}
               <div className="flex items-center gap-2 flex-wrap shrink-0">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                <span className="text-xs font-bold text-slate-500">
                   Relleno rápido pendientes:
                 </span>
                 {(['A', 'B', 'C'] as GradeScale[]).map((scale) => (
@@ -751,15 +755,15 @@ export const EvaluationsSection: React.FC = () => {
                   <div
                     key={scale}
                     className={`p-2 rounded-xl border transition-all ${
-                      count > 0 ? cfg.bgBadge : 'bg-slate-50 text-slate-400 border-slate-200'
+                      count > 0 ? cfg.bgBadge : 'bg-slate-50 text-slate-500 border-slate-200'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-black text-sm">{scale}</span>
-                      <span className="text-[10px] opacity-75 font-mono">{pct}%</span>
+                      <span className="text-xs opacity-75 tabular-nums">{pct}%</span>
                     </div>
                     <div className="text-xs font-black mt-0.5">{count} alumnos</div>
-                    <div className="text-[9px] truncate opacity-80 mt-0.5">{cfg.range}</div>
+                    <div className="text-xs truncate opacity-80 mt-0.5">{cfg.range}</div>
                   </div>
                 );
               })}
@@ -770,18 +774,18 @@ export const EvaluationsSection: React.FC = () => {
           <div className="bg-white rounded-2xl border border-slate-200 p-3 sm:p-4 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
             {/* Search Input */}
             <div className="relative w-full sm:w-72">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar por estudiante, cédula u obs..."
-                className="w-full text-xs pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#5EA832] focus:border-transparent transition-all"
+                className="w-full text-xs pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600 text-xs"
                 >
                   ✕
                 </button>
@@ -794,7 +798,7 @@ export const EvaluationsSection: React.FC = () => {
                 onClick={() => setStatusFilter('all')}
                 className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all ${
                   statusFilter === 'all'
-                    ? 'bg-[#285A14] text-white shadow-2xs'
+                    ? 'bg-primary-800 text-white shadow-2xs'
                     : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                 }`}
               >
@@ -804,7 +808,7 @@ export const EvaluationsSection: React.FC = () => {
                 onClick={() => setStatusFilter('pending')}
                 className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all ${
                   statusFilter === 'pending'
-                    ? 'bg-amber-600 text-white shadow-2xs'
+                    ? 'bg-warning-600 text-white shadow-2xs'
                     : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                 }`}
               >
@@ -814,7 +818,7 @@ export const EvaluationsSection: React.FC = () => {
                 onClick={() => setStatusFilter('graded')}
                 className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all ${
                   statusFilter === 'graded'
-                    ? 'bg-emerald-600 text-white shadow-2xs'
+                    ? 'bg-success-600 text-white shadow-2xs'
                     : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                 }`}
               >
@@ -824,7 +828,7 @@ export const EvaluationsSection: React.FC = () => {
                 onClick={() => setStatusFilter('ac')}
                 className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all ${
                   statusFilter === 'ac'
-                    ? 'bg-teal-600 text-white shadow-2xs'
+                    ? 'bg-info-600 text-white shadow-2xs'
                     : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                 }`}
               >
@@ -871,29 +875,29 @@ export const EvaluationsSection: React.FC = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="bg-slate-100/80 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200">
+                    <tr className="bg-slate-100/80 text-slate-600 text-xs border-b border-slate-200">
                       <th className="py-3 px-3 w-10 text-center font-bold">N°</th>
                       <th className="py-3 px-3 min-w-[220px] font-bold text-slate-900">
-                        Estudiante Inscrito
+                        Estudiante inscrito
                       </th>
-                      <th className="py-3 px-3 min-w-[320px] text-center font-bold text-[#285A14]">
+                      <th className="py-3 px-3 min-w-[320px] text-center font-bold text-primary-800">
                         Nota (A, B, C, D, E, SE)
                       </th>
                       <th className="py-3 px-3 min-w-[200px] text-center font-bold text-slate-800">
-                        Adaptación de la Prueba
+                        Adaptación de la prueba
                       </th>
                       <th className="py-3 px-3 min-w-[280px] font-bold text-slate-800">
-                        Observaciones Pedagógicas
+                        Observaciones pedagógicas
                       </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200">
                     {filteredGrades.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="py-12 text-center text-slate-400">
+                        <td colSpan={5} className="py-12 text-center text-slate-500">
                           <Users className="w-8 h-8 mx-auto mb-2 text-slate-300" />
                           <p className="text-sm font-semibold">No se encontraron estudiantes con los filtros actuales.</p>
-                          <p className="text-xs text-slate-400 mt-1">
+                          <p className="text-xs text-slate-500 mt-1">
                             Cambia el filtro de búsqueda o el grado seleccionado.
                           </p>
                         </td>
@@ -911,11 +915,11 @@ export const EvaluationsSection: React.FC = () => {
                             className={`hover:bg-slate-50/90 transition-colors ${
                               studentItem.gradeValue
                                 ? 'bg-white'
-                                : 'bg-amber-50/20'
+                                : 'bg-warning-50/20'
                             }`}
                           >
                             {/* N° */}
-                            <td className="py-3 px-3 text-center text-slate-400 font-mono text-[11px]">
+                            <td className="py-3 px-3 text-center text-slate-500 tabular-nums text-xs">
                               {studentItem.orderNumber || idx + 1}
                             </td>
 
@@ -924,11 +928,11 @@ export const EvaluationsSection: React.FC = () => {
                               <div className="font-bold text-slate-900 text-xs">
                                 {studentItem.studentName}
                               </div>
-                              <div className="text-[10px] text-slate-500 font-mono flex items-center gap-2 mt-0.5">
+                              <div className="text-xs text-slate-500 tabular-nums flex items-center gap-2 mt-0.5">
                                 <span>Cédula: {studentItem.schoolId}</span>
                                 {studentItem.adaptation !== 'regular' && (
                                   <span
-                                    className={`px-1.5 py-0.2 rounded font-bold uppercase text-[9px] border ${adaptCfg.badgeStyle}`}
+                                    className={`px-1.5 py-0.2 rounded font-bold text-xs border ${adaptCfg.badgeStyle}`}
                                   >
                                     {adaptCfg.shortLabel}
                                   </span>
@@ -964,7 +968,7 @@ export const EvaluationsSection: React.FC = () => {
                                   <button
                                     type="button"
                                     onClick={() => handleSetGrade(studentItem.studentId, studentItem.gradeValue!)}
-                                    className="p-1 text-slate-400 hover:text-rose-600 rounded-lg transition-colors ml-1"
+                                    className="p-1 text-slate-500 hover:text-danger-600 rounded-lg transition-colors ml-1"
                                     title="Quitar nota"
                                   >
                                     <RotateCcw className="w-3.5 h-3.5" />
@@ -1006,7 +1010,7 @@ export const EvaluationsSection: React.FC = () => {
                                 value={studentItem.observations || ''}
                                 onChange={(e) => handleSetObservation(studentItem.studentId, e.target.value)}
                                 placeholder="Escribe observación pedagógica..."
-                                className="w-full text-xs px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#5EA832] focus:border-transparent transition-all"
+                                className="w-full text-xs px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                               />
 
                               {/* Quick chips if field is empty or has room */}
@@ -1017,7 +1021,7 @@ export const EvaluationsSection: React.FC = () => {
                                       key={chip}
                                       type="button"
                                       onClick={() => handleApplyQuickObservation(studentItem.studentId, chip)}
-                                      className="text-[10px] px-2 py-0.5 bg-slate-100 hover:bg-emerald-50 text-slate-600 hover:text-[#285A14] rounded-md transition-all border border-slate-200/60 truncate max-w-[170px]"
+                                      className="text-xs px-2 py-0.5 bg-slate-100 hover:bg-success-50 text-slate-600 hover:text-primary-800 rounded-md transition-all border border-slate-200/60 truncate max-w-[170px]"
                                       title={chip}
                                     >
                                       + {chip}
@@ -1049,21 +1053,21 @@ export const EvaluationsSection: React.FC = () => {
                     className={`p-4 rounded-2xl border transition-all ${
                       studentItem.gradeValue
                         ? 'bg-white border-slate-200 shadow-xs'
-                        : 'bg-amber-50/30 border-amber-200/80 shadow-2xs'
+                        : 'bg-warning-50/30 border-warning-200/80 shadow-2xs'
                     }`}
                   >
                     {/* Header */}
                     <div className="flex items-start justify-between gap-2 mb-3">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="w-6 h-6 rounded-full bg-slate-100 text-slate-600 font-mono text-xs font-bold flex items-center justify-center shrink-0">
+                          <span className="w-6 h-6 rounded-full bg-slate-100 text-slate-600 tabular-nums text-xs font-bold flex items-center justify-center shrink-0">
                             {studentItem.orderNumber || idx + 1}
                           </span>
                           <h4 className="font-bold text-slate-900 text-xs">
                             {studentItem.studentName}
                           </h4>
                         </div>
-                        <span className="text-[10px] text-slate-400 font-mono block ml-8">
+                        <span className="text-xs text-slate-500 tabular-nums block ml-8">
                           {studentItem.schoolId}
                         </span>
                       </div>
@@ -1076,7 +1080,7 @@ export const EvaluationsSection: React.FC = () => {
                           {studentItem.gradeValue}
                         </span>
                       ) : (
-                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-amber-100 text-amber-800">
+                        <span className="px-2 py-0.5 rounded-lg text-xs font-bold bg-warning-100 text-warning-800">
                           Pendiente
                         </span>
                       )}
@@ -1084,7 +1088,7 @@ export const EvaluationsSection: React.FC = () => {
 
                     {/* Grade Selector Pills */}
                     <div className="mb-3">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                      <span className="text-xs font-bold text-slate-500 block mb-1">
                         Calificación:
                       </span>
                       <div className="grid grid-cols-6 gap-1">
@@ -1112,8 +1116,8 @@ export const EvaluationsSection: React.FC = () => {
 
                     {/* Adaptation Selector */}
                     <div className="mb-3">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
-                        Tipo de Adaptación:
+                      <span className="text-xs font-bold text-slate-500 block mb-1">
+                        Tipo de adaptación:
                       </span>
                       <div className="grid grid-cols-3 gap-1 bg-slate-100 p-1 rounded-xl text-center">
                         {(['regular', 'AC+', 'AC-'] as TestAdaptationType[]).map((adapt) => {
@@ -1138,7 +1142,7 @@ export const EvaluationsSection: React.FC = () => {
 
                     {/* Observations */}
                     <div>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                      <span className="text-xs font-bold text-slate-500 block mb-1">
                         Observación:
                       </span>
                       <input
@@ -1146,7 +1150,7 @@ export const EvaluationsSection: React.FC = () => {
                         value={studentItem.observations || ''}
                         onChange={(e) => handleSetObservation(studentItem.studentId, e.target.value)}
                         placeholder="Observación..."
-                        className="w-full text-xs px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#5EA832] transition-all"
+                        className="w-full text-xs px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 transition-all"
                       />
                     </div>
                   </div>
@@ -1158,14 +1162,14 @@ export const EvaluationsSection: React.FC = () => {
           {/* BOTTOM CONTROLS & AUDIT STATUS BAR */}
           <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200">
-                <Check className="w-5 h-5 text-[#285A14]" />
+              <div className="p-2.5 bg-success-50 rounded-xl border border-success-200">
+                <Check className="w-5 h-5 text-primary-800" />
               </div>
               <div>
                 <p className="text-xs font-bold text-slate-900">
                   Planilla Centralizada · {currentEvaluation.grade} · {currentEvaluation.subject}
                 </p>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-xs text-slate-500">
                   Cambios sincronizados localmente en tiempo real. Última actualización:{' '}
                   {currentEvaluation.updatedAt || 'Hoy'}
                 </p>
@@ -1178,23 +1182,23 @@ export const EvaluationsSection: React.FC = () => {
                 className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-4 py-2.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-xs rounded-xl shadow-2xs transition-all"
               >
                 <Printer className="w-4 h-4 text-slate-600" />
-                <span>Imprimir Acta</span>
+                <span>Imprimir acta</span>
               </button>
 
               <button
                 onClick={() => {
                   saveEvaluationRecord(currentEvaluation);
                 }}
-                className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-4 py-2.5 bg-[#285A14] hover:bg-[#1e460e] text-white font-bold text-xs rounded-xl shadow-md transition-all"
+                className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-4 py-2.5 bg-primary-800 hover:bg-primary-900 text-white font-bold text-xs rounded-xl shadow-md transition-all"
               >
-                <Save className="w-4 h-4 text-emerald-300" />
-                <span>Guardar Planilla</span>
+                <Save className="w-4 h-4 text-success-300" />
+                <span>Guardar planilla</span>
               </button>
 
               {viewMode === 'coordinator' && (
                 <button
                   onClick={() => setIsAuditModalOpen(true)}
-                  className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-4 py-2.5 bg-[#5EA832] hover:bg-[#4d8b28] text-white font-bold text-xs rounded-xl shadow-md transition-all"
+                  className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-4 py-2.5 bg-primary-600 hover:bg-primary-600 text-white font-bold text-xs rounded-xl shadow-md transition-all"
                 >
                   <ShieldCheck className="w-4 h-4 text-white" />
                   <span>Auditar</span>

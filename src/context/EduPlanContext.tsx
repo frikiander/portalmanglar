@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useRef } from 'react';
 import { User, Competency, LessonPlan, ViewMode, PlanStatus, SchoolEvent, ClassroomProject, ClassroomProjectWeek, DutySlot, NavigationModule, Student, ExternalSchool, IntercollegiateEventKey, FieldTrip, FieldTripStatus, EvaluationRecord, EvaluationStatus, StudentGradeEntry, EvaluationMoment, EvaluationLapso, GradeScale, TestAdaptationType, AcademicSubject } from '../types';
 import { MOCK_USERS, INITIAL_COMPETENCIES, INITIAL_LESSON_PLANS, INITIAL_SCHOOL_EVENTS, INITIAL_CLASSROOM_PROJECTS, INITIAL_DUTY_SLOTS, AVAILABLE_GRADES } from '../data/mockData';
 import { INITIAL_STUDENTS_DATA, SCHOOL_GRADES } from '../data/mockRoster';
@@ -21,6 +21,7 @@ import {
   removeSubject,
   fetchCompetencies,
   upsertCompetency,
+  upsertCompetencies,
   removeCompetency,
   fetchLessonPlans,
   upsertLessonPlan,
@@ -53,6 +54,8 @@ import {
   upsertEventSchedule,
   removeEventSchedule,
   fetchSchoolYears,
+  fetchUserByEmail,
+  setWriteErrorListener,
   upsertSchoolYear,
   setDefaultSchoolYearInDb,
   removeSchoolYear,
@@ -87,6 +90,8 @@ import {
   mapEventScheduleToDb,
 } from '../lib/mappers';
 import { matchSubjects, matchGrades } from '../utils/curricularMatcher';
+import { clampWeeks, currentLapsoName, defaultLapsoConfigs } from '../utils/lapsoCalendar';
+import type { LapsoConfig } from '../types';
 
 interface Toast {
   id: string;
@@ -99,6 +104,8 @@ interface EduPlanContextType {
   setCurrentUser: (user: User) => void;
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
+  /** True for coordinators: they can switch between coordinator and teacher views. */
+  canSwitchView: boolean;
   activeModule: NavigationModule;
   setActiveModule: (module: NavigationModule) => void;
   plans: LessonPlan[];
@@ -150,6 +157,12 @@ interface EduPlanContextType {
   deleteSchoolYear: (year: string) => void;
   availableSchoolYears: string[];
   isViewingHistoricalYear: boolean;
+  // Lapsos del año seleccionado (fechas y semanas configurables)
+  lapsos: LapsoConfig[];
+  getLapsosForYear: (year: string) => LapsoConfig[];
+  updateLapsosForYear: (year: string, configs: LapsoConfig[]) => void;
+  /** Weeks in the named lapso of the selected year; the current lapso when omitted. */
+  getLapsoWeeks: (lapsoName?: string) => number;
   // Módulo de Evaluación y Calificaciones
   evaluations: EvaluationRecord[];
   saveEvaluationRecord: (record: EvaluationRecord, silent?: boolean) => EvaluationRecord;
@@ -181,6 +194,8 @@ interface EduPlanContextType {
   submitPlanToCoordination: (planId: string) => void;
   reviewPlan: (planId: string, status: 'approved' | 'rejected', feedback: string) => void;
   addCompetency: (competency: Omit<Competency, 'id'>) => Competency;
+  /** Batch import: adds new competencies and replaces the given existing ones in a single save. */
+  importCompetencies: (toAdd: Omit<Competency, 'id'>[], toUpdate: Competency[]) => void;
   updateCompetency: (competency: Competency) => void;
   deleteCompetency: (id: string) => void;
   getCompetenciesFor: (subject: string, grade: string) => Competency[];
@@ -268,7 +283,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setAvailableSchoolYears(updated);
     localStorage.setItem('eduplan_available_school_years', JSON.stringify(updated));
     upsertSchoolYear({ year_label: trimmed, is_default: false }).catch(() => {});
-    addToast(`Año escolar "${trimmed}" creado con éxito.`, 'success');
+    addToast(`Año escolar "${trimmed}" creado.`, 'success');
   };
 
   const deleteSchoolYear = (year: string) => {
@@ -284,6 +299,32 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
     removeSchoolYear(year).catch(() => {});
     addToast(`Año escolar "${year}" eliminado de la lista.`, 'info');
+  };
+
+  // ─── Lapsos: fecha de inicio y semanas por año escolar ───
+  const [lapsoConfigs, setLapsoConfigs] = useState<Record<string, LapsoConfig[]>>(() => {
+    try {
+      return JSON.parse(localStorage.getItem('eduplan_lapso_configs') || '{}');
+    } catch {
+      return {};
+    }
+  });
+
+  const getLapsosForYear = (year: string): LapsoConfig[] => lapsoConfigs[year] ?? defaultLapsoConfigs(year);
+  const lapsos = useMemo(() => getLapsosForYear(selectedSchoolYear), [lapsoConfigs, selectedSchoolYear]);
+
+  const updateLapsosForYear = (year: string, configs: LapsoConfig[]) => {
+    const cleaned = configs.map((c) => ({ ...c, weeks: clampWeeks(c.weeks) }));
+    const next = { ...lapsoConfigs, [year]: cleaned };
+    setLapsoConfigs(next);
+    localStorage.setItem('eduplan_lapso_configs', JSON.stringify(next));
+    upsertSchoolYear({ year_label: year, lapsos: cleaned }).catch(() => {});
+    addToast(`Lapsos del año ${year} guardados.`, 'success');
+  };
+
+  const getLapsoWeeks = (lapsoName?: string): number => {
+    const name = lapsoName ?? currentLapsoName(lapsos);
+    return clampWeeks(lapsos.find((l) => l.name === name)?.weeks ?? lapsos[0]?.weeks ?? 15);
   };
 
   const currentSchoolYear = defaultSchoolYear;
@@ -364,12 +405,29 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return MOCK_USERS[0];
   });
 
-  const [viewMode, setViewModeState] = useState<ViewMode>(() => {
+  const [requestedViewMode, setViewModeState] = useState<ViewMode>(() => {
     const saved = localStorage.getItem('eduplan_view_mode');
     return (saved as ViewMode) || 'teacher';
   });
 
-  // Sincronización Supabase: Usuarios (fetch inicial al montar)
+  // Only coordinators may use the coordinator view. Teachers always get 'teacher',
+  // whatever is stored in the browser or requested by any component.
+  const canSwitchView = currentUser.role === 'coordinator';
+  const viewMode: ViewMode = canSwitchView ? requestedViewMode : 'teacher';
+
+  // A different person signing in starts in their own role's view (a reload keeps the stored choice)
+  const viewUserRef = useRef(currentUser.id);
+  useEffect(() => {
+    if (viewUserRef.current === currentUser.id) return;
+    viewUserRef.current = currentUser.id;
+    setViewModeState(currentUser.role);
+  }, [currentUser.id, currentUser.role]);
+
+  // Bumped on every sign-in: with Row Level Security the server only returns data to a signed-in
+  // portal member, so everything fetched before the session existed has to be fetched again.
+  const [dataEpoch, setDataEpoch] = useState(0);
+
+  // Sincronización Supabase: Usuarios
   useEffect(() => {
     if (!SUPABASE_CONFIGURED) return;
     fetchUsers().then((rows) => {
@@ -377,12 +435,10 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
         const remoteUsers = rows.map(mapDbUserToUser);
         setUsers(remoteUsers);
         localStorage.setItem('eduplan_users_list', JSON.stringify(remoteUsers));
-      } else if (rows !== null) {
-        // Supabase vacío → sembrar con usuarios mock
-        MOCK_USERS.forEach((u) => upsertUser(mapUserToDb(u)));
       }
+      // An empty list is normal before signing in (RLS) — never seed demo users into the real database.
     });
-  }, []);
+  }, [dataEpoch]);
 
   // Sincronización Supabase: Asignaturas (fetch inicial al montar)
   useEffect(() => {
@@ -392,20 +448,25 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
         const remoteSubjects = rows.map(mapDbSubjectToSubject);
         setSubjects(remoteSubjects);
         localStorage.setItem('eduplan_academic_subjects', JSON.stringify(remoteSubjects));
-      } else if (rows !== null) {
-        // Supabase vacío → sembrar con asignaturas institucionales
-        INITIAL_INSTITUTIONAL_SUBJECTS.forEach((s) => upsertSubject(mapSubjectToDb(s)));
       }
+      // Empty before signing in (RLS). Coordinación loads the catalogue from Asignaturas.
     });
-  }, []);
+  }, [dataEpoch]);
 
   // Monitor Supabase Auth State (Google OAuth)
   useEffect(() => {
-    const unsub = onAuthStateChange((_event, session) => {
+    const unsub = onAuthStateChange(async (event, session) => {
       if (session?.user?.email) {
         setIsLoggedInWithGoogle(true);
-        const userEmail = session.user.email.toLowerCase().trim();
-        const found = users.find((u) => u.email.toLowerCase().trim() === userEmail);
+        let found: User | null = null;
+        try {
+          const row = await fetchUserByEmail(session.user.email);
+          found = row ? mapDbUserToUser(row) : null;
+        } catch {
+          // Network or server problem: keep the session and say so, instead of signing the person out
+          setAuthError('No se pudo verificar tu cuenta con el servidor. Revisa tu conexión y recarga la página.');
+          return;
+        }
         if (found) {
           if (found.status === 'inactive') {
             setAuthError(`La cuenta '${session.user.email}' está desactivada. Contacta a Coordinación.`);
@@ -422,6 +483,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
             setViewModeState(updatedUser.role);
             localStorage.setItem('eduplan_user', JSON.stringify(updatedUser));
             setAuthError(null);
+            if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') setDataEpoch((n) => n + 1);
           }
         } else {
           // Email not in authorized list
@@ -434,7 +496,27 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
     });
     return () => unsub();
-  }, [users]);
+  }, []);
+
+  // Server rejections (e.g. a teacher saving something only Coordinación may change) become a visible toast.
+  // One toast per kind every few seconds: a batch import can fail many rows at once.
+  useEffect(() => {
+    let last = { kind: '', at: 0 };
+    setWriteErrorListener((kind) => {
+      // Demo accounts have no server session and keep their data in the browser: nothing to report
+      if (localStorage.getItem('eduplan_demo_mode') === 'true') return;
+      const now = Date.now();
+      if (last.kind === kind && now - last.at < 4000) return;
+      last = { kind, at: now };
+      addToast(
+        kind === 'permission'
+          ? 'El servidor no guardó el cambio: tu cuenta no tiene permiso para hacerlo.'
+          : 'El servidor no guardó el cambio. Revisa tu conexión e inténtalo de nuevo.',
+        'warning',
+      );
+    });
+    return () => setWriteErrorListener(null);
+  }, []);
 
   const [activeModule, setActiveModuleState] = useState<NavigationModule>(() => {
     const saved = localStorage.getItem('eduplan_active_module');
@@ -676,6 +758,17 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     fetchSchoolYears().then((rows) => {
       if (rows && rows.length > 0) {
         const labels = rows.map((r: any) => String(r.year_label));
+        const remoteLapsos: Record<string, LapsoConfig[]> = {};
+        rows.forEach((r: any) => {
+          if (Array.isArray(r.lapsos) && r.lapsos.length > 0) remoteLapsos[String(r.year_label)] = r.lapsos;
+        });
+        if (Object.keys(remoteLapsos).length > 0) {
+          setLapsoConfigs((prev) => {
+            const merged = { ...prev, ...remoteLapsos };
+            localStorage.setItem('eduplan_lapso_configs', JSON.stringify(merged));
+            return merged;
+          });
+        }
         setAvailableSchoolYears(labels);
         localStorage.setItem('eduplan_available_school_years', JSON.stringify(labels));
         const def = rows.find((r: any) => r.is_default);
@@ -688,7 +781,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
       }
     });
-  }, []);
+  }, [dataEpoch]);
 
   // Banco de Competencias
   useEffect(() => {
@@ -700,7 +793,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
         localStorage.setItem(isDemoMode ? 'eduplan_competencies' : 'eduplan_competencies_real', JSON.stringify(remote));
       }
     });
-  }, [isDemoMode]);
+  }, [isDemoMode, dataEpoch]);
 
   // Planes de Clase
   useEffect(() => {
@@ -712,7 +805,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
         localStorage.setItem(isDemoMode ? 'eduplan_plans' : 'eduplan_plans_real', JSON.stringify(remote));
       }
     });
-  }, [selectedSchoolYear, isDemoMode]);
+  }, [selectedSchoolYear, isDemoMode, dataEpoch]);
 
   // Eventos Escolares
   useEffect(() => {
@@ -724,7 +817,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
         localStorage.setItem(isDemoMode ? 'eduplan_events' : 'eduplan_events_real', JSON.stringify(remote));
       }
     });
-  }, [isDemoMode]);
+  }, [isDemoMode, dataEpoch]);
 
   // Proyectos de Aula
   useEffect(() => {
@@ -736,7 +829,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
         localStorage.setItem(isDemoMode ? 'eduplan_classroom_projects_v4' : 'eduplan_classroom_projects_real', JSON.stringify(remote));
       }
     });
-  }, [selectedSchoolYear, isDemoMode]);
+  }, [selectedSchoolYear, isDemoMode, dataEpoch]);
 
   // Guardias Escolares
   useEffect(() => {
@@ -748,7 +841,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
         localStorage.setItem(isDemoMode ? 'eduplan_duty_slots' : 'eduplan_duty_slots_real', JSON.stringify(remote));
       }
     });
-  }, [selectedSchoolYear, isDemoMode]);
+  }, [selectedSchoolYear, isDemoMode, dataEpoch]);
 
   // Estudiantes (Nómina)
   useEffect(() => {
@@ -760,7 +853,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
         localStorage.setItem(isDemoMode ? 'eduplan_students' : 'eduplan_students_real', JSON.stringify(remote));
       }
     });
-  }, [selectedSchoolYear, isDemoMode]);
+  }, [selectedSchoolYear, isDemoMode, dataEpoch]);
 
   // Directorio de Colegios
   useEffect(() => {
@@ -772,7 +865,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
         localStorage.setItem(isDemoMode ? 'eduplan_schools' : 'eduplan_schools_real', JSON.stringify(remote));
       }
     });
-  }, [isDemoMode]);
+  }, [isDemoMode, dataEpoch]);
 
   // Salidas de Campo
   useEffect(() => {
@@ -784,7 +877,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
         localStorage.setItem(isDemoMode ? 'eduplan_field_trips' : 'eduplan_field_trips_real', JSON.stringify(remote));
       }
     });
-  }, [selectedSchoolYear, isDemoMode]);
+  }, [selectedSchoolYear, isDemoMode, dataEpoch]);
 
   // Evaluaciones
   useEffect(() => {
@@ -796,7 +889,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
         localStorage.setItem(isDemoMode ? 'eduplan_evaluations' : 'eduplan_evaluations_real', JSON.stringify(remote));
       }
     });
-  }, [selectedSchoolYear, isDemoMode]);
+  }, [selectedSchoolYear, isDemoMode, dataEpoch]);
 
   // Horarios de Clase y de Eventos
   useEffect(() => {
@@ -815,7 +908,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
         localStorage.setItem(isDemoMode ? 'eduplan_event_schedules_v1' : 'eduplan_event_schedules_real', JSON.stringify(remote));
       }
     });
-  }, [selectedSchoolYear, isDemoMode]);
+  }, [selectedSchoolYear, isDemoMode, dataEpoch]);
 
   const addToast = (message: string, type: 'success' | 'info' | 'warning' = 'success') => {
     const id = Date.now().toString() + Math.random().toString(36).substring(2, 5);
@@ -830,12 +923,16 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const setViewMode = (mode: ViewMode) => {
+    if (mode === 'coordinator' && !canSwitchView) {
+      addToast('La vista de coordinación es solo para Coordinación.', 'warning');
+      return;
+    }
     setViewModeState(mode);
     localStorage.setItem('eduplan_view_mode', mode);
     if (mode === 'coordinator') {
-      addToast('Cambiaste a la Vista de Coordinación Pedagógica', 'info');
+      addToast('Vista de coordinación activada.', 'info');
     } else {
-      addToast('Cambiaste a la Vista del Docente', 'info');
+      addToast('Vista docente activada.', 'info');
       if (['subjects', 'schools', 'users'].includes(activeModule)) {
         setActiveModuleState('planning');
         localStorage.setItem('eduplan_active_module', 'planning');
@@ -858,21 +955,24 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
         prev.map((p) => (p.id === planData.id ? savedPlan : p))
       );
       upsertLessonPlan(mapLessonPlanToDb(savedPlan, selectedSchoolYear)).catch(() => {});
-      addToast('Planificación guardada exitosamente', 'success');
+      addToast('Planificación guardada', 'success');
       return savedPlan;
     } else {
-      const newId = `plan-w${planData.weekNumber}-${Date.now().toString().slice(-4)}`;
+      const daySlug = planData.dayOfWeek ? `-${planData.dayOfWeek.slice(0, 3).toLowerCase()}` : '';
+      const newId = `plan-w${planData.weekNumber}${daySlug}-${Date.now().toString().slice(-4)}`;
       savedPlan = {
         id: newId,
         teacherId: currentUser.id,
         teacherName: currentUser.fullName,
         teacherAvatar: currentUser.avatar,
         weekNumber: planData.weekNumber,
+        dayOfWeek: planData.dayOfWeek,
         subject: planData.subject || 'English',
         grade: planData.grade || '4to Grado',
         topic: planData.topic || '',
         status: (planData.status as PlanStatus) || 'draft',
         competencyIds: planData.competencyIds || [],
+        selectedIndicators: planData.selectedIndicators,
         startActivity: planData.startActivity || '',
         developmentActivity: planData.developmentActivity || '',
         closingActivity: planData.closingActivity || '',
@@ -943,6 +1043,19 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return newComp;
   };
 
+  const importCompetencies = (toAdd: Omit<Competency, 'id'>[], toUpdate: Competency[]) => {
+    const stamp = Date.now().toString(36);
+    const added: Competency[] = toAdd.map((c, i) => ({ ...c, id: `comp-${stamp}-${i}` }));
+    const updatedById = new Map(toUpdate.map((c) => [c.id, c]));
+    setCompetencies((prev) => [...prev.map((c) => updatedById.get(c.id) ?? c), ...added]);
+    upsertCompetencies([...added, ...toUpdate].map(mapCompetencyToDb)).catch(() => {});
+    const parts = [
+      added.length > 0 && `${added.length} ${added.length === 1 ? 'competencia agregada' : 'competencias agregadas'}`,
+      toUpdate.length > 0 && `${toUpdate.length} ${toUpdate.length === 1 ? 'actualizada' : 'actualizadas'}`,
+    ].filter(Boolean);
+    addToast(`Banco de competencias: ${parts.join(' y ')}.`, 'success');
+  };
+
   const updateCompetency = (competency: Competency) => {
     setCompetencies((prev) => prev.map((c) => (c.id === competency.id ? competency : c)));
     upsertCompetency(mapCompetencyToDb(competency)).catch(() => {});
@@ -985,7 +1098,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
       prev.map((p) => (p.id === project.id ? updated : p))
     );
     upsertClassroomProject(mapClassroomProjectToDb(updated, selectedSchoolYear)).catch(() => {});
-    addToast(`Proyecto "${project.title}" actualizado con éxito.`, 'success');
+    addToast(`Proyecto "${project.title}" actualizado.`, 'success');
   };
 
   const updateClassroomProjectWeek = (projectId: string, weekData: ClassroomProjectWeek) => {
@@ -1187,7 +1300,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setFieldTrips((prev) => [newFieldTrip, ...prev]);
     upsertFieldTrip(mapFieldTripToDb(newFieldTrip, selectedSchoolYear)).catch(() => {});
     addToast(
-      `${data.type === 'salida_campo' ? 'Salida de Campo' : 'Invitado Especial'} registrada exitosamente.`,
+      `${data.type === 'salida_campo' ? 'Salida de Campo' : 'Invitado Especial'} registrada.`,
       'success'
     );
     return newFieldTrip;
@@ -1339,7 +1452,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     upsertEvaluation(mapEvaluationToDb(updated)).catch(() => {});
 
     if (!silent) {
-      addToast('Planilla de evaluación guardada con éxito', 'success');
+      addToast('Planilla de evaluación guardada', 'success');
     }
     return updated;
   };
@@ -1520,7 +1633,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return [...prev, schedWithMeta];
     });
     upsertClassSchedule(mapClassScheduleToDb(schedWithMeta)).catch(() => {});
-    addToast(`Horario de ${schedule.grade} (Semana ${schedule.weekNumber}) guardado exitosamente`, 'success');
+    addToast(`Horario de ${schedule.grade} (Semana ${schedule.weekNumber}) guardado`, 'success');
   };
 
   const saveWeekClassSchedule = (params: {
@@ -1656,7 +1769,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     };
     setEventSchedules((prev) => [newEvent, ...prev]);
     upsertEventSchedule(mapEventScheduleToDb(newEvent)).catch(() => {});
-    addToast(`Horario de evento "${newEvent.title}" creado con éxito`, 'success');
+    addToast(`Horario de evento "${newEvent.title}" creado`, 'success');
     return newEvent;
   };
 
@@ -1822,6 +1935,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setCurrentUser,
     viewMode,
     setViewMode,
+    canSwitchView,
     activeModule,
     setActiveModule,
     plans,
@@ -1869,6 +1983,10 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     deleteSchoolYear,
     availableSchoolYears,
     isViewingHistoricalYear,
+    lapsos,
+    getLapsosForYear,
+    updateLapsosForYear,
+    getLapsoWeeks,
     evaluations,
     saveEvaluationRecord,
     updateStudentGrade,
@@ -1898,6 +2016,7 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     submitPlanToCoordination,
     reviewPlan,
     addCompetency,
+    importCompetencies,
     updateCompetency,
     deleteCompetency,
     getCompetenciesFor,
@@ -1940,6 +2059,8 @@ export const EduPlanProvider: React.FC<{ children: React.ReactNode }> = ({ child
     defaultSchoolYear,
     availableSchoolYears,
     isViewingHistoricalYear,
+    lapsoConfigs,
+    lapsos,
     evaluations,
     classSchedules,
     eventSchedules,

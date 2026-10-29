@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Printer, CheckCircle2, AlertCircle, Award } from 'lucide-react';
 import { LessonPlan, Competency } from '../types';
+import { planWhen } from '../utils/planDays';
 import { ManglarEmblem } from './ManglarLogo';
 import { getGradeBadgeStyle, getGradeLeftAccentStyle } from '../utils/gradeColors';
 
@@ -18,7 +19,7 @@ export const LessonPlanPreviewModal: React.FC<Props> = ({ plan, competencies, on
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-transparent flex items-center justify-center p-4 overflow-y-auto print:p-0 print:static print:block print:overflow-visible">
+    <div className="fixed inset-0 z-50 bg-raiz/40 flex items-center justify-center p-4 overflow-y-auto print:p-0 print:static print:block print:overflow-visible">
       {/* ─── Reglas de Impresión Oficial y Ajuste Dinámico ────────────────── */}
       <style>{`
         @media print {
@@ -81,12 +82,12 @@ export const LessonPlanPreviewModal: React.FC<Props> = ({ plan, competencies, on
         {/* Top Control Bar (Hidden on print) */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50/90 no-print shrink-0">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-white border border-emerald-100 p-1 shadow-2xs flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-white border border-success-100 p-1 shadow-2xs flex items-center justify-center shrink-0">
               <ManglarEmblem className="w-full h-full" />
             </div>
             <div>
               <h3 className="text-base font-bold text-slate-800">
-                Ficha Pedagógica Oficial · Semana {plan.weekNumber}
+                Ficha Pedagógica Oficial · {planWhen(plan)}
               </h3>
               <p className="text-xs text-slate-500 font-medium">
                 Portal Manglar · Colegio Integral El Manglar
@@ -96,14 +97,14 @@ export const LessonPlanPreviewModal: React.FC<Props> = ({ plan, competencies, on
           <div className="flex items-center space-x-2">
             <button
               onClick={handlePrint}
-              className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 text-xs font-bold text-white bg-[#5EA832] hover:bg-[#498925] border border-transparent rounded-lg transition-colors shadow-xs cursor-pointer"
+              className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 text-xs font-bold text-white bg-primary-600 hover:bg-primary-600 border border-transparent rounded-lg transition-colors shadow-xs cursor-pointer"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>Imprimir / PDF</span>
             </button>
             <button
               onClick={onClose}
-              className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200/60 cursor-pointer"
+              className="p-1.5 text-slate-500 hover:text-slate-600 rounded-lg hover:bg-slate-200/60 cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -117,14 +118,14 @@ export const LessonPlanPreviewModal: React.FC<Props> = ({ plan, competencies, on
         >
           
           {/* Institutional Header */}
-          <div className="border-b-2 border-[#285A14] pb-3 mb-3 print:pb-2 print:mb-2 print-avoid-break">
+          <div className="border-b-2 border-primary-800 pb-3 mb-3 print:pb-2 print:mb-2 print-avoid-break">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center space-x-3 min-w-0">
-                <div className="w-12 h-12 print:w-11 print:h-11 rounded-xl bg-white border border-emerald-100 p-1 shadow-2xs print:shadow-none flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 print:w-11 print:h-11 rounded-xl bg-white border border-success-100 p-1 shadow-2xs print:shadow-none flex items-center justify-center shrink-0">
                   <ManglarEmblem className="w-full h-full" />
                 </div>
                 <div className="min-w-0">
-                  <span className="text-[9px] print:text-[8px] font-black uppercase tracking-widest text-[#285A14] block leading-tight">
+                  <span className="text-[9px] print:text-[8px] font-black uppercase tracking-widest text-primary-800 block leading-tight">
                     República Bolivariana de Venezuela · MPPE
                   </span>
                   <h1 className="text-base print:text-sm font-black text-slate-900 tracking-tight leading-snug uppercase">
@@ -137,22 +138,22 @@ export const LessonPlanPreviewModal: React.FC<Props> = ({ plan, competencies, on
               </div>
 
               <div className="text-right shrink-0">
-                <div className="inline-block bg-emerald-50 print:bg-emerald-50/80 border border-emerald-200 px-2.5 py-1 print:px-2 print:py-0.5 rounded-lg text-right">
-                  <span className="text-xs print:text-[10px] font-black text-emerald-950 block leading-tight">
-                    SEMANA {plan.weekNumber}
+                <div className="inline-block bg-success-50 print:bg-success-50/80 border border-success-200 px-2.5 py-1 print:px-2 print:py-0.5 rounded-lg text-right">
+                  <span className="text-xs print:text-[10px] font-black text-success-950 block leading-tight">
+                    SEMANA {plan.weekNumber}{plan.dayOfWeek ? ` · ${plan.dayOfWeek.toUpperCase()}` : ''}
                   </span>
-                  <span className="text-[9px] print:text-[8px] font-bold text-emerald-700 block leading-tight">
+                  <span className="text-[9px] print:text-[8px] font-bold text-success-700 block leading-tight">
                     Año Escolar 2026 - 2027
                   </span>
                 </div>
                 <div className="mt-1 print:mt-0.5">
                   <span className={`inline-flex items-center px-2 py-0.5 rounded-md font-bold text-[9px] uppercase border ${
                     plan.status === 'approved'
-                      ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                      ? 'bg-success-100 text-success-900 border-success-300'
                       : plan.status === 'submitted'
-                      ? 'bg-indigo-100 text-indigo-900 border-indigo-300'
+                      ? 'bg-primary-100 text-primary-900 border-primary-300'
                       : plan.status === 'rejected'
-                      ? 'bg-amber-100 text-amber-900 border-amber-300'
+                      ? 'bg-warning-100 text-warning-900 border-warning-300'
                       : 'bg-slate-100 text-slate-700 border-slate-300'
                   }`}>
                     {plan.status === 'approved' ? 'Planificación Aprobada' : plan.status === 'submitted' ? 'Enviada a Revisión' : plan.status === 'rejected' ? 'Con Observaciones' : 'Borrador'}
@@ -195,7 +196,7 @@ export const LessonPlanPreviewModal: React.FC<Props> = ({ plan, competencies, on
           {/* Competencies */}
           <div className="print-avoid-break">
             <div className="flex items-center space-x-1.5 mb-1.5 print:mb-1">
-              <Award className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+              <Award className="w-3.5 h-3.5 text-primary-600 shrink-0" />
               <h4 className="text-[9.5px] print:text-[8.5px] font-black uppercase tracking-wider text-slate-700">
                 Competencias & Indicadores Curriculares
               </h4>
@@ -216,14 +217,14 @@ export const LessonPlanPreviewModal: React.FC<Props> = ({ plan, competencies, on
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center space-x-1.5 min-w-0">
                           <span 
-                            className="font-mono font-bold px-1.5 py-0.5 rounded border text-[9px] print:text-[8px] shrink-0 shadow-2xs print:shadow-none"
+                            className="tabular-nums font-bold px-1.5 py-0.5 rounded border text-[9px] print:text-[8px] shrink-0 shadow-2xs print:shadow-none"
                             style={getGradeBadgeStyle(comp.grade || plan.grade)}
                           >
                             {comp.code}
                           </span>
                           <span className="font-bold text-slate-900 truncate">{comp.title}</span>
                         </div>
-                        <span className="px-1.5 py-0.5 rounded bg-emerald-50 text-[#285A14] font-bold text-[9px] print:text-[8px] shrink-0 border border-emerald-200">
+                        <span className="px-1.5 py-0.5 rounded bg-success-50 text-primary-800 font-bold text-[9px] print:text-[8px] shrink-0 border border-success-200">
                           Eje: {comp.category}
                         </span>
                       </div>
@@ -237,21 +238,21 @@ export const LessonPlanPreviewModal: React.FC<Props> = ({ plan, competencies, on
                           <ul className="space-y-0.5 print:space-y-0">
                             {indicatorsToShow.map((ind, i) => (
                               <li key={i} className="text-[10px] print:text-[8.5px] text-slate-700 flex items-start space-x-1.5 leading-snug">
-                                <CheckCircle2 className="w-3 h-3 print:w-2.5 print:h-2.5 text-[#5EA832] shrink-0 mt-0.5" />
+                                <CheckCircle2 className="w-3 h-3 print:w-2.5 print:h-2.5 text-primary-600 shrink-0 mt-0.5" />
                                 <span>{ind}</span>
                               </li>
                             ))}
                           </ul>
                         </div>
                       ) : (
-                        <p className="text-slate-400 italic text-[9px]">No se seleccionaron indicadores específicos.</p>
+                        <p className="text-slate-500 italic text-[9px]">No se seleccionaron indicadores específicos.</p>
                       )}
                     </div>
                   );
                 })}
               </div>
             ) : (
-              <p className="text-xs print:text-[9.5px] text-slate-400 italic p-2 bg-slate-50 rounded border border-slate-200">
+              <p className="text-xs print:text-[9.5px] text-slate-500 italic p-2 bg-slate-50 rounded border border-slate-200">
                 No se han asociado competencias específicas a esta semana.
               </p>
             )}
@@ -261,34 +262,34 @@ export const LessonPlanPreviewModal: React.FC<Props> = ({ plan, competencies, on
           <div className="space-y-2.5 print:space-y-1.5">
             {/* Inicio */}
             <div className="border border-slate-200 rounded-lg p-2.5 print:p-1.5 bg-white print-avoid-break">
-              <div className="flex items-center space-x-1.5 text-indigo-700 font-bold text-xs print:text-[9.5px] mb-1">
-                <span className="w-4 h-4 print:w-3.5 print:h-3.5 rounded-full bg-indigo-100 flex items-center justify-center text-[9px] font-black shrink-0">1</span>
+              <div className="flex items-center space-x-1.5 text-primary-700 font-bold text-xs print:text-[9.5px] mb-1">
+                <span className="w-4 h-4 print:w-3.5 print:h-3.5 rounded-full bg-primary-100 flex items-center justify-center text-[9px] font-black shrink-0">1</span>
                 <span>Inicio (Motivación y saberes previos)</span>
               </div>
               <p className="text-xs print:text-[9.5px] text-slate-800 whitespace-pre-line leading-relaxed print:leading-snug break-words">
-                {plan.startActivity || <span className="italic text-slate-400">Sin descripción de inicio</span>}
+                {plan.startActivity || <span className="italic text-slate-500">Sin descripción de inicio</span>}
               </p>
             </div>
 
             {/* Desarrollo */}
             <div className="border border-slate-200 rounded-lg p-2.5 print:p-1.5 bg-white print-avoid-break">
-              <div className="flex items-center space-x-1.5 text-indigo-700 font-bold text-xs print:text-[9.5px] mb-1">
-                <span className="w-4 h-4 print:w-3.5 print:h-3.5 rounded-full bg-indigo-100 flex items-center justify-center text-[9px] font-black shrink-0">2</span>
+              <div className="flex items-center space-x-1.5 text-primary-700 font-bold text-xs print:text-[9.5px] mb-1">
+                <span className="w-4 h-4 print:w-3.5 print:h-3.5 rounded-full bg-primary-100 flex items-center justify-center text-[9px] font-black shrink-0">2</span>
                 <span>Desarrollo (Actividades centrales y práctica guiada)</span>
               </div>
               <p className="text-xs print:text-[9.5px] text-slate-800 whitespace-pre-line leading-relaxed print:leading-snug break-words">
-                {plan.developmentActivity || <span className="italic text-slate-400">Sin descripción de desarrollo</span>}
+                {plan.developmentActivity || <span className="italic text-slate-500">Sin descripción de desarrollo</span>}
               </p>
             </div>
 
             {/* Cierre */}
             <div className="border border-slate-200 rounded-lg p-2.5 print:p-1.5 bg-white print-avoid-break">
-              <div className="flex items-center space-x-1.5 text-indigo-700 font-bold text-xs print:text-[9.5px] mb-1">
-                <span className="w-4 h-4 print:w-3.5 print:h-3.5 rounded-full bg-indigo-100 flex items-center justify-center text-[9px] font-black shrink-0">3</span>
+              <div className="flex items-center space-x-1.5 text-primary-700 font-bold text-xs print:text-[9.5px] mb-1">
+                <span className="w-4 h-4 print:w-3.5 print:h-3.5 rounded-full bg-primary-100 flex items-center justify-center text-[9px] font-black shrink-0">3</span>
                 <span>Cierre (Evaluación formativa y metacognición)</span>
               </div>
               <p className="text-xs print:text-[9.5px] text-slate-800 whitespace-pre-line leading-relaxed print:leading-snug break-words">
-                {plan.closingActivity || <span className="italic text-slate-400">Sin descripción de cierre</span>}
+                {plan.closingActivity || <span className="italic text-slate-500">Sin descripción de cierre</span>}
               </p>
             </div>
           </div>
@@ -316,12 +317,12 @@ export const LessonPlanPreviewModal: React.FC<Props> = ({ plan, competencies, on
 
           {/* Feedback from Coordinator if present */}
           {plan.coordinatorFeedback && (
-            <div className="p-2.5 print:p-1.5 rounded-lg border border-amber-300 bg-amber-50 print-avoid-break">
-              <div className="flex items-center space-x-1.5 text-amber-800 font-bold text-[9px] uppercase mb-0.5">
-                <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+            <div className="p-2.5 print:p-1.5 rounded-lg border border-warning-300 bg-warning-50 print-avoid-break">
+              <div className="flex items-center space-x-1.5 text-warning-800 font-bold text-[9px] uppercase mb-0.5">
+                <AlertCircle className="w-3.5 h-3.5 text-warning-600 shrink-0" />
                 <span>Observaciones de Coordinación Pedagógica</span>
               </div>
-              <p className="text-xs print:text-[9px] text-amber-950 leading-snug break-words">
+              <p className="text-xs print:text-[9px] text-warning-950 leading-snug break-words">
                 {plan.coordinatorFeedback}
               </p>
             </div>
@@ -350,7 +351,7 @@ export const LessonPlanPreviewModal: React.FC<Props> = ({ plan, competencies, on
               </div>
             </div>
 
-            <div className="mt-2 text-center text-[8px] text-slate-400">
+            <div className="mt-2 text-center text-[8px] text-slate-500">
               Portal Manglar · Colegio Integral El Manglar · Documento emitido automáticamente para registro docente institucional
             </div>
           </div>
@@ -361,7 +362,7 @@ export const LessonPlanPreviewModal: React.FC<Props> = ({ plan, competencies, on
         <div className="px-6 py-4 border-t border-slate-200 bg-slate-50 flex justify-end no-print shrink-0">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-[#5EA832] hover:bg-[#498925] text-white text-xs sm:text-sm font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
+            className="px-4 py-2 bg-primary-600 hover:bg-primary-600 text-white text-xs sm:text-sm font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
           >
             Cerrar Vista Previa
           </button>

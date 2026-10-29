@@ -70,12 +70,12 @@ export const RosterPrintModal: React.FC<Props> = ({ grade, students, onClose }) 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent overflow-y-auto animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-raiz/40 overflow-y-auto">
       <div className="bg-white rounded-2xl max-w-4xl w-full border border-slate-300 shadow-2xl overflow-hidden my-4 flex flex-col max-h-[92vh]">
         {/* Top Control Bar (Hidden on print) */}
         <div className="print:hidden flex items-center justify-between px-6 py-3.5 bg-slate-900 text-white shrink-0">
           <div className="flex items-center space-x-3">
-            <Printer className="w-5 h-5 text-[#FACD00]" />
+            <Printer className="w-5 h-5 text-attention-400" />
             <span className="text-sm font-bold">Vista Preliminar de Impresión / Nómina Oficial</span>
           </div>
           <div className="flex items-center space-x-2">
@@ -88,14 +88,14 @@ export const RosterPrintModal: React.FC<Props> = ({ grade, students, onClose }) 
             </button>
             <button
               onClick={handlePrint}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#5EA832] hover:bg-[#498925] text-white rounded-lg text-xs font-bold transition-colors cursor-pointer shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-primary-600 hover:bg-primary-600 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer shadow-xs"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>Imprimir Nómina</span>
             </button>
             <button
               onClick={onClose}
-              className="p-1.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
+              className="p-1.5 text-slate-500 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -105,13 +105,13 @@ export const RosterPrintModal: React.FC<Props> = ({ grade, students, onClose }) 
         {/* Printable Document Area */}
         <div className="p-8 overflow-y-auto print:p-0 print:overflow-visible flex-1 bg-white text-slate-900 font-sans">
           {/* Institutional Header */}
-          <div className="border-b-2 border-emerald-800 pb-4 mb-5 flex items-center justify-between">
+          <div className="border-b-2 border-success-800 pb-4 mb-5 flex items-center justify-between">
             <div className="flex items-center space-x-3.5">
               <div className="w-12 h-12 rounded-xl bg-white p-1 border border-slate-200 shadow-2xs flex items-center justify-center">
                 <ManglarEmblem className="w-full h-full" />
               </div>
               <div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-[#5EA832] block">
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary-600 block">
                   República Bolivariana de Venezuela · MPPE
                 </span>
                 <h1 className="text-base sm:text-lg font-black text-slate-900 leading-tight">
@@ -124,11 +124,11 @@ export const RosterPrintModal: React.FC<Props> = ({ grade, students, onClose }) 
             </div>
 
             <div className="text-right">
-              <div className="inline-block bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-lg">
-                <span className="text-xs font-black text-emerald-900 block">{grade}</span>
-                <span className="text-[10px] font-bold text-emerald-700">Año Escolar 2025 - 2026</span>
+              <div className="inline-block bg-success-50 border border-success-200 px-3 py-1 rounded-lg">
+                <span className="text-xs font-black text-success-900 block">{grade}</span>
+                <span className="text-[10px] font-bold text-success-700">Año Escolar 2025 - 2026</span>
               </div>
-              <span className="text-[10px] text-slate-400 block mt-1">
+              <span className="text-[10px] text-slate-500 block mt-1">
                 Matrícula Activa: <strong>{students.length} Estudiantes</strong>
               </span>
             </div>
@@ -166,13 +166,13 @@ export const RosterPrintModal: React.FC<Props> = ({ grade, students, onClose }) 
                     <td className="py-1.5 px-3 font-semibold text-slate-900 border-r border-slate-200">
                       {student.fullName}
                     </td>
-                    <td className="py-1.5 px-2 text-center font-mono text-slate-700 border-r border-slate-200">
+                    <td className="py-1.5 px-2 text-center tabular-nums text-slate-700 border-r border-slate-200">
                       {student.schoolId}
                     </td>
                     <td className="py-1.5 px-2 text-center border-r border-slate-200">
                       <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
                         student.condition === 'NUEVO'
-                          ? 'bg-amber-100 text-amber-900 border border-amber-300 font-black'
+                          ? 'bg-warning-100 text-warning-900 border border-warning-300 font-black'
                           : 'text-slate-600'
                       }`}>
                         {student.condition}
@@ -182,7 +182,7 @@ export const RosterPrintModal: React.FC<Props> = ({ grade, students, onClose }) 
                       <div className="font-medium truncate max-w-[140px]" title={student.motherName}>
                         {student.motherName || '-'}
                       </div>
-                      <div className="text-[10px] text-slate-500 font-mono">
+                      <div className="text-[10px] text-slate-500 tabular-nums">
                         {student.motherPhone || ''}
                       </div>
                     </td>
@@ -190,14 +190,14 @@ export const RosterPrintModal: React.FC<Props> = ({ grade, students, onClose }) 
                       <div className="font-medium truncate max-w-[140px]" title={student.fatherName}>
                         {student.fatherName || '-'}
                       </div>
-                      <div className="text-[10px] text-slate-500 font-mono">
+                      <div className="text-[10px] text-slate-500 tabular-nums">
                         {student.fatherPhone && student.fatherPhone !== 'n/a' ? student.fatherPhone : ''}
                       </div>
                     </td>
                     <td className="py-1.5 px-2 text-center">
                       <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
                         student.canvasAccepted
-                          ? 'bg-emerald-100 text-emerald-800'
+                          ? 'bg-success-100 text-success-800'
                           : 'bg-slate-100 text-slate-600'
                       }`}>
                         {student.canvasAccepted ? 'Aceptado' : 'Pendiente'}
@@ -228,7 +228,7 @@ export const RosterPrintModal: React.FC<Props> = ({ grade, students, onClose }) 
             </div>
           </div>
 
-          <div className="mt-8 text-center text-[10px] text-slate-400">
+          <div className="mt-8 text-center text-[10px] text-slate-500">
             Emitido a través de Portal Manglar · Fecha de impresión: {new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </div>
         </div>

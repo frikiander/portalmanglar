@@ -142,21 +142,21 @@ export const ScheduleLateralDrawer: React.FC<ScheduleLateralDrawerProps> = ({
           {isOpen ? (
             <>
               <div className="flex items-center space-x-2 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-emerald-100 text-[#3A6B1F] flex items-center justify-center shrink-0">
+                <div className="w-7 h-7 rounded-lg bg-success-100 text-primary-700 flex items-center justify-center shrink-0">
                   <Layers className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider truncate">
-                    Panel de Asignaturas
+                  <h3 className="text-xs font-black text-slate-900 truncate">
+                    Panel de asignaturas
                   </h3>
-                  <p className="text-[10px] text-slate-500 truncate">
+                  <p className="text-xs text-slate-500 truncate">
                     Arrastra dentro y fuera del horario
                   </p>
                 </div>
               </div>
               <button
                 onClick={onToggle}
-                className="p-1 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-200/60 transition-colors"
+                className="p-1 text-slate-500 hover:text-slate-700 rounded-lg hover:bg-slate-200/60 transition-colors"
                 title="Contraer panel"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -165,15 +165,15 @@ export const ScheduleLateralDrawer: React.FC<ScheduleLateralDrawerProps> = ({
           ) : (
             <button
               onClick={onToggle}
-              className="w-full flex flex-col items-center justify-center py-2 text-slate-500 hover:text-emerald-700 transition-colors"
+              className="w-full flex flex-col items-center justify-center py-2 text-slate-500 hover:text-success-700 transition-colors"
               title="Expandir barra lateral de asignaturas"
             >
               <ChevronLeft className="w-4 h-4 mb-2" />
-              <span className="text-[10px] font-black uppercase tracking-wider [writing-mode:vertical-lr] rotate-180">
-                Asignaturas & Bandeja
+              <span className="text-xs font-black [writing-mode:vertical-lr] rotate-180">
+                Asignaturas & bandeja
               </span>
               {unassignedSubjects.length > 0 && (
-                <span className="mt-2 w-5 h-5 rounded-full bg-amber-500 text-white text-[10px] font-bold flex items-center justify-center shadow-xs">
+                <span className="mt-2 w-5 h-5 rounded-full bg-warning-700 text-white text-xs font-bold flex items-center justify-center shadow-xs">
                   {unassignedSubjects.length}
                 </span>
               )}
@@ -185,10 +185,10 @@ export const ScheduleLateralDrawer: React.FC<ScheduleLateralDrawerProps> = ({
         {isOpen && (
           <div className="flex-1 overflow-y-auto p-4 space-y-5 text-slate-800">
             {/* Quick Info Hint */}
-            <div className="bg-emerald-50/80 border border-emerald-200 rounded-xl p-2.5 text-[11px] text-emerald-950 flex items-start space-x-2">
-              <Sparkles className="w-3.5 h-3.5 text-[#5EA832] shrink-0 mt-0.5" />
+            <div className="bg-success-50/80 border border-success-200 rounded-xl p-2.5 text-xs text-success-950 flex items-start space-x-2">
+              <Sparkles className="w-3.5 h-3.5 text-primary-600 shrink-0 mt-0.5" />
               <div>
-                <span className="font-bold">Interacción Drag & Drop:</span> Arrastra cualquier tarjeta a una celda para asignarla, entre celdas para intercambiar, o hacia la bandeja para sacarla del horario.
+                <span className="font-bold">Interacción drag & drop:</span> Arrastra cualquier tarjeta a una celda para asignarla, entre celdas para intercambiar, o hacia la bandeja para sacarla del horario.
               </div>
             </div>
 
@@ -196,18 +196,18 @@ export const ScheduleLateralDrawer: React.FC<ScheduleLateralDrawerProps> = ({
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-1.5">
-                  <Inbox className="w-4 h-4 text-amber-600" />
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-slate-700">
-                    Bandeja Sin Asignar
+                  <Inbox className="w-4 h-4 text-warning-600" />
+                  <span className="text-xs font-extrabold text-slate-700">
+                    Bandeja sin asignar
                   </span>
-                  <span className="text-[10px] font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full">
+                  <span className="text-xs font-bold bg-warning-100 text-warning-900 px-2 py-0.5 rounded-full">
                     {unassignedSubjects.length}
                   </span>
                 </div>
                 {unassignedSubjects.length > 0 && !readOnly && (
                   <button
                     onClick={onClearAllUnassigned}
-                    className="text-[10px] font-semibold text-rose-600 hover:text-rose-800 transition-colors"
+                    className="text-xs font-semibold text-danger-600 hover:text-danger-800 transition-colors"
                   >
                     Vaciar
                   </button>
@@ -221,22 +221,22 @@ export const ScheduleLateralDrawer: React.FC<ScheduleLateralDrawerProps> = ({
                 onDrop={handleTrayDrop}
                 className={`border-2 border-dashed rounded-xl p-3 text-center transition-all ${
                   isDropOverTray
-                    ? 'border-emerald-500 bg-emerald-100/70 scale-[1.02] shadow-md ring-2 ring-emerald-400'
+                    ? 'border-success-500 bg-success-100/70 scale-[1.02] shadow-md ring-2 ring-success-400'
                     : isDragging
-                    ? 'border-amber-400 bg-amber-50/70 text-amber-900 animate-pulse'
+                    ? 'border-warning-400 bg-warning-50/70 text-warning-900 animate-pulse'
                     : 'border-slate-200 bg-slate-50/60 hover:bg-slate-100/50'
                 }`}
               >
                 <div className="flex flex-col items-center justify-center text-slate-500 pointer-events-none py-1">
-                  <Inbox className={`w-5 h-5 mb-1 ${isDropOverTray ? 'text-emerald-700' : isDragging ? 'text-amber-600' : 'text-slate-400'}`} />
-                  <p className="text-[11px] font-bold text-slate-700 leading-tight">
+                  <Inbox className={`w-5 h-5 mb-1 ${isDropOverTray ? 'text-success-700' : isDragging ? 'text-warning-600' : 'text-slate-500'}`} />
+                  <p className="text-xs font-bold text-slate-700 leading-tight">
                     {isDropOverTray
                       ? '¡Suelta para mover a la bandeja!'
                       : isDragging
                       ? 'Suelta aquí para sacar del horario'
                       : 'Arrastra una materia aquí para desasignarla'}
                   </p>
-                  <p className="text-[10px] text-slate-400 mt-0.5">
+                  <p className="text-xs text-slate-500 mt-0.5">
                     Se guardará aquí para reubicarla cuando desees
                   </p>
                 </div>
@@ -266,7 +266,7 @@ export const ScheduleLateralDrawer: React.FC<ScheduleLateralDrawerProps> = ({
                         className={`p-2.5 rounded-xl border flex items-center justify-between group transition-all cursor-grab active:cursor-grabbing shadow-2xs hover:shadow-sm ${catStyle.bg} ${catStyle.border}`}
                       >
                         <div className="flex items-center space-x-2 min-w-0">
-                          <GripVertical className="w-3.5 h-3.5 text-slate-400 shrink-0 group-hover:text-slate-600" />
+                          <GripVertical className="w-3.5 h-3.5 text-slate-500 shrink-0 group-hover:text-slate-600" />
                           <SubjectAvatar
                             subject={matchedSubj}
                             name={item.subject}
@@ -278,7 +278,7 @@ export const ScheduleLateralDrawer: React.FC<ScheduleLateralDrawerProps> = ({
                               {item.subject}
                             </div>
                             {(item.classroom || item.teacherName) && (
-                              <div className="text-[10px] text-slate-600 truncate">
+                              <div className="text-xs text-slate-600 truncate">
                                 {item.classroom && <span>{item.classroom}</span>}
                                 {item.classroom && item.teacherName && <span> · </span>}
                                 {item.teacherName && <span>{item.teacherName}</span>}
@@ -290,7 +290,7 @@ export const ScheduleLateralDrawer: React.FC<ScheduleLateralDrawerProps> = ({
                         {!readOnly && (
                           <button
                             onClick={() => onRemoveUnassigned(idx)}
-                            className="text-slate-400 hover:text-rose-600 p-1 rounded-md transition-colors shrink-0"
+                            className="text-slate-500 hover:text-danger-600 p-1 rounded-md transition-colors shrink-0"
                             title="Eliminar de la bandeja"
                           >
                             <X className="w-3.5 h-3.5" />
@@ -309,14 +309,14 @@ export const ScheduleLateralDrawer: React.FC<ScheduleLateralDrawerProps> = ({
             <div className="space-y-2.5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-1.5">
-                  <BookOpen className="w-4 h-4 text-[#3A6B1F]" />
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-slate-700">
-                    Banco de Asignaturas
+                  <BookOpen className="w-4 h-4 text-primary-700" />
+                  <span className="text-xs font-extrabold text-slate-700">
+                    Banco de asignaturas
                   </span>
                 </div>
                 <button
                   onClick={() => setIsAddingCustom(!isAddingCustom)}
-                  className="text-[10px] font-bold text-emerald-700 hover:text-emerald-900 flex items-center space-x-0.5"
+                  className="text-xs font-bold text-success-700 hover:text-success-900 flex items-center space-x-0.5"
                 >
                   <Plus className="w-3 h-3" />
                   <span>Personalizada</span>
@@ -331,29 +331,29 @@ export const ScheduleLateralDrawer: React.FC<ScheduleLateralDrawerProps> = ({
                     placeholder="Nombre de la asignatura..."
                     value={customSubjectName}
                     onChange={(e) => setCustomSubjectName(e.target.value)}
-                    className="w-full text-xs p-1.5 border border-slate-300 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-emerald-500 bg-white"
+                    className="w-full text-xs p-1.5 border border-slate-300 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-success-500 bg-white"
                     autoFocus
                   />
                   <div className="flex items-center justify-end space-x-2">
                     <button
                       type="button"
                       onClick={() => setIsAddingCustom(false)}
-                      className="text-[10px] font-bold text-slate-500 hover:text-slate-700"
+                      className="text-xs font-bold text-slate-500 hover:text-slate-700"
                     >
                       Cancelar
                     </button>
                     <button
                       type="submit"
                       disabled={!customSubjectName.trim()}
-                      className="text-[10px] font-bold px-2 py-1 bg-[#5EA832] text-white rounded-md disabled:opacity-50"
+                      className="text-xs font-bold px-2 py-1 bg-primary-600 text-white rounded-md disabled:opacity-50"
                     >
-                      Añadir a Bandeja
+                      Añadir a bandeja
                     </button>
                   </div>
                 </form>
               )}
 
-              <p className="text-[11px] text-slate-500 leading-tight">
+              <p className="text-xs text-slate-500 leading-tight">
                 Arrastra cualquier asignatura directamente a una casilla de la tabla semanal:
               </p>
 
@@ -382,7 +382,7 @@ export const ScheduleLateralDrawer: React.FC<ScheduleLateralDrawerProps> = ({
                       className={`p-2 rounded-xl border flex items-center justify-between group cursor-grab active:cursor-grabbing transition-all hover:scale-[1.01] hover:shadow-xs select-none ${catStyle.bg} ${catStyle.border}`}
                     >
                       <div className="flex items-center space-x-2 min-w-0">
-                        <GripVertical className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 shrink-0" />
+                        <GripVertical className="w-3.5 h-3.5 text-slate-500 group-hover:text-slate-600 shrink-0" />
                         <SubjectAvatar
                           name={item.name}
                           iconUrl={item.iconUrl}
@@ -395,7 +395,7 @@ export const ScheduleLateralDrawer: React.FC<ScheduleLateralDrawerProps> = ({
                           {item.name}
                         </span>
                       </div>
-                      <MoveRight className="w-3 h-3 text-slate-400 group-hover:text-slate-700 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity mr-1" />
+                      <MoveRight className="w-3 h-3 text-slate-500 group-hover:text-slate-700 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity mr-1" />
                     </div>
                   );
                 })}

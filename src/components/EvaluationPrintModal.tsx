@@ -59,7 +59,7 @@ export const EvaluationPrintModal: React.FC<EvaluationPrintModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-raiz/40 overflow-y-auto">
       {/* Print styles */}
       <style>{`
         @media print {
@@ -85,11 +85,11 @@ export const EvaluationPrintModal: React.FC<EvaluationPrintModalProps> = ({
         }
       `}</style>
 
-      <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-slate-200">
         {/* Top bar (hidden in print) */}
         <div className="px-6 py-4 bg-slate-900 text-white flex items-center justify-between no-print">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-[#285A14] rounded-lg">
+            <div className="p-2 bg-primary-800 rounded-lg">
               <Printer className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -104,14 +104,14 @@ export const EvaluationPrintModal: React.FC<EvaluationPrintModalProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
-              className="flex items-center gap-2 px-4 py-2 bg-[#5EA832] hover:bg-[#4d8b28] text-white font-medium text-xs rounded-xl shadow-sm transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-600 text-white font-medium text-xs rounded-xl shadow-sm transition-all"
             >
               <Printer className="w-4 h-4" />
               <span>Imprimir Documento</span>
             </button>
             <button
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+              className="p-2 text-slate-500 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -121,12 +121,12 @@ export const EvaluationPrintModal: React.FC<EvaluationPrintModalProps> = ({
         {/* Printable Document Body */}
         <div className="flex-1 overflow-y-auto p-8 text-slate-900" id="printable-evaluation-sheet">
           {/* Header Institucional */}
-          <div className="border-b-2 border-[#285A14] pb-4 mb-6">
+          <div className="border-b-2 border-primary-800 pb-4 mb-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <ManglarEmblem size={56} />
                 <div>
-                  <h1 className="text-lg font-black text-[#285A14] tracking-tight uppercase">
+                  <h1 className="text-lg font-black text-primary-800 tracking-tight uppercase">
                     Colegio Integral El Manglar
                   </h1>
                   <p className="text-xs text-slate-600 font-medium">
@@ -139,10 +139,10 @@ export const EvaluationPrintModal: React.FC<EvaluationPrintModalProps> = ({
               </div>
 
               <div className="text-right">
-                <span className="inline-block px-3 py-1 bg-emerald-100 text-[#285A14] text-xs font-bold rounded-lg border border-emerald-300 uppercase tracking-wider">
+                <span className="inline-block px-3 py-1 bg-success-100 text-primary-800 text-xs font-bold rounded-lg border border-success-300 uppercase tracking-wider">
                   Acta Oficial de Calificaciones
                 </span>
-                <p className="text-[11px] text-slate-500 mt-1 font-mono">
+                <p className="text-[11px] text-slate-500 mt-1 tabular-nums">
                   Folio: {evaluation.id.slice(-8).toUpperCase()}
                 </p>
               </div>
@@ -152,25 +152,25 @@ export const EvaluationPrintModal: React.FC<EvaluationPrintModalProps> = ({
           {/* Metadata Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs mb-6">
             <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
                 Año Escolar
               </span>
               <span className="font-bold text-slate-900">{evaluation.schoolYear}</span>
             </div>
             <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
                 Grado / Sección
               </span>
               <span className="font-bold text-slate-900">{evaluation.grade}</span>
             </div>
             <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
                 Asignatura
               </span>
-              <span className="font-bold text-[#285A14]">{evaluation.subject}</span>
+              <span className="font-bold text-primary-800">{evaluation.subject}</span>
             </div>
             <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
                 Lapso / Momento
               </span>
               <span className="font-bold text-slate-900">
@@ -179,38 +179,38 @@ export const EvaluationPrintModal: React.FC<EvaluationPrintModalProps> = ({
             </div>
 
             <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
                 Docente Titular
               </span>
               <span className="font-medium text-slate-800">{evaluation.teacherName}</span>
             </div>
             <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
                 Estado del Acta
               </span>
               <span className="font-bold text-slate-800 flex items-center gap-1">
                 {evaluation.status === 'audited' ? (
                   <>
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                    <span className="text-emerald-700">Auditada y Certificada</span>
+                    <ShieldCheck className="w-3.5 h-3.5 text-success-600" />
+                    <span className="text-success-700">Auditada y Certificada</span>
                   </>
                 ) : evaluation.status === 'submitted' ? (
-                  <span className="text-amber-700">Consolidada (En Revisión)</span>
+                  <span className="text-warning-700">Consolidada (En Revisión)</span>
                 ) : (
                   <span className="text-slate-600">Borrador Docente</span>
                 )}
               </span>
             </div>
             <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
                 Fecha de Emisión
               </span>
-              <span className="font-medium text-slate-700 font-mono">
+              <span className="font-medium text-slate-700 tabular-nums">
                 {evaluation.updatedAt || new Date().toISOString().split('T')[0]}
               </span>
             </div>
             <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
                 Auditoría Coordinación
               </span>
               <span className="font-medium text-slate-700 truncate block">
@@ -221,8 +221,8 @@ export const EvaluationPrintModal: React.FC<EvaluationPrintModalProps> = ({
 
           {/* Título específico de la evaluación si existe */}
           {evaluation.title && (
-            <div className="mb-4 text-xs font-semibold text-slate-700 bg-emerald-50/50 p-2.5 rounded-lg border border-emerald-200/60">
-              <span className="text-[#285A14] font-bold mr-1">Objetivo / Contenido Evaluado:</span>
+            <div className="mb-4 text-xs font-semibold text-slate-700 bg-success-50/50 p-2.5 rounded-lg border border-success-200/60">
+              <span className="text-primary-800 font-bold mr-1">Objetivo / Contenido Evaluado:</span>
               {evaluation.title}
             </div>
           )}
@@ -231,7 +231,7 @@ export const EvaluationPrintModal: React.FC<EvaluationPrintModalProps> = ({
           <div className="border border-slate-200 rounded-xl overflow-hidden mb-6">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="bg-[#285A14] text-white uppercase text-[10px] tracking-wider">
+                <tr className="bg-primary-800 text-white uppercase text-[10px] tracking-wider">
                   <th className="py-2.5 px-3 w-10 text-center font-bold">N°</th>
                   <th className="py-2.5 px-3 w-28 font-semibold">Cédula Escolar</th>
                   <th className="py-2.5 px-3 font-semibold">Apellidos y Nombres</th>
@@ -253,7 +253,7 @@ export const EvaluationPrintModal: React.FC<EvaluationPrintModalProps> = ({
                       <td className="py-2 px-3 text-center font-bold text-slate-500 text-[11px]">
                         {item.orderNumber || idx + 1}
                       </td>
-                      <td className="py-2 px-3 font-mono text-slate-600 text-[11px]">
+                      <td className="py-2 px-3 tabular-nums text-slate-600 text-[11px]">
                         {item.schoolId || '-'}
                       </td>
                       <td className="py-2 px-3 font-bold text-slate-900 text-[11px]">
@@ -269,7 +269,7 @@ export const EvaluationPrintModal: React.FC<EvaluationPrintModalProps> = ({
                             {item.gradeValue}
                           </span>
                         ) : (
-                          <span className="text-slate-400 font-mono text-[11px]">S/C</span>
+                          <span className="text-slate-500 tabular-nums text-[11px]">S/C</span>
                         )}
                       </td>
                       <td className="py-2 px-3 text-center">
@@ -285,7 +285,7 @@ export const EvaluationPrintModal: React.FC<EvaluationPrintModalProps> = ({
                         {item.observations ? (
                           <span>{item.observations}</span>
                         ) : (
-                          <span className="text-slate-400 italic text-[10px]">Sin novedad</span>
+                          <span className="text-slate-500 italic text-[10px]">Sin novedad</span>
                         )}
                       </td>
                     </tr>
@@ -312,7 +312,7 @@ export const EvaluationPrintModal: React.FC<EvaluationPrintModalProps> = ({
                     <div key={scale} className="bg-white p-2 rounded-lg border border-slate-200">
                       <span className={`block font-black text-sm ${cfg.textBadge}`}>{scale}</span>
                       <span className="font-bold text-slate-900 block text-xs">{count}</span>
-                      <span className="text-[10px] text-slate-500 font-mono block">{pct}%</span>
+                      <span className="text-[10px] text-slate-500 tabular-nums block">{pct}%</span>
                     </div>
                   );
                 })}
@@ -334,14 +334,14 @@ export const EvaluationPrintModal: React.FC<EvaluationPrintModalProps> = ({
                   <span className="font-bold text-slate-800">{regularCount} alumnos</span>
                 </div>
                 <div className="flex justify-between border-b border-slate-200/80 pb-1">
-                  <span className="text-teal-700 font-semibold">AC+ (Altas Capacidades):</span>
-                  <span className="font-bold text-teal-800">{acPlusCount} alumnos</span>
+                  <span className="text-info-700 font-semibold">AC+ (Altas Capacidades):</span>
+                  <span className="font-bold text-info-800">{acPlusCount} alumnos</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-amber-800 font-semibold">
+                  <span className="text-warning-800 font-semibold">
                     AC- (Apoyo Psicopedagógico):
                   </span>
-                  <span className="font-bold text-amber-900">{acMinusCount} alumnos</span>
+                  <span className="font-bold text-warning-900">{acMinusCount} alumnos</span>
                 </div>
               </div>
             </div>
@@ -349,8 +349,8 @@ export const EvaluationPrintModal: React.FC<EvaluationPrintModalProps> = ({
 
           {/* Notas de Auditoría de Coordinación si existen */}
           {evaluation.auditNotes && (
-            <div className="mb-6 p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-xs">
-              <span className="font-bold text-[#285A14] block mb-1">
+            <div className="mb-6 p-3 bg-success-50 rounded-xl border border-success-200 text-xs">
+              <span className="font-bold text-primary-800 block mb-1">
                 Dictamen y Observaciones de Coordinación:
               </span>
               <p className="text-slate-700 italic">{evaluation.auditNotes}</p>

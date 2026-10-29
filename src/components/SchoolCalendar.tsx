@@ -19,6 +19,14 @@ import {
 } from 'lucide-react';
 import { useEduPlan } from '../context/EduPlanContext';
 import { SchoolEvent, CalendarViewType, EventType } from '../types';
+import { Button, Tabs, type TabOption } from './ui';
+
+const CALENDAR_VIEWS: TabOption<CalendarViewType>[] = [
+  { value: 'day',   label: 'Día' },
+  { value: 'week',  label: 'Semana' },
+  { value: 'month', label: 'Mes' },
+  { value: 'year',  label: 'Año' },
+];
 
 interface Props {
   className?: string;
@@ -26,6 +34,8 @@ interface Props {
 
 export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
   const { events, addSchoolEvent, deleteSchoolEvent, viewMode, currentUser } = useEduPlan();
+  // Coordinación publishes the calendar; teachers read it
+  const canManageEvents = viewMode === 'coordinator';
 
   // Current view date state (Default to September 2026, matching academic calendar)
   const [currentDate, setCurrentDate] = useState<Date>(new Date(2026, 8, 5)); // Sep 5, 2026
@@ -59,43 +69,43 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
     switch (type) {
       case 'planning_deadline':
         return {
-          bg: 'bg-amber-50 text-amber-900 border-amber-200',
-          dot: 'bg-amber-500',
-          badge: 'bg-amber-100 text-amber-800',
-          label: 'Entrega Planificación',
-          icon: <Clock className="w-3 h-3 text-amber-600" />
+          bg: 'bg-attention-50 text-attention-900 border-attention-200',
+          dot: 'bg-attention-500',
+          badge: 'bg-attention-100 text-attention-800',
+          label: 'Entrega de planificación',
+          icon: <Clock className="w-3 h-3 text-attention-600" />
         };
       case 'meeting':
         return {
-          bg: 'bg-indigo-50 text-indigo-900 border-indigo-200',
-          dot: 'bg-indigo-500',
-          badge: 'bg-indigo-100 text-indigo-800',
-          label: 'Reunión / Consejo',
-          icon: <Users className="w-3 h-3 text-indigo-600" />
+          bg: 'bg-info-50 text-info-900 border-info-200',
+          dot: 'bg-info-500',
+          badge: 'bg-info-100 text-info-800',
+          label: 'Reunión o consejo',
+          icon: <Users className="w-3 h-3 text-info-600" />
         };
       case 'academic':
         return {
-          bg: 'bg-emerald-50 text-emerald-900 border-emerald-200',
-          dot: 'bg-emerald-500',
-          badge: 'bg-emerald-100 text-emerald-800',
-          label: 'Actividad Curricular',
-          icon: <Award className="w-3 h-3 text-emerald-600" />
+          bg: 'bg-blue-50 text-blue-900 border-blue-200',
+          dot: 'bg-blue-500',
+          badge: 'bg-blue-100 text-blue-800',
+          label: 'Actividad curricular',
+          icon: <Award className="w-3 h-3 text-blue-600" />
         };
       case 'exam':
         return {
-          bg: 'bg-purple-50 text-purple-900 border-purple-200',
-          dot: 'bg-purple-500',
-          badge: 'bg-purple-100 text-purple-800',
-          label: 'Evaluaciones',
-          icon: <FileText className="w-3 h-3 text-purple-600" />
+          bg: 'bg-primary-50 text-primary-900 border-primary-200',
+          dot: 'bg-primary-500',
+          badge: 'bg-primary-100 text-primary-800',
+          label: 'Evaluación',
+          icon: <FileText className="w-3 h-3 text-primary-600" />
         };
       case 'holiday':
         return {
-          bg: 'bg-rose-50 text-rose-900 border-rose-200',
-          dot: 'bg-rose-500',
-          badge: 'bg-rose-100 text-rose-800',
-          label: 'Feriado / Receso',
-          icon: <Sparkles className="w-3 h-3 text-rose-600" />
+          bg: 'bg-slate-50 text-slate-900 border-slate-200',
+          dot: 'bg-slate-500',
+          badge: 'bg-slate-100 text-slate-800',
+          label: 'Feriado o receso',
+          icon: <Sparkles className="w-3 h-3 text-slate-600" />
         };
       default:
         return {
@@ -239,7 +249,7 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight">
             Calendario
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5 font-medium">
+          <p className="text-xs text-slate-500 mt-0.5 font-medium">
             Cronograma académico y efemérides institucionales
           </p>
         </div>
@@ -247,60 +257,18 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
         {/* Right: View Switcher (WEEK | MONTH | YEAR), Navigation (< July 2023 >), + Evento */}
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           
-          {/* Calendar View Toggle (Segmented control) */}
-          <div className="flex items-center space-x-2">
-            <span className="text-xs text-slate-500 font-medium hidden sm:inline-block">
-              Vista:
-            </span>
-            <div className="inline-flex rounded-lg border border-slate-200 bg-slate-50/70 p-0.5 text-xs font-semibold">
-              <button
-                onClick={() => setCalendarView('day')}
-                className={`px-3 py-1.5 rounded-md transition-colors ${
-                  calendarView === 'day'
-                    ? 'bg-white text-indigo-600 font-bold shadow-2xs'
-                    : 'text-slate-500 hover:text-slate-800'
-                }`}
-              >
-                DÍA
-              </button>
-              <button
-                onClick={() => setCalendarView('week')}
-                className={`px-3 py-1.5 rounded-md transition-colors ${
-                  calendarView === 'week'
-                    ? 'bg-white text-indigo-600 font-bold shadow-2xs'
-                    : 'text-slate-500 hover:text-slate-800'
-                }`}
-              >
-                SEMANA
-              </button>
-              <button
-                onClick={() => setCalendarView('month')}
-                className={`px-3 py-1.5 rounded-md transition-colors ${
-                  calendarView === 'month'
-                    ? 'bg-white text-indigo-600 font-bold shadow-2xs'
-                    : 'text-slate-500 hover:text-slate-800'
-                }`}
-              >
-                MES
-              </button>
-              <button
-                onClick={() => setCalendarView('year')}
-                className={`px-3 py-1.5 rounded-md transition-colors ${
-                  calendarView === 'year'
-                    ? 'bg-white text-indigo-600 font-bold shadow-2xs'
-                    : 'text-slate-500 hover:text-slate-800'
-                }`}
-              >
-                AÑO
-              </button>
-            </div>
-          </div>
+          <Tabs
+            label="Vista del calendario"
+            value={calendarView}
+            onChange={setCalendarView}
+            options={CALENDAR_VIEWS}
+          />
 
-          {/* Month / Period Navigation: < Month Year > in vibrant violet/indigo */}
+          {/* Month / Period Navigation: < Month Year > in primary */}
           <div className="flex items-center space-x-1.5 bg-white border border-slate-200/80 rounded-lg px-2.5 py-1 shadow-2xs">
             <button
               onClick={handlePrev}
-              className="p-1 text-indigo-600 hover:text-indigo-800 rounded transition-colors"
+              className="p-1 text-primary-600 hover:text-primary-800 rounded transition-colors"
               title="Anterior"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -315,22 +283,18 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
 
             <button
               onClick={handleNext}
-              className="p-1 text-indigo-600 hover:text-indigo-800 rounded transition-colors"
+              className="p-1 text-primary-600 hover:text-primary-800 rounded transition-colors"
               title="Siguiente"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
 
-          {/* "+ Evento" Action Button */}
-          <button
-            id="btn-add-school-event"
-            onClick={() => setIsCreateModalOpen(true)}
-            className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-2xs transition-colors"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>+ Evento</span>
-          </button>
+          {canManageEvents && (
+            <Button id="btn-add-school-event" size="sm" icon={Plus} onClick={() => setIsCreateModalOpen(true)}>
+              Nuevo evento
+            </Button>
+          )}
         </div>
 
       </div>
@@ -340,15 +304,9 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
       {/* ========================================================================= */}
       {calendarView === 'month' && (
         <div className="bg-white rounded-xl shadow-xs overflow-hidden border border-slate-200/80">
-          {/* Solid Indigo/Purple Header Row */}
-          <div className="grid grid-cols-7 bg-indigo-600 text-white text-center text-xs font-bold uppercase tracking-wider py-3">
-            <div>DOM</div>
-            <div>LUN</div>
-            <div>MAR</div>
-            <div>MIÉ</div>
-            <div>JUE</div>
-            <div>VIE</div>
-            <div>SÁB</div>
+          {/* Weekday header */}
+          <div className="grid grid-cols-7 bg-slate-50 border-b border-slate-200 text-center text-sm font-bold text-slate-600 py-2.5">
+            {['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].map((d) => <div key={d}>{d}</div>)}
           </div>
 
           {/* Month Grid Table */}
@@ -372,7 +330,7 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
                   className={`min-h-[100px] sm:min-h-[120px] p-2 sm:p-2.5 transition-colors flex flex-col justify-between cursor-pointer ${
                     item.isCurrentMonth
                       ? isToday
-                        ? 'bg-indigo-50/40 hover:bg-indigo-50/70'
+                        ? 'bg-primary-50/40 hover:bg-primary-50/70'
                         : 'bg-white hover:bg-slate-50/80'
                       : 'bg-slate-50/60 text-slate-300'
                   }`}
@@ -381,17 +339,17 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
                     <span
                       className={`text-xs font-bold w-6 h-6 rounded-md flex items-center justify-center ${
                         isToday
-                          ? 'bg-indigo-600 text-white'
+                          ? 'bg-primary-600 text-white'
                           : item.isCurrentMonth
                           ? 'text-slate-800'
-                          : 'text-slate-400 font-normal'
+                          : 'text-slate-500 font-normal'
                       }`}
                     >
                       {item.date.getDate()}
                     </span>
 
                     {dayEvents.length > 0 && (
-                      <span className="text-[10px] font-semibold text-slate-400">
+                      <span className="text-xs font-semibold text-slate-500">
                         {dayEvents.length}
                       </span>
                     )}
@@ -400,8 +358,7 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
                   {/* Clean event list matching reference image style */}
                   <div className="space-y-1 overflow-hidden">
                     {dayEvents.slice(0, 2).map((ev) => {
-                      const isExamOrDeadline = ev.type === 'exam' || ev.type === 'planning_deadline';
-                      const accentColor = isExamOrDeadline ? 'border-pink-500' : 'border-indigo-500';
+                      const badge = getEventBadge(ev.type);
 
                       return (
                         <div
@@ -410,16 +367,17 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
                             e.stopPropagation();
                             setSelectedEvent(ev);
                           }}
-                          className={`text-left text-[11px] font-medium text-slate-700 truncate border-b-2 ${accentColor} pb-0.5 hover:text-indigo-700 transition-colors cursor-pointer`}
-                          title={`${ev.title} (${ev.startTime || ''})`}
+                          className="flex items-center gap-1.5 text-left text-xs font-medium text-slate-700 hover:text-raiz transition-colors cursor-pointer min-w-0"
+                          title={`${badge.label}: ${ev.title}${ev.startTime ? ` (${ev.startTime})` : ''}`}
                         >
-                          {ev.title}
+                          <span className={`w-2 h-2 rounded-full shrink-0 ${badge.dot}`} aria-hidden />
+                          <span className="truncate">{ev.title}</span>
                         </div>
                       );
                     })}
 
                     {dayEvents.length > 2 && (
-                      <div className="text-[10px] text-slate-400 font-semibold pt-0.5">
+                      <div className="text-xs text-slate-500 font-semibold pt-0.5">
                         +{dayEvents.length - 2} más...
                       </div>
                     )}
@@ -449,17 +407,17 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
                   key={i}
                   className={`p-3 rounded-2xl border flex flex-col min-h-[220px] ${
                     isToday
-                      ? 'bg-indigo-50/50 border-indigo-300 ring-2 ring-indigo-500/20'
+                      ? 'bg-primary-50/50 border-primary-300 ring-2 ring-primary-500/20'
                       : 'bg-white border-slate-200'
                   }`}
                 >
                   <div className="pb-2 border-b border-slate-100 flex items-center justify-between mb-2">
-                    <span className="text-xs font-bold text-slate-500 uppercase">
+                    <span className="text-xs font-bold text-slate-500">
                       {dayNamesShort[i]}
                     </span>
                     <span
                       className={`text-xs font-black rounded-lg w-6 h-6 flex items-center justify-center ${
-                        isToday ? 'bg-indigo-600 text-white' : 'text-slate-800'
+                        isToday ? 'bg-primary-600 text-white' : 'text-slate-800'
                       }`}
                     >
                       {d.getDate()}
@@ -477,12 +435,12 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
                             onClick={() => setSelectedEvent(ev)}
                             className={`p-2 rounded-xl border text-xs cursor-pointer hover:shadow-xs transition-shadow ${badge.bg}`}
                           >
-                            <div className="flex items-center space-x-1 font-bold text-[11px] mb-0.5">
+                            <div className="flex items-center space-x-1 font-bold text-xs mb-0.5">
                               {badge.icon}
                               <span className="truncate">{ev.title}</span>
                             </div>
                             {ev.startTime && (
-                              <div className="text-[10px] text-slate-500 flex items-center space-x-1">
+                              <div className="text-xs text-slate-500 flex items-center space-x-1">
                                 <Clock className="w-2.5 h-2.5" />
                                 <span>{ev.startTime} - {ev.endTime || ''}</span>
                               </div>
@@ -491,7 +449,7 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
                         );
                       })
                     ) : (
-                      <div className="h-full flex items-center justify-center text-[11px] text-slate-300 font-medium italic">
+                      <div className="h-full flex items-center justify-center text-xs text-slate-300 font-medium italic">
                         Sin eventos
                       </div>
                     )}
@@ -510,8 +468,8 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
         <div className="p-6 max-w-3xl mx-auto space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-200">
             <div>
-              <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider block">
-                Agenda del Día
+              <span className="text-xs font-bold text-primary-600 block">
+                Agenda del día
               </span>
               <h4 className="text-lg font-black text-slate-900">
                 {currentDate.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
@@ -535,12 +493,12 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
                   >
                     <div className="space-y-1">
                       <div className="flex items-center space-x-2">
-                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${badge.badge}`}>
+                        <span className={`px-2 py-0.5 rounded-md text-xs font-bold border ${badge.badge}`}>
                           {badge.label}
                         </span>
                         {ev.startTime && (
                           <span className="text-xs font-bold text-slate-600 flex items-center space-x-1">
-                            <Clock className="w-3 h-3 text-slate-400" />
+                            <Clock className="w-3 h-3 text-slate-500" />
                             <span>{ev.startTime} - {ev.endTime || ''}</span>
                           </span>
                         )}
@@ -556,26 +514,26 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
                     </div>
 
                     <div className="shrink-0 ml-3">
-                      <span className="text-xs font-medium text-slate-400">Ver detalle</span>
+                      <span className="text-xs font-medium text-slate-500">Ver detalle</span>
                     </div>
                   </div>
                 );
               })
             ) : (
               <div className="p-8 text-center rounded-2xl bg-slate-50 border border-dashed border-slate-200">
-                <CalendarIcon className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+                <CalendarIcon className="w-8 h-8 text-slate-500 mx-auto mb-2" />
                 <p className="text-xs font-semibold text-slate-600">
                   No hay eventos registrados para este día.
                 </p>
-                <button
+                {canManageEvents && <button
                   onClick={() => {
                     setNewDate(formatDateKey(currentDate));
                     setIsCreateModalOpen(true);
                   }}
-                  className="mt-3 px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700"
+                  className="mt-3 px-3 py-1.5 bg-primary-600 text-white rounded-xl text-xs font-bold hover:bg-primary-700"
                 >
                   + Programar evento aquí
-                </button>
+                </button>}
               </div>
             )}
           </div>
@@ -601,9 +559,9 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
                     setCurrentDate(new Date(year, mIdx, 1));
                     setCalendarView('month');
                   }}
-                  className={`p-4 rounded-2xl border transition-all cursor-pointer hover:border-indigo-300 hover:shadow-xs ${
+                  className={`p-4 rounded-2xl border transition-all cursor-pointer hover:border-primary-300 hover:shadow-xs ${
                     mIdx === month
-                      ? 'bg-indigo-50/50 border-indigo-300 ring-2 ring-indigo-500/20'
+                      ? 'bg-primary-50/50 border-primary-300 ring-2 ring-primary-500/20'
                       : 'bg-white border-slate-200'
                   }`}
                 >
@@ -611,7 +569,7 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
                     <span className="text-xs font-bold text-slate-900">
                       {mName}
                     </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-600">
+                    <span className="text-xs font-bold px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-600">
                       {monthEvents.length} ev.
                     </span>
                   </div>
@@ -620,15 +578,15 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
                     {monthEvents.slice(0, 2).map((ev) => (
                       <div
                         key={ev.id}
-                        className="text-[10px] text-slate-600 truncate flex items-center space-x-1"
+                        className="text-xs text-slate-600 truncate flex items-center space-x-1"
                       >
-                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary-500 shrink-0" />
                         <span className="truncate">{ev.title}</span>
                       </div>
                     ))}
 
                     {monthEvents.length === 0 && (
-                      <div className="text-[10px] text-slate-400 italic">
+                      <div className="text-xs text-slate-500 italic">
                         Sin eventos
                       </div>
                     )}
@@ -641,18 +599,22 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
       )}
 
       {/* Bottom info footer */}
-      <div className="px-6 py-3 bg-slate-50 border-t border-slate-200/80 flex flex-wrap items-center justify-between gap-3 text-[11px] text-slate-500">
-        <div className="flex items-center space-x-4">
-          <span className="font-semibold text-slate-700">Tipos de eventos:</span>
-          <span className="flex items-center space-x-1"><span className="w-2 h-2 rounded-full bg-amber-500" /><span>Entrega Planificación</span></span>
-          <span className="flex items-center space-x-1"><span className="w-2 h-2 rounded-full bg-indigo-500" /><span>Reunión</span></span>
-          <span className="flex items-center space-x-1"><span className="w-2 h-2 rounded-full bg-emerald-500" /><span>Curricular</span></span>
-          <span className="flex items-center space-x-1"><span className="w-2 h-2 rounded-full bg-purple-500" /><span>Evaluación</span></span>
-          <span className="flex items-center space-x-1"><span className="w-2 h-2 rounded-full bg-rose-500" /><span>Feriado</span></span>
+      <div className="px-4 sm:px-6 py-3 bg-slate-50 border-t border-slate-200/80 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+          <span className="font-semibold text-slate-700">Tipos de evento:</span>
+          {(['planning_deadline', 'exam', 'meeting', 'academic', 'holiday'] as EventType[]).map((t) => {
+            const b = getEventBadge(t);
+            return (
+              <span key={t} className="flex items-center gap-1.5">
+                <span className={`w-2 h-2 rounded-full ${b.dot}`} />
+                <span>{b.label}</span>
+              </span>
+            );
+          })}
         </div>
 
-        <div className="italic">
-          * Eventos gestionados por Coordinación Académica
+        <div>
+          Coordinación académica publica los eventos.
         </div>
       </div>
 
@@ -660,16 +622,16 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
       {/* MODAL: CARGAR NUEVO EVENTO ESCOLAR (Coordinador)                          */}
       {/* ========================================================================= */}
       {isCreateModalOpen && (
-        <div className="fixed inset-0 z-50 bg-transparent flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-300 animate-in fade-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 z-50 bg-raiz/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-300">
             <div className="flex items-center justify-between pb-4 border-b border-slate-100">
               <div className="flex items-center space-x-2.5">
-                <span className="p-2 rounded-xl bg-indigo-50 text-indigo-600">
+                <span className="p-2 rounded-xl bg-primary-50 text-primary-600">
                   <Plus className="w-4 h-4" />
                 </span>
                 <div>
                   <h4 className="text-base font-bold text-slate-900">
-                    Cargar Evento en Calendario Escolar
+                    Cargar evento en calendario escolar
                   </h4>
                   <p className="text-xs text-slate-500">
                     Visible para toda la comunidad y el cuerpo docente
@@ -679,7 +641,7 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
 
               <button
                 onClick={() => setIsCreateModalOpen(false)}
-                className="p-1.5 text-slate-400 hover:text-slate-700 rounded-xl"
+                className="p-1.5 text-slate-500 hover:text-slate-700 rounded-xl"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -687,8 +649,8 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
 
             <form onSubmit={handleCreateSubmit} className="space-y-4 pt-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">
-                  Título del Evento *
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Título del evento *
                 </label>
                 <input
                   type="text"
@@ -696,30 +658,30 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   placeholder="Ej: Entrega de Planificaciones Quincenales / Consejo Técnico"
-                  className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+                  className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-primary-500"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">
-                    Tipo de Evento
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Tipo de evento
                   </label>
                   <select
                     value={newType}
                     onChange={(e) => setNewType(e.target.value as EventType)}
-                    className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 bg-white"
+                    className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-primary-500 bg-white"
                   >
-                    <option value="planning_deadline">Entrega de Planificación</option>
-                    <option value="meeting">Reunión / Consejo Técnico</option>
-                    <option value="academic">Actividad Curricular</option>
-                    <option value="exam">Evaluación / Exámenes</option>
-                    <option value="holiday">Feriado / Receso Escolar</option>
+                    <option value="planning_deadline">Entrega de planificación</option>
+                    <option value="meeting">Reunión / consejo técnico</option>
+                    <option value="academic">Actividad curricular</option>
+                    <option value="exam">Evaluación / exámenes</option>
+                    <option value="holiday">Feriado / receso escolar</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
                     Fecha (YYYY-MM-DD)
                   </label>
                   <input
@@ -727,7 +689,7 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
                     required
                     value={newDate}
                     onChange={(e) => setNewDate(e.target.value)}
-                    className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 bg-white"
+                    className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-primary-500 bg-white"
                   >
                   </input>
                 </div>
@@ -735,40 +697,40 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">
-                    Hora Inicio
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Hora inicio
                   </label>
                   <input
                     type="time"
                     value={newStartTime}
                     onChange={(e) => setNewStartTime(e.target.value)}
-                    className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+                    className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-primary-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">
-                    Hora Fin
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Hora fin
                   </label>
                   <input
                     type="time"
                     value={newEndTime}
                     onChange={(e) => setNewEndTime(e.target.value)}
-                    className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+                    className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-primary-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">
-                  Descripción o Instrucciones
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Descripción o instrucciones
                 </label>
                 <textarea
                   rows={2}
                   value={newDesc}
                   onChange={(e) => setNewDesc(e.target.value)}
                   placeholder="Detalles sobre lugar, formato de entrega, rúbrica o enlaces..."
-                  className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 resize-none"
+                  className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-primary-500 resize-none"
                 />
               </div>
 
@@ -782,9 +744,9 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs"
+                  className="px-5 py-2.5 text-xs font-bold text-white bg-primary-600 hover:bg-primary-700 rounded-xl shadow-xs"
                 >
-                  Guardar en Calendario
+                  Guardar en calendario
                 </button>
               </div>
             </form>
@@ -796,8 +758,8 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
       {/* MODAL: DETALLE DEL EVENTO                                                 */}
       {/* ========================================================================= */}
       {selectedEvent && (
-        <div className="fixed inset-0 z-50 bg-transparent flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-300 animate-in fade-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 z-50 bg-raiz/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-300">
             {(() => {
               const badge = getEventBadge(selectedEvent.type);
               return (
@@ -808,7 +770,7 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
                     </span>
                     <button
                       onClick={() => setSelectedEvent(null)}
-                      className="p-1 text-slate-400 hover:text-slate-700 rounded-lg"
+                      className="p-1 text-slate-500 hover:text-slate-700 rounded-lg"
                     >
                       <X className="w-5 h-5" />
                     </button>
@@ -821,12 +783,12 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
 
                     <div className="flex items-center space-x-3 text-xs text-slate-600">
                       <div className="flex items-center space-x-1">
-                        <CalendarIcon className="w-3.5 h-3.5 text-slate-400" />
+                        <CalendarIcon className="w-3.5 h-3.5 text-slate-500" />
                         <span className="font-semibold">{selectedEvent.date}</span>
                       </div>
                       {selectedEvent.startTime && (
                         <div className="flex items-center space-x-1">
-                          <Clock className="w-3.5 h-3.5 text-slate-400" />
+                          <Clock className="w-3.5 h-3.5 text-slate-500" />
                           <span>{selectedEvent.startTime} {selectedEvent.endTime ? `- ${selectedEvent.endTime}` : ''}</span>
                         </div>
                       )}
@@ -838,16 +800,16 @@ export const SchoolCalendar: React.FC<Props> = ({ className = '' }) => {
                   </div>
 
                   <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <button
+                    {canManageEvents ? <button
                       onClick={() => {
                         deleteSchoolEvent(selectedEvent.id);
                         setSelectedEvent(null);
                       }}
-                      className="inline-flex items-center space-x-1 text-xs text-rose-600 hover:text-rose-800 font-semibold"
+                      className="inline-flex items-center space-x-1 text-xs text-danger-600 hover:text-danger-800 font-semibold"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
-                      <span>Eliminar Evento</span>
-                    </button>
+                      <span>Eliminar evento</span>
+                    </button> : <span />}
 
                     <button
                       onClick={() => setSelectedEvent(null)}
